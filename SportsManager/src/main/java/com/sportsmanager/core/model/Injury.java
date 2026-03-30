@@ -8,7 +8,7 @@ public class Injury {
     private final Severity severity;
     private int gamesRemaining;
 
-
+/*Hi, selin here, should we name injuries? We only have severity for now*/
     public Injury(Severity severity, int gamesRemaining) {
         this.id = UUID.randomUUID();
         this.severity = severity;

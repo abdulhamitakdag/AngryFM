@@ -7,8 +7,9 @@ public abstract class AbstractPlayer extends AbstractPerson {
     private String position;
     private int shirtNumber;
     private AbstractPlayerAttributes attributes;
-    private Object injury; // B kişisinin yazacağı Injury sınıfı gelecek
-
+    private Injury injury; // B kişisinin yazacağı Injury sınıfı gelecek
+    /*ben selin, burayı placeholder objeden Injury class objesine değiştiriyorum hakkınızı helal edin*/
+    /*ben yine selin, oyuncuya nasıl injury veriyoruz?*/
     public AbstractPlayer(String name, int age, Gender gender, String position, int shirtNumber, AbstractPlayerAttributes attributes) {
         super(name, age, gender);
         this.position = position;
