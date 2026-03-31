@@ -22,6 +22,14 @@ public class MatchResult {
         }
     }
 
+    public int getHomeScore() {
+        return homeScore;
+    }
+
+    public int getAwayScore() {
+        return awayScore;
+    }
+
     public boolean isHomeWin() {
         return homeScore > awayScore;
     }

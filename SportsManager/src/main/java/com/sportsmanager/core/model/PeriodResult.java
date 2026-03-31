@@ -22,4 +22,11 @@ public class PeriodResult {
         }
     }
 
+    public int getHomeScore() {
+        return homeScore;
+    }
+
+    public int getAwayScore() {
+        return awayScore;
+    }
 }

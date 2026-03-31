@@ -2,11 +2,11 @@ package com.sportsmanager.core.model;
 
 public abstract class AbstractPlayerAttributes {
 
-    public abstract double OverallRating();
+    public abstract int computeOverallRating();
     public abstract void applyTrainingBoost(double intensity);
 
-    public double getOverallRating() {
-        return OverallRating();
+    public int getOverallRating() {
+        return computeOverallRating();
     }
 
     public double limiter(double value, double min, double max) {

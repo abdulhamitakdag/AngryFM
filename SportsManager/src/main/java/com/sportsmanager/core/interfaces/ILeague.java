@@ -1,7 +1,7 @@
 package com.sportsmanager.core.interfaces;
 
 import com.sportsmanager.core.model.AbstractPlayerAttributes;
-import com.sportsmanager.core.model.StandingEntry;
+import com.sportsmanager.core.model.TeamInLeagueTable;
 import com.sportsmanager.core.model.MatchResult;
 import com.sportsmanager.core.model.AbstractTeam;
 
@@ -47,7 +47,7 @@ public interface ISport {
  * Lig yönetimi için gerekli sözleşmeyi sağlar.
  */
 public interface ILeague {
-    List<StandingEntry> getStandings();
+    List<TeamInLeagueTable> getStandings();
     void recordResult(MatchResult result);
     void generateFixtures(List<AbstractTeam> teams);
     boolean isSeasonOver();

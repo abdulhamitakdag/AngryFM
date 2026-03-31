@@ -10,10 +10,18 @@ public abstract class AbstractCoach extends AbstractPerson {
     public AbstractCoach(String name, int age, Gender gender, CoachSpecialty specialty, int coachingLevel) {
         super(name, age, gender);
         if (coachingLevel < 1 || coachingLevel > 5) {
-            throw new IllegalArgumentException("Koçluk seviyesi 1 ile 5 arasında olmalıdır.");
+            throw new IllegalArgumentException("Coaching level must be between 1 and 5.");
         }
         this.specialty = specialty;
         this.coachingLevel = coachingLevel;
+    }
+
+    public CoachSpecialty getSpecialty() {
+        return specialty;
+    }
+
+    public int getCoachingLevel() {
+        return coachingLevel;
     }
 
     /**
