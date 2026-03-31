@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Antrenman yapılabilen (gelişime açık) varlıkların yeteneklerini tanımlar.
  */
-public interface ITrainable {
+interface ITrainable {
     /**
      * Varlığa antrenman uygular.
      * @param intensity Antrenman yoğunluğu (0.0 ile 1.0 arası)
@@ -26,7 +26,7 @@ public interface ITrainable {
 /**
  * Sisteme eklenecek tüm spor branşlarının temel kurallarını belirler.
  */
-public interface ISport {
+interface ISport {
     String getSportId();
     int getPlayersOnField();
     int getWinPoints();
@@ -56,7 +56,7 @@ public interface ILeague {
 /**
  * Maçların simülasyon mantığını barındıran motor arayüzü.
  */
-public interface IMatchEngine {
+interface IMatchEngine {
     // Not: PeriodResult, AbstractTeam ve Injury sınıfları B kişisi ve diğer tasklardan gelecek
     Object simulatePeriod(AbstractTeam home, AbstractTeam away, Object tacticModifier);
     List<Object> determineInjuries(AbstractTeam home, AbstractTeam away);
