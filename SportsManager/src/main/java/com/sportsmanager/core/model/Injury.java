@@ -9,7 +9,7 @@ public class Injury {
     private int gamesRemaining;
 
 /*Hi, selin here, should we name injuries? We only have severity for now*/
-    public Injury(Severity severity, int gamesRemaining) {
+    public Injury(int severity, int gamesRemaining) {
         this.id = UUID.randomUUID();
         this.severity = severity;
         this.gamesRemaining = gamesRemaining;

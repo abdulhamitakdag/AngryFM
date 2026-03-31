@@ -31,6 +31,7 @@ public abstract class AbstractPlayer extends AbstractPerson {
     public void train(double intensity) {
         if (injury != null) {
             // Sakat oyuncu antrenman yapamaz
+            //ben selin, buradaki returne value verecek miyiz?
             return;
         }
         if (attributes != null) {
