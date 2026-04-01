@@ -1,15 +1,23 @@
 package com.sportsmanager.core.model;
-
-import  com.sportsmanager.core.model.BaseTest;
-import com.sportsmanager.core.model.TestObjFactory;
-import com.sportsmanager.core.model.Injury;
 import org.junit.jupiter.api.Test;
+
+import java.util.Random;
+import static com.sportsmanager.core.model.TestObjFactory.generateTestFemmePlayer;
+import static com.sportsmanager.core.model.TestObjFactory.generateTestMascPlayer;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPlayer extends com.sportsmanager.core.model.BaseTest {
+    static class AbstractPlayerStub extends AbstractPlayer{
+        public AbstractPlayerStub(String name, int age, Gender gender) {
+            super(name, age, gender, "N/A", 0, null);
+        }
+        @Override
+        public double getTrainingEffectiveness() {return 0;}
+
+
     @Test
     void testInjuredFemmePlayerNoTrain(){
-        AbstractPlayer player= TestObjFactory.generateTestFemmePlayer();
+        AbstractPlayer player= generateTestFemmePlayer();
         com.sportsmanager.core.model.Injury injury=
                 new com.sportsmanager.core.model.Injury(3,3);
         player.setInjury(injury);
@@ -18,12 +26,13 @@ public class TestPlayer extends com.sportsmanager.core.model.BaseTest {
         assertTrue(player.getInjury() !=null, "Player is injured!");
         assertFalse(player.getInjury().isRecovered, "Player is not recovered from her injury yet!");
     //getter ve setterlar Injury için yazılmamış, yazılınca burası çalışmalı
+        //player recovery sistemini oturtamadım
         //veya nasıl bir getter/setter adı verildiyse ona göre değiştirilmeli
     }
 
     @Test
     void testInjuredMascPlayerNoTrain(){
-        AbstractPlayer player= TestObjFactory.generateTestMascPlayer();
+        AbstractPlayer player= generateTestMascPlayer();
         com.sportsmanager.core.model.Injury injury=
                 new com.sportsmanager.core.model.Injury(3,3);
         player.setInjury(injury);
@@ -33,5 +42,6 @@ public class TestPlayer extends com.sportsmanager.core.model.BaseTest {
         assertFalse(player.getInjury().isRecovered, "Player is not recovered from his injury yet!");
         //getter ve setterlar Injury için yazılmamış, yazılınca burası çalışmalı
         //veya nasıl bir getter/setter adı verildiyse ona göre değiştirilmeli
+        }
     }
 }

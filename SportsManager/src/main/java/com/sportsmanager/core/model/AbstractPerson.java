@@ -9,7 +9,7 @@ import java.util.UUID;
 public abstract class AbstractPerson implements ITrainable {
     private final UUID id;
     private final String name;
-    private final int age;
+    private static int age;
     private final Gender gender;
 
     public AbstractPerson(String name, int age, Gender gender) {
@@ -24,6 +24,6 @@ public abstract class AbstractPerson implements ITrainable {
 
     public UUID getId() { return id; }
     public String getName() { return name; }
-    public int getAge() { return age; }
+    public static int getAge() { return age; }
     public Gender getGender() { return gender; }
 }
