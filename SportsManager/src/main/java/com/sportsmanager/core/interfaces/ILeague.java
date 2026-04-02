@@ -6,9 +6,7 @@ import com.sportsmanager.core.model.AbstractTeam;
 
 import java.util.List;
 
-/**
- * Lig yönetimi için gerekli sözleşmeyi sağlar.
- */
+// lig işlemleri için temel arayüz
 public interface ILeague {
     List<TeamInLeagueTable> getStandings();
     void recordResult(MatchResult result);

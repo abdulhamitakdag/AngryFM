@@ -4,28 +4,16 @@ import com.sportsmanager.core.model.AbstractPlayerAttributes;
 
 import java.util.List;
 
-/**
- * Sisteme eklenecek tüm spor branşlarının temel kurallarını belirler.
- */
+// spor branşlarının temel kurallarını belirleyen arayüz
 public interface ISport {
     String getSportId();
     int getPlayersOnField();
     int getWinPoints();
     boolean allowsDraw();
 
-    /**
-     * Bu spor branşına ait maç motorunu üretir (Factory Method).
-     */
-    IMatchEngine createMatchEngine();
+    IMatchEngine createMatchEngine(); // bu branşa ait maç motoru üretir
 
-    /**
-     * Belirtilen pozisyon için rastgele yetenekler (attributes) üretir.
-     */
-    AbstractPlayerAttributes generateRandomAttributes(String position);
+    AbstractPlayerAttributes generateRandomAttributes(String position); // pozisyona göre rastgele yetenek üretir
 
-    /**
-     * Bu spor branşına ait geçerli saha pozisyonlarının listesini döndürür.
-     */
-    List<String> getValidPositions();
+    List<String> getValidPositions(); // geçerli saha pozisyonları
 }
-

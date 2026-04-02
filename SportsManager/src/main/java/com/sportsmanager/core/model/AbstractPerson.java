@@ -3,9 +3,7 @@ package com.sportsmanager.core.model;
 import com.sportsmanager.core.interfaces.ITrainable;
 import java.util.UUID;
 
-/**
- * Oyuncu ve koçların ortak özelliklerini barındıran temel sınıf.
- */
+// oyuncu ve koçların ortak özellikleri
 public abstract class AbstractPerson implements ITrainable {
     private final UUID id;
     private final String name;

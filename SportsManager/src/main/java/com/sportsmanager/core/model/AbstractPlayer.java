@@ -1,8 +1,6 @@
 package com.sportsmanager.core.model;
 
-/**
- * Sporcuların temel yapısını tanımlar.
- */
+// sporcuların temel yapısı
 public abstract class AbstractPlayer extends AbstractPerson {
     private String position;
     private int shirtNumber;
@@ -43,9 +41,7 @@ public abstract class AbstractPlayer extends AbstractPerson {
         return this.injury != null && this.injury.getGamesRemaining() > 0;
     }
 
-    /**
-     * Sakatlık süresini bir maç azaltır.
-     */
+    // sakatlık süresini bir maç azaltır
     public void decrementInjury() {
         if (injury != null) {
             injury.decrementGamesRemaining();
@@ -58,7 +54,7 @@ public abstract class AbstractPlayer extends AbstractPerson {
     @Override
     public void train(double intensity) {
         if (injury != null) {
-            // Sakat oyuncu antrenman yapamaz
+            // sakat oyuncu antrenman yapamaz
             //ben selin, buradaki returne value verecek miyiz?
             return;
         }

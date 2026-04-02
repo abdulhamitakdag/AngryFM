@@ -1,17 +1,7 @@
 package com.sportsmanager.core.interfaces;
 
-/**
- * Antrenman yapılabilen (gelişime açık) varlıkların yeteneklerini tanımlar.
- */
+// antrenman yapılabilen varlıklar için arayüz
 public interface ITrainable {
-    /**
-     * Varlığa antrenman uygular.
-     * @param intensity Antrenman yoğunluğu (0.0 ile 1.0 arası)
-     */
-    void train(double intensity);
-
-    /**
-     * @return Antrenman verimliliği katsayısı
-     */
-    double getTrainingEffectiveness();
+    void train(double intensity); // intensity 0.0 ile 1.0 arası
+    double getTrainingEffectiveness(); // antrenman verimlilik katsayısı
 }

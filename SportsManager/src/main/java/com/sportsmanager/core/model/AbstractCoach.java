@@ -1,8 +1,6 @@
 package com.sportsmanager.core.model;
 
-/**
- * Takım koçlarının temel yapısını tanımlar.
- */
+// koçların temel yapısı
 public abstract class AbstractCoach extends AbstractPerson {
     private CoachSpecialty specialty;
     private int coachingLevel; // 1 ile 5 arası
@@ -24,26 +22,20 @@ public abstract class AbstractCoach extends AbstractPerson {
         return coachingLevel;
     }
 
-    /**
-     * Takıma antrenman yaptırır.
-     */
+    // takıma antrenman yaptırır
     public void conductTraining(AbstractTeam team) {
-        // Takımdaki her oyuncu için train() metodunu çağırır
-        // Bu detay AbstractTeam ile entegre çalışacak
+        // her oyuncu icin train() cagirilacak, AbstractTeam ile entegre calışacak
     }
 
-    /**
-     * Koçun uzmanlık alanına göre sağlayacağı çarpan (hook metodu).
-     */
-    public abstract double specialtyMultiplier();
+    public abstract double specialtyMultiplier(); // koçun uzmanlık alanına göre çarpan
 
     @Override
     public void train(double intensity) {
-        // Koçların antrenman mantığı (varsa) buraya eklenebilir
+        // koçların antrenman mantığı buraya eklenebilir
     }
 
     @Override
     public double getTrainingEffectiveness() {
-        return 1.0 + (coachingLevel * 0.1); // Örnek bir verimlilik hesabı
+        return 1.0 + (coachingLevel * 0.1); // basit verimlilik hesabı
     }
 }

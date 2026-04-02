@@ -9,37 +9,38 @@ public abstract class AbstractLeague implements ILeague {
     private final String name;
     private final List<AbstractTeam> teams;
     private final List<Fixture> fixtures;
-    private final Map<UUID, TeamInLeagueTable> standingsMap;
+    private final Map<UUID, TeamInLeagueTable> teamMap;
     private int currentWeek;
 
     public AbstractLeague(String name) {
         this.name = name;
         this.teams = new ArrayList<>();
         this.fixtures = new ArrayList<>();
-        this.standingsMap = new LinkedHashMap<>();
+        this.teamMap = new HashMap<>(); //LinkedHashMap gereksiz veri tutacağından HashMap e geçildi.
         this.currentWeek = 1;
     }
-
+//her lig için belirlenecek kazanma ve beraberliğin getirdiği puan sayısı
     protected abstract int getWinPoints();
     protected abstract int getDrawPoints();
 
-    // FootballMatch vs dondurecek
+    // FootballMatch falan döndürecek buradan
+    //Maç oluşturma methodu her maç için farklı olacağından abstract method tercih edildi
     protected abstract AbstractMatch createMatch(AbstractTeam home, AbstractTeam away);
 
     @Override
     public List<TeamInLeagueTable> getStandings() {
-        List<TeamInLeagueTable> sorted = new ArrayList<>(standingsMap.values());
+        List<TeamInLeagueTable> sorted = new ArrayList<>(teamMap.values());
         sorted.sort((a, b) -> {
             if (a.getPoints() != b.getPoints()) {
-                return Integer.compare(b.getPoints(), a.getPoints());
+                return Integer.compare(b.getPoints(), a.getPoints());//puan üstünlüğü kontrolü
             }
-            if (a.getGoalDifference() != b.getGoalDifference()) {
+            if (a.getGoalDifference() != b.getGoalDifference()) {//puanlar eşitse averaj üstünlüğü
                 return Integer.compare(b.getGoalDifference(), a.getGoalDifference());
             }
-            // esitlik bozulamazsa kura cek
-            return new Random().nextBoolean() ? 1 : -1;
+            // eşitlik bozulmazsa alfabetik sıraya göre diz
+            return a.getTeam().getName().compareTo(b.getTeam().getName());
         });
-        return Collections.unmodifiableList(sorted);
+        return Collections.unmodifiableList(sorted); //en sonda çıkan sıralanmış tabloyu salt okunur yaparak döndürüyoruz.
     }
 
     @Override
@@ -56,19 +57,21 @@ public abstract class AbstractLeague implements ILeague {
                 break;
             }
         }
+        //eğer üstteki döngüde bütün fixtürlerin oynandığını anlarsak hata fırlatıyoruz çünkü
+        //sezon bittikten sonra maç sonucu kaydedilemez
         if (fixture == null) {
             throw new IllegalStateException("No unplayed fixtures remaining");
         }
 
         fixture.setResult(result);
 
-        TeamInLeagueTable homeEntry = standingsMap.get(fixture.getHomeTeam().getId());
-        TeamInLeagueTable awayEntry = standingsMap.get(fixture.getAwayTeam().getId());
+        TeamInLeagueTable homeEntry = teamMap.get(fixture.getHomeTeam().getId());
+        TeamInLeagueTable awayEntry = teamMap.get(fixture.getAwayTeam().getId());
 
         if (homeEntry == null || awayEntry == null) {
-            throw new IllegalStateException("Team not found in standings");
+            throw new IllegalStateException("Team not found in fixture");
         }
-
+// iki takımın da verileri güncellenir
         homeEntry.addResult(result.isHomeWin(), result.isDraw(),
                 result.getHomeScore(), result.getAwayScore(),
                 getWinPoints(), getDrawPoints());
@@ -86,11 +89,11 @@ public abstract class AbstractLeague implements ILeague {
         this.teams.clear();
         this.teams.addAll(teamList);
         this.fixtures.clear();
-        this.standingsMap.clear();
+        this.teamMap.clear();
         this.currentWeek = 1;
 
         for (AbstractTeam team : teams) {
-            standingsMap.put(team.getId(), new TeamInLeagueTable(team));
+            teamMap.put(team.getId(), new TeamInLeagueTable(team));
         }
 
         int n = teams.size();
@@ -118,7 +121,7 @@ public abstract class AbstractLeague implements ILeague {
             roundTeams.add(1, last);
         }
 
-        // 2.tur  ev sahibi karşya geçer
+        // 2. tur  ev sahibi deplasmanla yer değiştirir
         int firstTourSize = fixtures.size();
         for (int i = 0; i < firstTourSize; i++) {
             Fixture f = fixtures.get(i);
@@ -139,11 +142,10 @@ public abstract class AbstractLeague implements ILeague {
         currentWeek++;
     }
 
-    // sezon bitmeden null doner
     public AbstractTeam getChampion() {
         if (!isSeasonOver()) return null;
-        List<TeamInLeagueTable> standings = getStandings();
-        return standings.isEmpty() ? null : standings.get(0).getTeam();
+        List<TeamInLeagueTable> teamlist = getStandings();
+        return teamlist.isEmpty() ? null : teamlist.get(0).getTeam();
     }
 
     public List<Fixture> getUnplayedFixtures() {

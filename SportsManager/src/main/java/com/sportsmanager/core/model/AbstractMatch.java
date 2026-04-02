@@ -36,15 +36,15 @@ public abstract class AbstractMatch {
 
     protected abstract void validateSubstitution(AbstractTeam team, AbstractPlayer out, AbstractPlayer in);
 
-    // alt sinif kendi engine'ini kullanarak simule edecek
+    // alt sınıf kendi engine'ini kullanarak simüle edecek
     protected abstract PeriodResult simulatePeriodInternal(AbstractTeam home, AbstractTeam away);
 
-    // mac sonu sakatlik hesabi
+    // maç sonu sakatlık hesabı
     protected abstract void applyInjuries(AbstractTeam home, AbstractTeam away);
 
     protected abstract int getMaxSubstitutions();
 
-    /*mac baslat*/
+    /*maçı başlat*/
     public void start() {
         if (state != MatchState.NOT_STARTED) {
             throw new IllegalStateException("Match already started or finished");
@@ -87,7 +87,7 @@ public abstract class AbstractMatch {
         homeSubCount++;
     }
 
-    // oyuncu degisikligi - deplasman
+    // deplasman değişikliği
     public void substituteAway(AbstractPlayer playerOut, AbstractPlayer playerIn) {
         checkSubState();
         if (awaySubCount >= getMaxSubstitutions()) {
@@ -103,12 +103,12 @@ public abstract class AbstractMatch {
         }
     }
 
-    // mac bitti, sakatlik vs hesapla
+    // maç bitti, sakatlık falan hesaplansın
     protected void finalizeMatch() {
         applyInjuries(homeTeam, awayTeam);
     }
 
-    // tum devrelerin skorlarini topla
+    // tüm devrelerin skorunu toplayıp MatchResult döndürüyoruz
     public MatchResult getMatchResult() {
         if (state != MatchState.FINISHED) {
             throw new IllegalStateException("Match is not finished yet");

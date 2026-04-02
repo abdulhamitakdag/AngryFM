@@ -5,10 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Takımların temel yapısını tanımlar.
- * Kadro yönetimi, antrenman ve sezon istatistiklerini barındırır.
- */
+// takımların temel yapısı - kadro, antrenman, sezon istatistikleri burada
 public abstract class AbstractTeam {
 
     private final UUID id;
@@ -31,27 +28,12 @@ public abstract class AbstractTeam {
         this.coaches = new ArrayList<>();
     }
 
-    // ── Abstract hook'lar ─────────────────────────────────────────────────────
-
-    /**
-     * Verilen kadronun bu spor için geçerli bir maç kadrosu oluşturup
-     * oluşturmadığını doğrular.
-     * Geçersizse IllegalArgumentException fırlatır.
-     */
+    // kadro geçerli mi kontrol eder, değilse hata fırlatır
     public abstract void validateLineup(List<AbstractPlayer> lineup);
 
-    /**
-     * Bu spor için izin verilen maksimum kadro büyüklüğü.
-     * Futbol için 23, Voleybol için 12 gibi.
-     */
-    public abstract int getMaxSquadSize();
+    public abstract int getMaxSquadSize(); // futbol icin 23, voleybol icin 12 gibi
 
-    // ── Kadro yönetimi ────────────────────────────────────────────────────────
-
-    /**
-     * Kadroya oyuncu ekler.
-     * Aynı oyuncu zaten kadroda varsa veya kadro doluysa hata fırlatır.
-     */
+    // kadroya oyuncu ekler, zaten varsa veya kadro doluysa hata fırlatır
     public void addPlayer(AbstractPlayer player) {
         if (player == null) {
             throw new IllegalArgumentException("Oyuncu null olamaz.");
@@ -70,24 +52,17 @@ public abstract class AbstractTeam {
         squad.add(player);
     }
 
-    /**
-     * Oyuncuyu kadrodan çıkarır.
-     * @return oyuncu bulunup çıkarıldıysa true
-     */
+    // oyuncuyu kadrodan çıkarır, bulunduysa true döner
     public boolean removePlayer(AbstractPlayer player) {
         return squad.remove(player);
     }
 
-    /**
-     * Tüm kadroyu döndürür (sakat olanlar dahil).
-     */
+    // tüm kadro (sakatlar dahil)
     public List<AbstractPlayer> getSquad() {
         return Collections.unmodifiableList(squad);
     }
 
-    /**
-     * Sadece sakat olmayan, oynayabilecek oyuncuları döndürür.
-     */
+    // sakat olmayan, oynayabilecek oyuncular
     public List<AbstractPlayer> getAvailablePlayers() {
         List<AbstractPlayer> available = new ArrayList<>();
         for (AbstractPlayer p : squad) {
@@ -98,9 +73,7 @@ public abstract class AbstractTeam {
         return Collections.unmodifiableList(available);
     }
 
-    /**
-     * Sakat oyuncuların listesini döndürür.
-     */
+    // sakat oyuncuların listesi
     public List<AbstractPlayer> getInjuredPlayers() {
         List<AbstractPlayer> injured = new ArrayList<>();
         for (AbstractPlayer p : squad) {
@@ -111,7 +84,7 @@ public abstract class AbstractTeam {
         return Collections.unmodifiableList(injured);
     }
 
-    // ── Koç yönetimi ──────────────────────────────────────────────────────────
+    // koç yönetimi
 
     public void addCoach(AbstractCoach coach) {
         if (coach == null) {
@@ -128,18 +101,9 @@ public abstract class AbstractTeam {
         return Collections.unmodifiableList(coaches);
     }
 
-    // ── Antrenman ─────────────────────────────────────────────────────────────
-
-    /**
-     * Takıma antrenman yaptırır.
-     *
-     * Koç varsa: koçun conductTraining() metodu çağrılır (specialty çarpanları devreye girer).
-     * Koç yoksa: oyuncular bağımsız antrenman yapar, yoğunluk %80'e düşer.
-     *
-     * Sakat oyuncular her iki durumda da atlanır.
-     *
-     * @param intensity antrenman yoğunluğu (0.0 ile 1.0 arası)
-     */
+    // takıma antrenman yaptırır
+    // koç varsa koçun metodunu çağırır, yoksa oyuncular kendi başına antrenman yapar (%80 yoğunlukla)
+    // sakatlar atlanır
     public void runTrainingSession(double intensity) {
         double clampedIntensity = Math.max(0.0, Math.min(1.0, intensity));
         List<AbstractPlayer> trainees = getAvailablePlayers();
@@ -149,10 +113,9 @@ public abstract class AbstractTeam {
         }
 
         if (!coaches.isEmpty()) {
-            // Koç var: koçun conductTraining'ini çağır
-            coaches.get(0).conductTraining(this);
+            coaches.get(0).conductTraining(this); // koç varsa onun antrenmanını çağır
         } else {
-            // Koç yok: bağımsız antrenman, %80 yoğunluk cezası
+            // koç yoksa %80 yoğunlukla kendi başına antrenman
             double reduced = clampedIntensity * 0.80;
             for (AbstractPlayer p : trainees) {
                 p.train(reduced);
@@ -160,16 +123,7 @@ public abstract class AbstractTeam {
         }
     }
 
-    // ── Sezon istatistikleri ──────────────────────────────────────────────────
-
-    /**
-     * Bir maç sonucunu kaydeder ve istatistikleri günceller.
-     *
-     * @param won       bu takım kazandıysa true
-     * @param drew      beraberlik olduysa true (won true ise bu parametre göz ardı edilir)
-     * @param scored    bu takımın attığı gol/puan
-     * @param conceded  bu takımın yediği gol/puan
-     */
+    // maç sonucunu kaydeder ve istatistikleri günceller
     public void recordResult(boolean won, boolean drew, int scored, int conceded) {
         if (won) {
             wins++;
@@ -182,10 +136,7 @@ public abstract class AbstractTeam {
         goalsConceded  += conceded;
     }
 
-    /**
-     * Tüm sezon istatistiklerini sıfırlar.
-     * Yeni sezon başında çağrılmalıdır.
-     */
+    // sezon istatistiklerini sıfırlar, yeni sezon başında çağrılmalı
     public void resetSeasonStats() {
         wins          = 0;
         draws         = 0;
@@ -202,7 +153,7 @@ public abstract class AbstractTeam {
     public int getGoalDifference(){ return goalsScored - goalsConceded; }
     public int getMatchesPlayed() { return wins + draws + losses; }
 
-    // ── Taktik ────────────────────────────────────────────────────────────────
+    // taktik
 
     public AbstractTactic getCurrentTactic() {
         return currentTactic;
@@ -212,7 +163,7 @@ public abstract class AbstractTeam {
         this.currentTactic = tactic;
     }
 
-    // ── Temel getter'lar ──────────────────────────────────────────────────────
+    // getter'lar
 
     public UUID getId()   { return id; }
     public String getName(){ return name; }

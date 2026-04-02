@@ -2,17 +2,8 @@ package com.sportsmanager.core.model;
 
 import java.util.List;
 
-/**
- * Takımın maç stratejisini tanımlar.
- *
- * Üç evrensel eksen tüm sporlar için geçerlidir:
- *   - attackingWeight  : hücum ağırlığı        (0.0 = tam savunma, 1.0 = tam hücum)
- *   - defensiveWeight  : savunma ağırlığı       (her zaman 1.0 - attackingWeight)
- *   - pressureIntensity: pressing yoğunluğu     (0.0 = pasif, 1.0 = maksimum press)
- *
- * Üç değer de [0.0, 1.0] aralığına clamp'lenir.
- * Maç motoru (IMatchEngine) modifier metodlarını okuyarak simülasyonu ölçekler.
- */
+// takımın maç stratejisi - hücum/savunma ağırlığı ve pressing yoğunluğu burada tutuluyor
+// üç değer de 0.0-1.0 arasına clamp'leniyor, maç motoru modifier'ları buradan okuyor
 public abstract class AbstractTactic {
 
     private String name;
@@ -27,65 +18,40 @@ public abstract class AbstractTactic {
         this.pressureIntensity = clamp(pressureIntensity);
     }
 
-    // ── Abstract hook'lar ─────────────────────────────────────────────────────
+    public abstract String getFormationString(); // "4-3-3", "5-1" gibi formasyon yazısı
 
-    /**
-     * UI'da ve maç raporlarında gösterilen formasyon yazısı.
-     * Futbol için "4-3-3", voleybol için "5-1" gibi.
-     */
-    public abstract String getFormationString();
-
-    /**
-     * Verilen kadronun bu taktiği uygulayıp uygulayamayacağını doğrular.
-     * Eksik pozisyon varsa IllegalArgumentException fırlatır.
-     */
+    // kadro bu taktiğe uygun mu kontrol eder, eksik pozisyon varsa hata fırlatır
     public abstract void validateForSquad(List<AbstractPlayer> squad);
 
-    // ── Maç motoru modifier'ları ──────────────────────────────────────────────
+    // maç motoru modifier'ları - hücum/savunma/pressing çarpanları
 
-    /**
-     * Hücum çıktısına uygulanan çarpan.
-     * Formül: 0.80 + attackingWeight * 0.40  →  aralık: [0.80, 1.20]
-     * Subclass'lar spor-spesifik mantık için override edebilir.
-     */
-    public double getOffensiveModifier() {
+    public double getOffensiveModifier() { // 0.80 - 1.20 arası
         return 0.80 + attackingWeight * 0.40;
     }
 
-    /**
-     * Savunma direncine uygulanan çarpan.
-     * Formül: 0.80 + defensiveWeight * 0.40  →  aralık: [0.80, 1.20]
-     */
-    public double getDefensiveModifier() {
+    public double getDefensiveModifier() { // 0.80 - 1.20 arası
         return 0.80 + defensiveWeight * 0.40;
     }
 
-    /**
-     * Pressing yoğunluğu çarpanı.
-     * Formül: 0.90 + pressureIntensity * 0.20  →  aralık: [0.90, 1.10]
-     * Yüksek press daha fazla top kapma şansı yaratır ama kontra riskini artırır.
-     */
-    public double getPressureModifier() {
+    // yüksek press = daha çok top kapma ama kontra riski artar
+    public double getPressureModifier() { // 0.90 - 1.10 arası
         return 0.90 + pressureIntensity * 0.20;
     }
 
-    // ── Getter'lar ────────────────────────────────────────────────────────────
+    // getter'lar
 
     public String getName()              { return name; }
     public double getAttackingWeight()   { return attackingWeight; }
     public double getDefensiveWeight()   { return defensiveWeight; }
     public double getPressureIntensity() { return pressureIntensity; }
 
-    // ── Setter'lar ────────────────────────────────────────────────────────────
+    // setter'lar
 
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * Hücum ağırlığını günceller.
-     * defensiveWeight otomatik olarak 1.0 - attackingWeight olarak hesaplanır.
-     */
+    // defensiveWeight otomatik hesaplanır (1.0 - attackingWeight)
     public void setAttackingWeight(double attackingWeight) {
         this.attackingWeight = clamp(attackingWeight);
         this.defensiveWeight = clamp(1.0 - attackingWeight);
@@ -95,12 +61,7 @@ public abstract class AbstractTactic {
         this.pressureIntensity = clamp(pressureIntensity);
     }
 
-    // ── Yardımcı ─────────────────────────────────────────────────────────────
-
-    /**
-     * Değeri [0.0, 1.0] aralığına sınırlar.
-     * Subclass'ların kendi ekstra numeric alanları için de kullanabilir.
-     */
+    // değeri 0.0 - 1.0 arasına sınırlar
     protected static double clamp(double v) {
         return Math.max(0.0, Math.min(1.0, v));
     }
