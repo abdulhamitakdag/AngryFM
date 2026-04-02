@@ -9,7 +9,13 @@ public class Injury {
     private int gamesRemaining;
 
 /*Hi, selin here, should we name injuries? We only have severity for now*/
-    public Injury(int severity, int gamesRemaining) {
+    public Injury(Severity severity, int gamesRemaining) {
+        if (severity == null) {
+            throw new IllegalArgumentException("Severity null olamaz.");
+        }
+        if (gamesRemaining < 1) {
+            throw new IllegalArgumentException("gamesRemaining en az 1 olmalı.");
+        }
         this.id = UUID.randomUUID();
         this.severity = severity;
         this.gamesRemaining = gamesRemaining;

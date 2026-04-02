@@ -57,8 +57,7 @@ public interface ILeague {
  * Maçların simülasyon mantığını barındıran motor arayüzü.
  */
 interface IMatchEngine {
-    // Not: PeriodResult, AbstractTeam ve Injury sınıfları B kişisi ve diğer tasklardan gelecek
-    Object simulatePeriod(AbstractTeam home, AbstractTeam away, Object tacticModifier);
-    List<Object> determineInjuries(AbstractTeam home, AbstractTeam away);
-    double calculatePlayerRating(Object player);
+    com.sportsmanager.core.model.PeriodResult simulatePeriod(AbstractTeam home, AbstractTeam away);
+    List<com.sportsmanager.core.model.Injury> determineInjuries(AbstractTeam home, AbstractTeam away);
+    double calculatePlayerRating(com.sportsmanager.core.model.AbstractPlayer player);
 }
