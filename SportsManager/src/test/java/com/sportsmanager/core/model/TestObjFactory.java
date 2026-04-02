@@ -12,13 +12,13 @@ public class TestObjFactory {
     //no positions and shirt numbers and stuff yet.
     public static TestPlayer.AbstractPlayerStub generateTestFemmePlayer(){
         String name=generateRandomFullFemmeName();
-        int age= TestPlayer.AbstractPlayerStub.getAge();
+        int age = random.nextInt(36) + 15;
         return new TestPlayer.AbstractPlayerStub(name, age, Gender.FEMALE);
     }
 
     public static TestPlayer.AbstractPlayerStub generateTestMascPlayer(){
         String name=generateRandomFullMascName();
-        int age= TestPlayer.AbstractPlayerStub.getAge();
+        int age = random.nextInt(36) + 15;
         return new TestPlayer.AbstractPlayerStub(name, age, Gender.MALE);
 
     }
