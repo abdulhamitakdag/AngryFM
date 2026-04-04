@@ -9,8 +9,8 @@ public class FootballPlayer extends AbstractPlayer {
     private final FootballPositions position;
 
 
-    public FootballPlayer(String name, int age, Gender gender, int shirtNumber, String position, AbstractPlayerAttributes attributes) {
-        super(name, age, gender, position.name(), shirtNumber, attributes);
+    public FootballPlayer(String name, int age, Gender gender, int shirtNumber, FootballPositions position, AbstractPlayerAttributes attributes) {
+        super(name, age, gender, shirtNumber, attributes);
         this.position = position;
     }
 

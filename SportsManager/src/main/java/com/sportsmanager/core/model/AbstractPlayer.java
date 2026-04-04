@@ -2,14 +2,12 @@ package com.sportsmanager.core.model;
 
 // sporcuların temel yapısı
 public abstract class AbstractPlayer extends AbstractPerson {
-    private String position;
     private int shirtNumber;
     private AbstractPlayerAttributes attributes;
     private Injury injury;
 
-    public AbstractPlayer(String name, int age, Gender gender, String position, int shirtNumber, AbstractPlayerAttributes attributes) {
+    public AbstractPlayer(String name, int age, Gender gender, int shirtNumber, AbstractPlayerAttributes attributes) {
         super(name, age, gender);
-        this.position = position;
         /* this.position = Objects.requireNonNull(position);
         abstraction için ekleyebiliriz*/
         this.shirtNumber = shirtNumber;
@@ -19,9 +17,7 @@ public abstract class AbstractPlayer extends AbstractPerson {
         this.injury = null; // Başlangıçta sakatlık yok
     }
 
-    public String getPosition() {
-        return position;
-    }
+    public abstract String getPosition();
 
     public int getShirtNumber() {
         return shirtNumber;
