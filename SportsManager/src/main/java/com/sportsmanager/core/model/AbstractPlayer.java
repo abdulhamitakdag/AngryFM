@@ -7,14 +7,15 @@ public abstract class AbstractPlayer extends AbstractPerson {
     private AbstractPlayerAttributes attributes;
     private Injury injury;
 
-    /*ben selin, burayı placeholder objeden Injury class objesine değiştiriyorum hakkınızı helal edin*/
-    /*ben yine selin, oyuncuya nasıl injury veriyoruz?*/
-
     public AbstractPlayer(String name, int age, Gender gender, String position, int shirtNumber, AbstractPlayerAttributes attributes) {
         super(name, age, gender);
         this.position = position;
+        /* this.position = Objects.requireNonNull(position);
+        abstraction için ekleyebiliriz*/
         this.shirtNumber = shirtNumber;
         this.attributes = attributes;
+        /*this.attributes = Objects.requireNonNull(attributes);
+        abstraction için ekleyebiliriz*/
         this.injury = null; // Başlangıçta sakatlık yok
     }
 
@@ -55,7 +56,6 @@ public abstract class AbstractPlayer extends AbstractPerson {
     public void train(double intensity) {
         if (injury != null) {
             // sakat oyuncu antrenman yapamaz
-            //ben selin, buradaki returne value verecek miyiz?
             return;
         }
         if (attributes != null) {

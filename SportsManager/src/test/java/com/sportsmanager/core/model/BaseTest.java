@@ -13,4 +13,13 @@ public abstract class BaseTest {
             throw new AssertionError(name + " was " + value + ", but expected between " + min + " and " + max);
         }
     }
+
+    //custom error mesaj formatı sayı aralıkları için
+    protected void outOfBoundsMessage(String name, double value, double min, double max) {
+        if (value < min || value > max) {
+            throw new AssertionError(
+                    name + " was " + value + ", but expected between " + min + " and " + max
+            );
+        }
+    }
 }

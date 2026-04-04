@@ -2,7 +2,9 @@ package com.sportsmanager.sport.football;
 
 import com.sportsmanager.core.interfaces.IMatchEngine;
 import com.sportsmanager.core.interfaces.ISport;
+import com.sportsmanager.core.model.AbstractPlayer;
 import com.sportsmanager.core.model.AbstractPlayerAttributes;
+import com.sportsmanager.core.model.Gender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,19 @@ public class FootballSport implements ISport {
             positions.add(pos.name());
         }
         return positions;
+    }
+
+
+    //(Ben Selin) ISport'a eklediğim metodu implementledim
+    @Override
+    public AbstractPlayer createPlayer(String name, int age, Gender gender, int shirtNumber, String position, AbstractPlayerAttributes attributes) {
+        return new FootballPlayer(
+                name,
+                age,
+                gender,
+                shirtNumber,
+                position, attributes
+        );
     }
 
 

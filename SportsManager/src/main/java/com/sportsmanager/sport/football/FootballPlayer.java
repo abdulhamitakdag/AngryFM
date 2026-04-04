@@ -1,6 +1,7 @@
 package com.sportsmanager.sport.football;
 
 import com.sportsmanager.core.model.AbstractPlayer;
+import com.sportsmanager.core.model.AbstractPlayerAttributes;
 import com.sportsmanager.core.model.Gender;
 
 public class FootballPlayer extends AbstractPlayer {
@@ -8,7 +9,7 @@ public class FootballPlayer extends AbstractPlayer {
     private final FootballPositions position;
 
 
-    public FootballPlayer(String name, int age, Gender gender, int shirtNumber, FootballPositions position, FootballAttributes attributes) {
+    public FootballPlayer(String name, int age, Gender gender, int shirtNumber, String position, AbstractPlayerAttributes attributes) {
         super(name, age, gender, position.name(), shirtNumber, attributes);
         this.position = position;
     }

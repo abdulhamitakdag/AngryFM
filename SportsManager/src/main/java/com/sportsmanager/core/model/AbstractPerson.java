@@ -11,6 +11,11 @@ public abstract class AbstractPerson implements ITrainable {
     private final Gender gender;
 
     public AbstractPerson(String name, int age, Gender gender) {
+        //burada bizim teknik direktör, sporcularla aynı yaş kısıtlamasına sahip oluyor
+        //buradaki kısıtlamayı AbstractPlayer'a taşıyabiliriz, ne dersiniz
+        //değiştirirsek testleri de ona göre değiştirmem gerekecek so
+        //burayı değiştirirseniz pls ping me in the project gc
+
         if (age < 15 || age > 50) {
             throw new IllegalArgumentException("Yaş 15 ile 50 arasında olmalıdır.");
         }
