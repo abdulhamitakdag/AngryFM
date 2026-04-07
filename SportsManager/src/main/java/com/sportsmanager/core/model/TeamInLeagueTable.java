@@ -14,6 +14,9 @@ public class TeamInLeagueTable implements Comparable<TeamInLeagueTable> {
     private int losses;
 
     public TeamInLeagueTable(AbstractTeam team) {
+        if (team == null) {
+            throw new IllegalArgumentException("Team cannot be null.");
+        }
         this.id = UUID.randomUUID();
         this.team = team;
     }
@@ -44,6 +47,22 @@ public class TeamInLeagueTable implements Comparable<TeamInLeagueTable> {
 
     public AbstractTeam getTeam() {
         return team;
+    }
+
+    public int getWins() {
+        return wins;
+    }
+    public int getDraws() {
+        return draws;
+    }
+    public int getLosses() {
+        return losses;
+    }
+    public int getGoalsScored() {
+        return goalsScored;
+    }
+    public int getGoalsConceded() {
+        return goalsConceded;
     }
 
     @Override

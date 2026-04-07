@@ -32,7 +32,7 @@ public abstract class AbstractMatch {
         this.awaySubCount = 0;
     }
 
-    public abstract int getTotalPeriods();
+    public abstract int getTotalPeriods();//her bir spor için değişir
 
     protected abstract void validateSubstitution(AbstractTeam team, AbstractPlayer out, AbstractPlayer in);
 
@@ -87,7 +87,7 @@ public abstract class AbstractMatch {
         homeSubCount++;
     }
 
-    // deplasman değişikliği
+    // deplasmandaki oyuncu değişikliği değişikliği
     public void substituteAway(AbstractPlayer playerOut, AbstractPlayer playerIn) {
         checkSubState();
         if (awaySubCount >= getMaxSubstitutions()) {

@@ -22,6 +22,9 @@ public abstract class AbstractTeam {
     private int goalsConceded;
 
     public AbstractTeam(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Team name cannot be null or empty.");
+        }
         this.id = UUID.randomUUID();
         this.name = name;
         this.squad = new ArrayList<>();

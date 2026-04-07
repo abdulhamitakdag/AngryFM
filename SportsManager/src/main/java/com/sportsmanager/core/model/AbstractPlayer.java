@@ -23,6 +23,10 @@ public abstract class AbstractPlayer extends AbstractPerson {
         return shirtNumber;
     }
 
+    public void setShirtNumber(int shirtNumber) {
+        this.shirtNumber = shirtNumber;
+    }
+
     public AbstractPlayerAttributes getAttributes() {
         return attributes;
     }

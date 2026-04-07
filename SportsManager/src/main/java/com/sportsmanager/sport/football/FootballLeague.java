@@ -13,6 +13,13 @@ public class FootballLeague extends AbstractLeague {
         super(name);
     }
 
+    public int getPointsForWin() {
+        return pointsForWin;
+    }
+    public int getPointsForDraw() {
+        return pointsForDraw;
+    }
+
     @Override
     protected int getWinPoints() {
         return pointsForWin;

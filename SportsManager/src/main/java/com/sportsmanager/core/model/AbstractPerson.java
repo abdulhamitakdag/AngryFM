@@ -16,6 +16,12 @@ public abstract class AbstractPerson implements ITrainable {
         //değiştirirsek testleri de ona göre değiştirmem gerekecek so
         //burayı değiştirirseniz pls ping me in the project gc
 
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty.");
+        }
+        if (gender == null) {
+            throw new IllegalArgumentException("Gender cannot be null.");
+        }
         if (age < 15 || age > 50) {
             throw new IllegalArgumentException("Yaş 15 ile 50 arasında olmalıdır.");
         }

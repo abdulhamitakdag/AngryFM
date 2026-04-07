@@ -14,8 +14,8 @@ public class FootballMatchEngine implements IMatchEngine {
     @Override
     public PeriodResult simulatePeriod(AbstractTeam home, AbstractTeam away) {
         // takımın ovr ortalamasını alıp taktik çarpanıyla poisson'a sokuyoruz
-        double homeLambda = calcLambda(home);
-        double awayLambda = calcLambda(away);
+        double homeLambda = calcLambda(home, away);
+        double awayLambda = calcLambda(away, home);
 
         int homeGoals = poisson(homeLambda);
         int awayGoals = poisson(awayLambda);
@@ -44,8 +44,8 @@ public class FootballMatchEngine implements IMatchEngine {
         return Math.max(0, Math.min(100, base + variation));
     }
 
-    // λ = (avgOVR / 100) * tacticMod * 1.5
-    private double calcLambda(AbstractTeam team) {
+    // λ = (avgOVR / 100) * offensiveMod * defPenalty * 1.5
+    private double calcLambda(AbstractTeam team, AbstractTeam opponent) {
         List<AbstractPlayer> available = team.getAvailablePlayers();
         if (available.isEmpty()) return 0.3; // kadro boşsa bile bişeyler olsun
 
@@ -58,12 +58,18 @@ public class FootballMatchEngine implements IMatchEngine {
         double avgOvr = totalOvr / available.size();
 
         // taktik atanmamışsa 1.0 kabul ediyoruz
-        double tacticMod = 1.0;
+        double offensiveMod = 1.0;
+        double defPenalty = 1.0;
         if (team.getCurrentTactic() != null) {
-            tacticMod = team.getCurrentTactic().getOffensiveModifier();
+            offensiveMod = team.getCurrentTactic().getOffensiveModifier();
+        }
+        if (opponent.getCurrentTactic() != null) {
+            // rakip savunması güçlüyse (1.20) → defPenalty = 0.80 → daha az gol
+            // rakip savunması zayıfsa (0.80) → defPenalty = 1.20 → daha çok gol
+            defPenalty = 2.0 - opponent.getCurrentTactic().getDefensiveModifier();
         }
 
-        return (avgOvr / 100.0) * tacticMod * 1.5;
+        return (avgOvr / 100.0) * offensiveMod * defPenalty * 1.5;
     }
 
     private int poisson(double lambda) {

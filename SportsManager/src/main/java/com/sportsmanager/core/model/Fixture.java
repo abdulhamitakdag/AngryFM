@@ -12,6 +12,12 @@ public class Fixture {
 
 
     public Fixture(int week, AbstractTeam homeTeam, AbstractTeam awayTeam) {
+        if (homeTeam == null || awayTeam == null) {
+            throw new IllegalArgumentException("Teams cannot be null.");
+        }
+        if (week < 1) {
+            throw new IllegalArgumentException("Week must be at least 1.");
+        }
         this.id = UUID.randomUUID();
         this.week = week;
         this.homeTeam = homeTeam;
@@ -24,6 +30,10 @@ public class Fixture {
 
     public boolean isPlayed() {
         return this.result != null;
+    }
+
+    public int getWeek() {
+        return week;
     }
 
     public AbstractTeam getHomeTeam() {

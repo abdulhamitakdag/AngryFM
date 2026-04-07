@@ -7,6 +7,9 @@ public abstract class AbstractCoach extends AbstractPerson {
 
     public AbstractCoach(String name, int age, Gender gender, CoachSpecialty specialty, int coachingLevel) {
         super(name, age, gender);
+        if (specialty == null) {
+            throw new IllegalArgumentException("Specialty cannot be null.");
+        }
         if (coachingLevel < 1 || coachingLevel > 5) {
             throw new IllegalArgumentException("Coaching level must be between 1 and 5.");
         }
@@ -20,6 +23,17 @@ public abstract class AbstractCoach extends AbstractPerson {
 
     public int getCoachingLevel() {
         return coachingLevel;
+    }
+
+    public void setSpecialty(CoachSpecialty specialty) {
+        this.specialty = specialty;
+    }
+
+    public void setCoachingLevel(int coachingLevel) {
+        if (coachingLevel < 1 || coachingLevel > 5) {
+            throw new IllegalArgumentException("Coaching level must be between 1 and 5.");
+        }
+        this.coachingLevel = coachingLevel;
     }
 
     // takıma antrenman yaptırır

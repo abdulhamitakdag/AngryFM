@@ -51,14 +51,9 @@ public class FootballSport implements ISport {
 
     //(Ben Selin) ISport'a eklediğim metodu implementledim
     @Override
-    public AbstractPlayer createPlayer(String name, int age, Gender gender, int shirtNumber, FootballPositions position, AbstractPlayerAttributes attributes) {
-        return new FootballPlayer(
-                name,
-                age,
-                gender,
-                shirtNumber,
-                position, attributes
-        );
+    public AbstractPlayer createPlayer(String name, int age, Gender gender, int shirtNumber, String position, AbstractPlayerAttributes attributes) {
+        FootballPositions pos = FootballPositions.valueOf(position.toUpperCase());
+        return new FootballPlayer(name, age, gender, shirtNumber, pos, attributes);
     }
 
 

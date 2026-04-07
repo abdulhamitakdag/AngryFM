@@ -11,10 +11,10 @@ public class Injury {
 /*Hi, selin here, should we name injuries? We only have severity for now*/
     public Injury(Severity severity, int gamesRemaining) {
         if (severity == null) {
-            throw new IllegalArgumentException("Severity null olamaz.");
+            throw new IllegalArgumentException("Severity cannot be null!");
         }
         if (gamesRemaining < 1) {
-            throw new IllegalArgumentException("gamesRemaining en az 1 olmalı.");
+            throw new IllegalArgumentException("gamesRemaining must be at least 1!");
         }
         this.id = UUID.randomUUID();
         this.severity = severity;

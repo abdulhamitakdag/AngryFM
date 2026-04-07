@@ -77,6 +77,39 @@ public class FootballAttributes extends AbstractPlayerAttributes {
         return (int) limiter(newRating, 0, 100);
     }
 
+    public FootballPositions getPosition() {
+        return position;
+    }
+
+    public double getReflexes() {
+        return reflexes;
+    }
+    public double getPositioning() {
+        return positioning;
+    }
+    public double getDiving() {
+        return diving;
+    }
+    public double getHandling() {
+        return handling;
+    }
+
+    public double getPace() {
+        return pace;
+    }
+    public double getShooting() {
+        return shooting;
+    }
+    public double getPassing() {
+        return passing;
+    }
+    public double getDefending() {
+        return defending;
+    }
+    public double getPhysical() {
+        return physical;
+    }
+
     @Override
     public void applyTrainingBoost(double intensity) {
         double boost = intensity * 0.5;
