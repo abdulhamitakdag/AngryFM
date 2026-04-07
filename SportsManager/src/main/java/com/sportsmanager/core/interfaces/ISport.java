@@ -1,8 +1,6 @@
 package com.sportsmanager.core.interfaces;
 
-import com.sportsmanager.core.model.AbstractPlayer;
-import com.sportsmanager.core.model.AbstractPlayerAttributes;
-import com.sportsmanager.core.model.Gender;
+import com.sportsmanager.core.model.*;
 
 import java.util.List;
 
@@ -24,4 +22,15 @@ public interface ISport {
                                 int shirtNumber, String position,
                                 AbstractPlayerAttributes attributes);
     //spesifik sporlar bu metodu implementler
+
+    AbstractTeam createTeam(String name);
+
+    AbstractCoach createCoach(String name, int age, Gender gender,
+                              CoachSpecialty specialty, int coachingLevel);
+
+    AbstractTactic createDefaultTactic();
+
+    int getRecommendedSquadSize();
+
+    int getRecommendedCoachCount();
 }

@@ -2,9 +2,7 @@ package com.sportsmanager.sport.football;
 
 import com.sportsmanager.core.interfaces.IMatchEngine;
 import com.sportsmanager.core.interfaces.ISport;
-import com.sportsmanager.core.model.AbstractPlayer;
-import com.sportsmanager.core.model.AbstractPlayerAttributes;
-import com.sportsmanager.core.model.Gender;
+import com.sportsmanager.core.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +52,31 @@ public class FootballSport implements ISport {
     public AbstractPlayer createPlayer(String name, int age, Gender gender, int shirtNumber, String position, AbstractPlayerAttributes attributes) {
         FootballPositions pos = FootballPositions.valueOf(position.toUpperCase());
         return new FootballPlayer(name, age, gender, shirtNumber, pos, attributes);
+    }
+
+    @Override
+    public AbstractTeam createTeam(String name) {
+        return null;
+    }
+
+    @Override
+    public AbstractCoach createCoach(String name, int age, Gender gender, CoachSpecialty specialty, int coachingLevel) {
+        return null;
+    }
+
+    @Override
+    public AbstractTactic createDefaultTactic() {
+        return null;
+    }
+
+    @Override
+    public int getRecommendedSquadSize() {
+        return 0;
+    }
+
+    @Override
+    public int getRecommendedCoachCount() {
+        return 0;
     }
 
 

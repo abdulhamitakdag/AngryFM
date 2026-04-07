@@ -2,6 +2,7 @@ package com.sportsmanager.util;
 
 import com.sportsmanager.core.interfaces.ISport;
 import com.sportsmanager.core.model.*;
+import com.sportsmanager.factory.SportFactory;
 import com.sportsmanager.sport.football.FootballCoach;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import static com.sportsmanager.util.ResourceLoader.*;
 
 public class RandomGenerator{
     private static final Random random= new Random();
+    public static final ISport DEFAULT_SPORT = SportFactory.createSport("football");
 
     private static final List<String> firstMaleNames = loadLinesFromTxt("malenames.txt");
     private static final List<String> firstFemaleNames = loadLinesFromTxt("femalenames.txt");
@@ -62,12 +64,42 @@ public class RandomGenerator{
         return new FootballCoach(name, age, Gender.FEMALE, specialty, level);
     }
 
-    public static AbstractCoach generateMaleCoach(){
+    public static FootballCoach generateMaleCoach(){
         String name = generateRandomFullMaleName();
         int age = random.nextInt(36) + 15;
         CoachSpecialty[] specialties = CoachSpecialty.values();
         CoachSpecialty specialty = specialties[random.nextInt(specialties.length)];
         int level = random.nextInt(5) + 1;
         return new FootballCoach(name, age, Gender.MALE, specialty, level);
+    }
+
+    public static AbstractTeam generateTeam(ISport sport) {
+        String teamName = generateRandomTeamName();
+        AbstractTeam team = sport.createTeam(teamName);
+
+        int squadSize = sport.getRecommendedSquadSize();
+        int coachCount = sport.getRecommendedCoachCount();
+
+        for (int i = 0; i < squadSize; i++) {
+            AbstractPlayer player;
+            if (random.nextBoolean()) {
+                player = generateMalePlayer(sport);
+            } else {
+                player = generateFemalePlayer(sport);
+            }
+            team.addPlayer(player);
+        }
+
+        for (int i = 0; i < coachCount; i++) {
+            AbstractCoach coach;
+            if (random.nextBoolean()) {
+                coach = generateMaleCoach();
+            } else {
+                coach = generateFemaleCoach();
+            }
+            team.addCoach(coach);
+        }
+
+        return team;
     }
 }
