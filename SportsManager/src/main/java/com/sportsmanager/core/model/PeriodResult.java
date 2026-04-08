@@ -28,6 +28,10 @@ public class PeriodResult {
         this.events = events != null ? Collections.unmodifiableList(new ArrayList<>(events)) : Collections.emptyList();
     }
 
+    public UUID getId() {
+        return id;
+    }
+
     public int getHomeScore() {
         return homeScore;
     }
