@@ -5,11 +5,16 @@ import java.util.*;
 public class MatchResult {
 
     private final UUID id;
+    private final AbstractTeam homeTeam;
+    private final AbstractTeam awayTeam;
     private final int homeScore;
     private final int awayScore;
 
-    public MatchResult(int homeScore, int awayScore) {
+    public MatchResult(AbstractTeam homeTeam, AbstractTeam awayTeam, int homeScore, int awayScore) {
         this.id = UUID.randomUUID();
+        this.homeTeam = homeTeam;
+        this.awayTeam = awayTeam;
+        
         if (homeScore < 0) {
             this.homeScore = 0;
         } else {
@@ -20,6 +25,14 @@ public class MatchResult {
         } else {
             this.awayScore = awayScore;
         }
+    }
+
+    public AbstractTeam getHomeTeam() {
+        return homeTeam;
+    }
+
+    public AbstractTeam getAwayTeam() {
+        return awayTeam;
     }
 
     public int getHomeScore() {
@@ -42,6 +55,11 @@ public class MatchResult {
         return awayScore > homeScore;
     }
 
+    public AbstractTeam getWinner() {
+        if (isHomeWin()) return homeTeam;
+        if (isAwayWin()) return awayTeam;
+        return null;
+    }
 
     @Override
     public boolean equals(Object o) {

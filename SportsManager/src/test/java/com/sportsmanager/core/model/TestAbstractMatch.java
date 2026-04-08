@@ -345,4 +345,94 @@ public class TestAbstractMatch extends BaseTest {
         assertThrows(UnsupportedOperationException.class, () ->
                 match.getPeriodResults().add(new PeriodResult(1, 1)));
     }
+
+    // --- MOCKITO TESTS ---
+
+    static class MockEngineMatch extends AbstractMatch {
+        private final com.sportsmanager.core.interfaces.IMatchEngine engine;
+
+        public MockEngineMatch(AbstractTeam home, AbstractTeam away, com.sportsmanager.core.interfaces.IMatchEngine engine) {
+            super(home, away);
+            this.engine = engine;
+        }
+
+        @Override
+        public int getTotalPeriods() { return 2; }
+
+        @Override
+        protected void validateSubstitution(AbstractTeam team, AbstractPlayer out, AbstractPlayer in) {
+            if (out == null || in == null || out.getAge() < 0) { // arbitrary validation check for test
+                throw new IllegalArgumentException("Geçersiz oyuncu");
+            }
+        }
+
+        @Override
+        protected PeriodResult simulatePeriodInternal(AbstractTeam home, AbstractTeam away) {
+            return engine.simulatePeriod(home, away);
+        }
+
+        @Override
+        protected void applyInjuries(AbstractTeam home, AbstractTeam away) {
+            engine.determineInjuries(home, away);
+        }
+
+        @Override
+        protected int getMaxSubstitutions() { return 3; }
+    }
+
+    @Test
+    void mockEngine_simulateCurrentPeriod_stateTransitions() {
+        com.sportsmanager.core.interfaces.IMatchEngine mockEngine = org.mockito.Mockito.mock(com.sportsmanager.core.interfaces.IMatchEngine.class);
+        org.mockito.Mockito.when(mockEngine.simulatePeriod(org.mockito.Mockito.any(), org.mockito.Mockito.any()))
+                .thenReturn(new PeriodResult(1, 0));
+
+        AbstractMatch match = new MockEngineMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT), mockEngine);
+        match.start();
+        assertEquals(AbstractMatch.MatchState.IN_PROGRESS, match.getState());
+
+        match.simulateCurrentPeriod();
+        assertEquals(AbstractMatch.MatchState.BETWEEN_PERIODS, match.getState());
+
+        match.resumeAfterBreak();
+        assertEquals(AbstractMatch.MatchState.IN_PROGRESS, match.getState());
+
+        match.simulateCurrentPeriod();
+        assertEquals(AbstractMatch.MatchState.FINISHED, match.getState());
+        
+        org.mockito.Mockito.verify(mockEngine, org.mockito.Mockito.times(2))
+                .simulatePeriod(org.mockito.Mockito.any(), org.mockito.Mockito.any());
+    }
+
+    @Test
+    void mockEngine_startTwiceThrowsException() {
+        com.sportsmanager.core.interfaces.IMatchEngine mockEngine = org.mockito.Mockito.mock(com.sportsmanager.core.interfaces.IMatchEngine.class);
+        AbstractMatch match = new MockEngineMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT), mockEngine);
+        
+        match.start();
+        assertThrows(IllegalStateException.class, match::start);
+    }
+
+    @Test
+    void mockEngine_getMatchResultBeforeFinishedThrowsException() {
+        com.sportsmanager.core.interfaces.IMatchEngine mockEngine = org.mockito.Mockito.mock(com.sportsmanager.core.interfaces.IMatchEngine.class);
+        org.mockito.Mockito.when(mockEngine.simulatePeriod(org.mockito.Mockito.any(), org.mockito.Mockito.any()))
+                .thenReturn(new PeriodResult(1, 1));
+
+        AbstractMatch match = new MockEngineMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT), mockEngine);
+        match.start();
+        match.simulateCurrentPeriod(); // Now in BETWEEN_PERIODS
+
+        assertThrows(IllegalStateException.class, match::getMatchResult);
+    }
+
+    @Test
+    void mockEngine_substituteHomeWithInvalidPlayerThrowsException() {
+        com.sportsmanager.core.interfaces.IMatchEngine mockEngine = org.mockito.Mockito.mock(com.sportsmanager.core.interfaces.IMatchEngine.class);
+        AbstractMatch match = new MockEngineMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT), mockEngine);
+        match.start();
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            match.substituteHome(null, null); // Invalid player
+        });
+    }
 }

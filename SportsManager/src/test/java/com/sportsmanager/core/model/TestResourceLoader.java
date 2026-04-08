@@ -15,12 +15,12 @@ public class TestResourceLoader extends BaseTest {
 
     @Test
     void loadLinesReturnsNonEmptyListForExistingMaleNamesFile() {
-        assertFalse(ResourceLoader.loadLinesFromTxt("male-names.txt").isEmpty());
+        assertFalse(ResourceLoader.loadLinesFromTxt("malenames.txt").isEmpty());
     }
 
     @Test
     void loadLinesReturnsNonEmptyListForExistingFemaleNamesFile() {
-        assertFalse(ResourceLoader.loadLinesFromTxt("female-names.txt").isEmpty());
+        assertFalse(ResourceLoader.loadLinesFromTxt("femalenames.txt").isEmpty());
     }
 
     @Test

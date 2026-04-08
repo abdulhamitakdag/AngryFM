@@ -119,7 +119,7 @@ public abstract class AbstractMatch {
             totalHome += pr.getHomeScore();
             totalAway += pr.getAwayScore();
         }
-        return new MatchResult(totalHome, totalAway);
+        return new MatchResult(homeTeam, awayTeam, totalHome, totalAway);
     }
 
     public AbstractTeam getHomeTeam()            { return homeTeam; }

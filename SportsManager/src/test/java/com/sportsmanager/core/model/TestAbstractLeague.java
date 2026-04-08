@@ -55,8 +55,7 @@ public class TestAbstractLeague extends BaseTest {
                 generateTeam(DEFAULT_SPORT),
                 generateTeam(DEFAULT_SPORT),
                 generateTeam(DEFAULT_SPORT),
-                generateTeam(DEFAULT_SPORT)
-        );
+                generateTeam(DEFAULT_SPORT));
 
         league.generateFixtures(teams);
 
@@ -71,8 +70,7 @@ public class TestAbstractLeague extends BaseTest {
                 generateTeam(DEFAULT_SPORT),
                 generateTeam(DEFAULT_SPORT),
                 generateTeam(DEFAULT_SPORT),
-                generateTeam(DEFAULT_SPORT)
-        );
+                generateTeam(DEFAULT_SPORT));
 
         league.generateFixtures(teams);
 
@@ -87,8 +85,7 @@ public class TestAbstractLeague extends BaseTest {
                 generateTeam(DEFAULT_SPORT),
                 generateTeam(DEFAULT_SPORT),
                 generateTeam(DEFAULT_SPORT),
-                generateTeam(DEFAULT_SPORT)
-        );
+                generateTeam(DEFAULT_SPORT));
 
         league.generateFixtures(teams);
 
@@ -101,8 +98,7 @@ public class TestAbstractLeague extends BaseTest {
 
         List<AbstractTeam> teams = List.of(
                 generateTeam(DEFAULT_SPORT),
-                generateTeam(DEFAULT_SPORT)
-        );
+                generateTeam(DEFAULT_SPORT));
 
         league.generateFixtures(teams);
 
@@ -119,7 +115,7 @@ public class TestAbstractLeague extends BaseTest {
 
         league.generateFixtures(List.of(t1, t2));
 
-        MatchResult result = new MatchResult(t1, t2, 2, 1);
+        MatchResult result = new MatchResult(t1, t2, 2, 1);// ilki home score, ikinci away score
 
         league.recordResult(result);
 
@@ -171,8 +167,7 @@ public class TestAbstractLeague extends BaseTest {
 
         league.generateFixtures(List.of(
                 generateTeam(DEFAULT_SPORT),
-                generateTeam(DEFAULT_SPORT)
-        ));
+                generateTeam(DEFAULT_SPORT)));
 
         List<TeamInLeagueTable> standings = league.getStandings();
 
@@ -186,8 +181,7 @@ public class TestAbstractLeague extends BaseTest {
 
         league.generateFixtures(List.of(
                 generateTeam(DEFAULT_SPORT),
-                generateTeam(DEFAULT_SPORT)
-        ));
+                generateTeam(DEFAULT_SPORT)));
 
         assertFalse(league.isSeasonOver());
     }
@@ -216,8 +210,7 @@ public class TestAbstractLeague extends BaseTest {
 
         league.generateFixtures(List.of(
                 generateTeam(DEFAULT_SPORT),
-                generateTeam(DEFAULT_SPORT)
-        ));
+                generateTeam(DEFAULT_SPORT)));
 
         assertNull(league.getChampion());
     }

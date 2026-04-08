@@ -52,7 +52,7 @@ public class TestAbstractTactic extends BaseTest {
     void defensiveWeightIsCalculatedAsOneMinusAttackingWeight() {
         AbstractTactic tactic = new DummyTactic("Test", 0.7, 0.5);
 
-        assertEquals(0.3, tactic.getDefensiveWeight());
+        assertEquals(0.3, tactic.getDefensiveWeight(), 0.001);
     }
 
     @Test
@@ -99,8 +99,8 @@ public class TestAbstractTactic extends BaseTest {
 
         tactic.setAttackingWeight(0.8);
 
-        assertEquals(0.8, tactic.getAttackingWeight());
-        assertEquals(0.2, tactic.getDefensiveWeight());
+        assertEquals(0.8, tactic.getAttackingWeight(), 0.001);
+        assertEquals(0.2, tactic.getDefensiveWeight(), 0.001);
     }
 
     @Test

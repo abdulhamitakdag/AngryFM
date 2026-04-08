@@ -22,7 +22,8 @@ public class TestInjury extends BaseTest {
 
     @Test
     void decrementGamesRemainingThrowsExceptionWhenAlready0() {
-        Injury injury = new Injury(Injury.Severity.SERIOUS, 0);
+        Injury injury = new Injury(Injury.Severity.SERIOUS, 1);
+        injury.decrementGamesRemaining();
         assertThrows(IllegalStateException.class, injury::decrementGamesRemaining);
     }
 

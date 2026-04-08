@@ -1,14 +1,18 @@
 package com.sportsmanager.core.model;
+
 import java.util.*;
 
 public class Injury {
 
-    public enum Severity { MINOR, MODERATE, SERIOUS }
+    public enum Severity {
+        MINOR, MODERATE, SERIOUS
+    }
+
     private final UUID id;
     private final Severity severity;
     private int gamesRemaining;
 
-/*Hi, selin here, should we name injuries? We only have severity for now*/
+    /* Hi, selin here, should we name injuries? We only have severity for now */
     public Injury(Severity severity, int gamesRemaining) {
         if (severity == null) {
             throw new IllegalArgumentException("Severity cannot be null!");
@@ -24,24 +28,28 @@ public class Injury {
     public UUID getId() {
         return id;
     }
+
     public Severity getSeverity() {
         return severity;
     }
+
     public int getGamesRemaining() {
         return gamesRemaining;
     }
 
-
     public void decrementGamesRemaining() {
-        if (this.gamesRemaining > 0) {
-            this.gamesRemaining--;
+        if (this.gamesRemaining == 0) {
+            throw new IllegalStateException("Games remaining is already 0");
         }
+        this.gamesRemaining--;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Injury injury = (Injury) o;
         return id.equals(injury.id);
     }

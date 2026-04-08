@@ -25,6 +25,9 @@ public class Fixture {
     }
 
     public void setResult(MatchResult newResult) {
+        if (this.result != null) {
+            throw new IllegalStateException("Result has already been set.");
+        }
         this.result = newResult;
     }
 

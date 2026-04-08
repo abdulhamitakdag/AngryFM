@@ -10,27 +10,25 @@ public class TestFootballCoach extends BaseTest {
 
     @Test
     void specialtyMultiplierAttackingCoachWithStrikerIsPositive() {
-        FootballCoach coach = generateMaleCoach();
-        AbstractPlayer player = generateMalePlayer(DEFAULT_SPORT);
+        FootballCoach coach = (FootballCoach) generateMaleCoach();
 
-        double multiplier = coach.specialtyMultiplier(player);
+        double multiplier = coach.specialtyMultiplier();
 
         assertTrue(multiplier > 0.0);
     }
 
     @Test
     void specialtyMultiplierReturnsReasonableValue() {
-        FootballCoach coach = generateMaleCoach();
-        AbstractPlayer player = generateMalePlayer(DEFAULT_SPORT);
+        FootballCoach coach = (FootballCoach) generateMaleCoach();
 
-        double multiplier = coach.specialtyMultiplier(player);
+        double multiplier = coach.specialtyMultiplier();
 
         assertTrue(multiplier >= 1.0);
     }
 
     @Test
     void coachingLevelIsWithinValidRange() {
-        FootballCoach coach = generateMaleCoach();
+        FootballCoach coach = (FootballCoach) generateMaleCoach();
         assertWithinRange(coach.getCoachingLevel(), 1, 5, "coachingLevel");
     }
 }

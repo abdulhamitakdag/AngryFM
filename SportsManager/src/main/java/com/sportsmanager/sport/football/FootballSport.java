@@ -56,27 +56,27 @@ public class FootballSport implements ISport {
 
     @Override
     public AbstractTeam createTeam(String name) {
-        return null;
+        return new FootballTeam(name);
     }
 
     @Override
     public AbstractCoach createCoach(String name, int age, Gender gender, CoachSpecialty specialty, int coachingLevel) {
-        return null;
+        return new FootballCoach(name, age, gender, specialty, coachingLevel);
     }
 
     @Override
     public AbstractTactic createDefaultTactic() {
-        return null;
+        return FootballTactic.create442();
     }
 
     @Override
     public int getRecommendedSquadSize() {
-        return 0;
+        return 23;
     }
 
     @Override
     public int getRecommendedCoachCount() {
-        return 0;
+        return 3;
     }
 
 

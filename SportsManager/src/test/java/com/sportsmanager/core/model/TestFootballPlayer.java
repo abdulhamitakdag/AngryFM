@@ -1,7 +1,6 @@
 package com.sportsmanager.core.model;
 
-import com.sportsmanager.core.model.AbstractPlayer;
-import com.sportsmanager.core.model.BaseTest;
+
 import com.sportsmanager.sport.football.FootballAttributes;
 import org.junit.jupiter.api.Test;
 
@@ -25,15 +24,15 @@ public class TestFootballPlayer extends BaseTest {
     @Test
     void invalidPositionThrowsException_Male() {
         assertThrows(IllegalArgumentException.class, () ->
-                new AbstractPlayer("John", 22, com.sportsmanager.core.model.Gender.MALE,
-                        "XYZ", 10, new FootballAttributes(70, 70, 70, 70, 70)));
+                new com.sportsmanager.sport.football.FootballPlayer("John", 22, com.sportsmanager.core.model.Gender.MALE,
+                        10, com.sportsmanager.sport.football.FootballPositions.GK, new FootballAttributes(com.sportsmanager.sport.football.FootballPositions.GK, 70, 70, 70, 70, 70)));
     }
 
     @Test
     void invalidPositionThrowsException_Female() {
         assertThrows(IllegalArgumentException.class, () ->
-                new AbstractPlayer("Jane", 22, com.sportsmanager.core.model.Gender.FEMALE,
-                        "XYZ", 10, new FootballAttributes(70, 70, 70, 70, 70)));
+                new com.sportsmanager.sport.football.FootballPlayer("Jane", 22, com.sportsmanager.core.model.Gender.FEMALE,
+                        10, com.sportsmanager.sport.football.FootballPositions.GK, new FootballAttributes(com.sportsmanager.sport.football.FootballPositions.GK, 70, 70, 70, 70, 70)));
     }
 
     @Test
