@@ -49,16 +49,17 @@ public abstract class AbstractLeague implements ILeague {
             throw new IllegalArgumentException("Result cannot be null");
         }
 
-        // ilk oynanmamis fixture'i bul
+        // sonucun takımlarına uyan ilk oynanmamış fixture'ı buluyoruz
+        // eskiden ilk oynanmamışı alıyorduk ama yanlış takımla eşleşme olabiliyordu
         Fixture fixture = null;
         for (Fixture f : fixtures) {
-            if (!f.isPlayed()) {
+            if (!f.isPlayed()
+                    && f.getHomeTeam().equals(result.getHomeTeam())
+                    && f.getAwayTeam().equals(result.getAwayTeam())) {
                 fixture = f;
                 break;
             }
         }
-        //eğer üstteki döngüde bütün fixtürlerin oynandığını anlarsak hata fırlatıyoruz çünkü
-        //sezon bittikten sonra maç sonucu kaydedilemez
         if (fixture == null) {
             throw new IllegalStateException("No unplayed fixtures remaining");
         }
@@ -79,6 +80,22 @@ public abstract class AbstractLeague implements ILeague {
         awayEntry.addResult(result.isAwayWin(), result.isDraw(),
                 result.getAwayScore(), result.getHomeScore(),
                 getWinPoints(), getDrawPoints());
+
+        // takımların kendi istatistiklerini de güncelliyoruz
+        AbstractTeam home = fixture.getHomeTeam();
+        AbstractTeam away = fixture.getAwayTeam();
+        home.recordResult(result.isHomeWin(), result.isDraw(),
+                result.getHomeScore(), result.getAwayScore());
+        away.recordResult(result.isAwayWin(), result.isDraw(),
+                result.getAwayScore(), result.getHomeScore());
+
+        // maç oynanınca sakat oyuncuların süresini azaltıyoruz
+        for (AbstractPlayer p : home.getSquad()) {
+            p.decrementInjury();
+        }
+        for (AbstractPlayer p : away.getSquad()) {
+            p.decrementInjury();
+        }
     }
     @Override
     public void generateFixtures(List<AbstractTeam> teamList) {
@@ -87,6 +104,10 @@ public abstract class AbstractLeague implements ILeague {
         }
         if (teamList.size()%2!=0) {
             throw new IllegalArgumentException("Team numbers must be even in the league");
+        }
+        // sezon ortasında yanlışlıkla çağrılmasın diye kontrol ediyoruz
+        if (!fixtures.isEmpty()) {
+            throw new IllegalStateException("Fixture already have been created, first reset the season");
         }
 
         this.teams.clear();

@@ -148,6 +148,15 @@ public abstract class AbstractTeam {
         goalsConceded = 0;
     }
 
+    // save/load için istatistikleri dışarıdan set edebilmeyi sağlıyor
+    public void restoreSeasonStats(int wins, int draws, int losses, int goalsScored, int goalsConceded) {
+        this.wins = wins;
+        this.draws = draws;
+        this.losses = losses;
+        this.goalsScored = goalsScored;
+        this.goalsConceded = goalsConceded;
+    }
+
     public int getWins()          { return wins; }
     public int getDraws()         { return draws; }
     public int getLosses()        { return losses; }

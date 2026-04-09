@@ -16,6 +16,9 @@ public class FootballTactic extends AbstractTactic {
         this.requiredPositions = requiredPositions;
     }
 
+    public Map<FootballPositions, Integer> getRequiredPositions()
+        { return requiredPositions; }
+
     @Override
     public String getFormationString() {
         return this.getName();

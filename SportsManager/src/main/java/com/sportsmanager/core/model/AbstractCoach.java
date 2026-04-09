@@ -36,9 +36,13 @@ public abstract class AbstractCoach extends AbstractPerson {
         this.coachingLevel = coachingLevel;
     }
 
-    // takıma antrenman yaptırır
+    // takıma antrenman yaptırıyor
+    // sakat olmayan oyuncuları alıp koçun seviyesine göre boost yapıyor
     public void conductTraining(AbstractTeam team) {
-        // her oyuncu icin train() cagirilacak, AbstractTeam ile entegre calışacak
+        for (AbstractPlayer player : team.getAvailablePlayers()) {
+            double intensity = specialtyMultiplier();
+            player.train(intensity);
+        }
     }
 
     public abstract double specialtyMultiplier(); // koçun uzmanlık alanına göre çarpan

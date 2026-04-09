@@ -60,14 +60,14 @@ public class TestAbstractPerson extends BaseTest {
 
     @Test
     void constructorAcceptsMinimumAge_Male() {
-        AbstractPerson person = new DummyPerson("Mehmet", 15, Gender.MALE);
-        assertEquals(15, person.getAge());
+        AbstractPerson person = new DummyPerson("Mehmet", 16, Gender.MALE);
+        assertEquals(16, person.getAge());
     }
 
     @Test
     void constructorAcceptsMinimumAge_Female() {
-        AbstractPerson person = new DummyPerson("Zeynep", 15, Gender.FEMALE);
-        assertEquals(15, person.getAge());
+        AbstractPerson person = new DummyPerson("Zeynep", 16, Gender.FEMALE);
+        assertEquals(16, person.getAge());
     }
 
     @Test
