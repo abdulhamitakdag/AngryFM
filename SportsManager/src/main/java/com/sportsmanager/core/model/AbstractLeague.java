@@ -85,6 +85,9 @@ public abstract class AbstractLeague implements ILeague {
         if (teamList == null || teamList.size() < 2) {
             throw new IllegalArgumentException("Need at least 2 teams for fixtures");
         }
+        if (teamList.size()%2!=0) {
+            throw new IllegalArgumentException("Team numbers must be even in the league");
+        }
 
         this.teams.clear();
         this.teams.addAll(teamList);

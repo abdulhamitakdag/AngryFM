@@ -16,12 +16,12 @@ public class MatchResult {
         this.awayTeam = awayTeam;
         
         if (homeScore < 0) {
-            this.homeScore = 0;
+            throw new IllegalArgumentException("Score cannot be negative");
         } else {
             this.homeScore = homeScore;
         }
         if (awayScore < 0) {
-            this.awayScore = 0;
+            throw new IllegalArgumentException("Score cannot be negative");
         } else {
             this.awayScore = awayScore;
         }
