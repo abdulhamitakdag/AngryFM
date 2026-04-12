@@ -43,6 +43,7 @@
     </dependencies>
 
     <build>
+        <defaultGoal>compile exec:java</defaultGoal>
         <plugins>
             <!-- JUnit 5 testlerini çalıştırmak için -->
             <plugin>
@@ -56,8 +57,26 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <mainClass>org.example.Main</mainClass>
+                </configuration>
+            </plugin>
+
+            <!-- compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
 
