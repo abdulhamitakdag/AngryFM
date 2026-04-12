@@ -40,7 +40,7 @@ public class TestAbstractTeam extends BaseTest {
         }
 
         @Override
-        public void conductTraining(AbstractTeam team) {
+        public void conductTraining(AbstractTeam team, double intensity) {
             // do nothing (override to avoid side effects)
         }
     }
