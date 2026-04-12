@@ -222,10 +222,8 @@ public abstract class AbstractSaveManager {
             team.setCurrentTactic(restoreTactic(td.getTactic()));
         }
 
-        // sezon istatistiklerini geri yüklüyoruz
-        team.restoreSeasonStats(
-                td.getWins(), td.getDraws(), td.getLosses(),
-                td.getGoalsScored(), td.getGoalsConceded());
+        // sezon istatistikleri, maçlar league.recordResult ile tekrar işlendiği için
+        // burada dışarıdan set etmeye gerek yok, yoksa istatistikler ikiye katlanır.
 
         return team;
     }

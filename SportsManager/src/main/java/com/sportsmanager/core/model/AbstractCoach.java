@@ -38,10 +38,10 @@ public abstract class AbstractCoach extends AbstractPerson {
 
     // takıma antrenman yaptırıyor
     // sakat olmayan oyuncuları alıp koçun seviyesine göre boost yapıyor
-    public void conductTraining(AbstractTeam team) {
+    public void conductTraining(AbstractTeam team, double intensity) {
+        double effectiveIntensity = intensity * getTrainingEffectiveness() * specialtyMultiplier();
         for (AbstractPlayer player : team.getAvailablePlayers()) {
-            double intensity = specialtyMultiplier();
-            player.train(intensity);
+            player.train(effectiveIntensity);
         }
     }
 

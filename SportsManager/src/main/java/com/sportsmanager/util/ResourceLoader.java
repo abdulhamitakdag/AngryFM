@@ -13,10 +13,10 @@ public class ResourceLoader {
     public static List<String> loadLinesFromTxt(String filename){
         InputStream is = ResourceLoader.class.getClassLoader().getResourceAsStream(filename);
         if (is==null){
-            throw new RuntimeException("Error: resource file named" + filename+ " not found.");
+            throw new RuntimeException("Error: resource file named " + filename+ " not found.");
         }
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))){
             return reader.lines().filter(line-> !line.trim().isEmpty()).collect(Collectors.toList());
-        } catch (Exception e){throw new RuntimeException("Error: failed to read resource file named" + filename);}
+        } catch (Exception e){throw new RuntimeException("Error: failed to read resource file named " + filename);}
     }
 }

@@ -116,7 +116,7 @@ public abstract class AbstractTeam {
         }
 
         if (!coaches.isEmpty()) {
-            coaches.get(0).conductTraining(this); // koç varsa onun antrenmanını çağır
+            coaches.get(0).conductTraining(this, clampedIntensity); // koç varsa onun antrenmanını çağır
         } else {
             // koç yoksa %80 yoğunlukla kendi başına antrenman
             double reduced = clampedIntensity * 0.80;

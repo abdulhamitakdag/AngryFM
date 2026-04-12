@@ -61,7 +61,8 @@ public abstract class AbstractLeague implements ILeague {
             }
         }
         if (fixture == null) {
-            throw new IllegalStateException("No unplayed fixtures remaining");
+            throw new IllegalStateException("No unplayed fixture found for matchup: " 
+                + result.getHomeTeam().getName() + " vs " + result.getAwayTeam().getName());
         }
 
         fixture.setResult(result);
@@ -89,13 +90,6 @@ public abstract class AbstractLeague implements ILeague {
         away.recordResult(result.isAwayWin(), result.isDraw(),
                 result.getAwayScore(), result.getHomeScore());
 
-        // maç oynanınca sakat oyuncuların süresini azaltıyoruz
-        for (AbstractPlayer p : home.getSquad()) {
-            p.decrementInjury();
-        }
-        for (AbstractPlayer p : away.getSquad()) {
-            p.decrementInjury();
-        }
     }
     @Override
     public void generateFixtures(List<AbstractTeam> teamList) {
@@ -164,6 +158,11 @@ public abstract class AbstractLeague implements ILeague {
 
     public void advanceWeek() {
         currentWeek++;
+        for (AbstractTeam team : teams) {
+            for (AbstractPlayer p : team.getInjuredPlayers()) {
+                p.decrementInjury();
+            }
+        }
     }
 
     public AbstractTeam getChampion() {
