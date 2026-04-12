@@ -51,6 +51,16 @@
                 <version>3.5.2</version>
             </plugin>
 
+            <!-- exec:java ile calistirmak icin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>org.example.Main</mainClass>
+                </configuration>
+            </plugin>
+
             <!-- JaCoCo coverage raporu -->
             <plugin>
                 <groupId>org.jacoco</groupId>

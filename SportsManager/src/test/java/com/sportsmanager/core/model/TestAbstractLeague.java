@@ -134,15 +134,12 @@ public class TestAbstractLeague extends BaseTest {
 
         league.generateFixtures(List.of(t1, t2));
 
-        MatchResult result = new MatchResult(t1, t2, 1, 0);
+        // play all matches using correct home/away from each fixture
+        playAllFixtures(league);
 
-        // play all matches
-        while (!league.isSeasonOver()) {
-            league.recordResult(result);
-        }
-
+        // all fixtures are played, any new result should throw
         assertThrows(IllegalStateException.class,
-                () -> league.recordResult(result));
+                () -> league.recordResult(new MatchResult(t1, t2, 1, 0)));
     }
 
     @Test
@@ -195,11 +192,7 @@ public class TestAbstractLeague extends BaseTest {
 
         league.generateFixtures(List.of(t1, t2));
 
-        MatchResult result = new MatchResult(t1, t2, 1, 0);
-
-        while (!league.isSeasonOver()) {
-            league.recordResult(result);
-        }
+        playAllFixtures(league);
 
         assertTrue(league.isSeasonOver());
     }
@@ -224,11 +217,7 @@ public class TestAbstractLeague extends BaseTest {
 
         league.generateFixtures(List.of(t1, t2));
 
-        MatchResult result = new MatchResult(t1, t2, 2, 0);
-
-        while (!league.isSeasonOver()) {
-            league.recordResult(result);
-        }
+        playAllFixtures(league);
 
         assertNotNull(league.getChampion());
     }
@@ -262,5 +251,14 @@ public class TestAbstractLeague extends BaseTest {
         int after = league.getCurrentWeek();
 
         assertEquals(before + 1, after);
+    }
+
+    // oynanmamış fikstürleri sırayla oynayıp doğru home/away ile sonuç kaydeder
+    private void playAllFixtures(AbstractLeague league) {
+        while (!league.isSeasonOver()) {
+            Fixture next = league.getUnplayedFixtures().get(0);
+            league.recordResult(new MatchResult(
+                    next.getHomeTeam(), next.getAwayTeam(), 1, 0));
+        }
     }
 }
