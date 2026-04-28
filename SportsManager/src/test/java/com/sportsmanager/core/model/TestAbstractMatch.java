@@ -49,8 +49,8 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void constructorStoresHomeTeamCorrectly() {
-        AbstractTeam home = generateTeam(DEFAULT_SPORT);
-        AbstractTeam away = generateTeam(DEFAULT_SPORT);
+        AbstractTeam home = generateTeam(DEFAULT_SPORT, DEFAULT_GENDER);
+        AbstractTeam away = generateTeam(DEFAULT_SPORT, DEFAULT_GENDER);
 
         AbstractMatch match = new DummyMatch(home, away);
 
@@ -59,8 +59,8 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void constructorStoresAwayTeamCorrectly() {
-        AbstractTeam home = generateTeam(DEFAULT_SPORT);
-        AbstractTeam away = generateTeam(DEFAULT_SPORT);
+        AbstractTeam home = generateTeam(DEFAULT_SPORT, DEFAULT_GENDER);
+        AbstractTeam away = generateTeam(DEFAULT_SPORT, DEFAULT_GENDER);
 
         AbstractMatch match = new DummyMatch(home, away);
 
@@ -69,21 +69,21 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void constructorSetsInitialStateToNotStarted() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
 
         assertEquals(AbstractMatch.MatchState.NOT_STARTED, match.getState());
     }
 
     @Test
     void constructorSetsCurrentPeriodTo0() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
 
         assertEquals(0, match.getCurrentPeriod());
     }
 
     @Test
     void constructorThrowsExceptionWhenHomeTeamIsNull() {
-        AbstractTeam away = generateTeam(DEFAULT_SPORT);
+        AbstractTeam away = generateTeam(DEFAULT_SPORT, DEFAULT_GENDER);
 
         assertThrows(IllegalArgumentException.class, () ->
                 new DummyMatch(null, away));
@@ -91,7 +91,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void constructorThrowsExceptionWhenAwayTeamIsNull() {
-        AbstractTeam home = generateTeam(DEFAULT_SPORT);
+        AbstractTeam home = generateTeam(DEFAULT_SPORT, DEFAULT_GENDER);
 
         assertThrows(IllegalArgumentException.class, () ->
                 new DummyMatch(home, null));
@@ -99,7 +99,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void startChangesStateToInProgress() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
 
         match.start();
 
@@ -108,7 +108,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void startSetsCurrentPeriodTo1() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
 
         match.start();
 
@@ -117,7 +117,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void startThrowsExceptionWhenCalledTwice() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
 
         match.start();
 
@@ -126,14 +126,14 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void simulateCurrentPeriodThrowsExceptionWhenMatchNotInProgress() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
 
         assertThrows(IllegalStateException.class, match::simulateCurrentPeriod);
     }
 
     @Test
     void simulateCurrentPeriodAddsPeriodResult() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
 
         match.simulateCurrentPeriod();
@@ -143,7 +143,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void simulateCurrentPeriodChangesStateToBetweenPeriodsAfterFirstPeriod() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
 
         match.simulateCurrentPeriod();
@@ -153,7 +153,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void resumeAfterBreakChangesStateToInProgress() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
         match.simulateCurrentPeriod();
 
@@ -164,7 +164,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void resumeAfterBreakIncreasesCurrentPeriod() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
         match.simulateCurrentPeriod();
 
@@ -175,14 +175,14 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void resumeAfterBreakThrowsExceptionWhenNotBetweenPeriods() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
 
         assertThrows(IllegalStateException.class, match::resumeAfterBreak);
     }
 
     @Test
     void secondSimulateCurrentPeriodFinishesMatch() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
         match.simulateCurrentPeriod();
         match.resumeAfterBreak();
@@ -194,7 +194,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void secondSimulateCurrentPeriodAppliesInjuries() {
-        DummyMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        DummyMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
         match.simulateCurrentPeriod();
         match.resumeAfterBreak();
@@ -206,7 +206,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void substituteHomeThrowsExceptionBeforeMatchStarts_Male() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, Gender.MALE), generateTeam(DEFAULT_SPORT, Gender.MALE));
 
         assertThrows(IllegalStateException.class, () ->
                 match.substituteHome(generateMalePlayer(DEFAULT_SPORT), generateMalePlayer(DEFAULT_SPORT)));
@@ -214,7 +214,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void substituteHomeThrowsExceptionBeforeMatchStarts_Female() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, Gender.FEMALE), generateTeam(DEFAULT_SPORT, Gender.FEMALE));
 
         assertThrows(IllegalStateException.class, () ->
                 match.substituteHome(generateFemalePlayer(DEFAULT_SPORT), generateFemalePlayer(DEFAULT_SPORT)));
@@ -222,7 +222,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void substituteHomeIncreasesHomeSubCount_Male() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, Gender.MALE), generateTeam(DEFAULT_SPORT, Gender.MALE));
         match.start();
 
         match.substituteHome(generateMalePlayer(DEFAULT_SPORT), generateMalePlayer(DEFAULT_SPORT));
@@ -232,7 +232,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void substituteHomeIncreasesHomeSubCount_Female() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, Gender.FEMALE), generateTeam(DEFAULT_SPORT, Gender.FEMALE));
         match.start();
 
         match.substituteHome(generateFemalePlayer(DEFAULT_SPORT), generateFemalePlayer(DEFAULT_SPORT));
@@ -242,7 +242,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void substituteAwayIncreasesAwaySubCount_Male() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, Gender.MALE), generateTeam(DEFAULT_SPORT, Gender.MALE));
         match.start();
 
         match.substituteAway(generateMalePlayer(DEFAULT_SPORT), generateMalePlayer(DEFAULT_SPORT));
@@ -252,7 +252,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void substituteAwayIncreasesAwaySubCount_Female() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, Gender.FEMALE), generateTeam(DEFAULT_SPORT, Gender.FEMALE));
         match.start();
 
         match.substituteAway(generateFemalePlayer(DEFAULT_SPORT), generateFemalePlayer(DEFAULT_SPORT));
@@ -262,7 +262,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void substituteHomeThrowsExceptionWhenSubstitutionLimitReached() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
 
         match.substituteHome(generateMalePlayer(DEFAULT_SPORT), generateMalePlayer(DEFAULT_SPORT));
@@ -274,7 +274,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void substituteAwayThrowsExceptionWhenSubstitutionLimitReached() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
 
         match.substituteAway(generateMalePlayer(DEFAULT_SPORT), generateMalePlayer(DEFAULT_SPORT));
@@ -286,7 +286,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void substituteHomeThrowsExceptionWhenPlayerIsNull() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -295,7 +295,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void substituteAwayThrowsExceptionWhenPlayerIsNull() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -304,7 +304,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void substituteHomeThrowsExceptionAfterMatchFinishes() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
         match.simulateCurrentPeriod();
         match.resumeAfterBreak();
@@ -316,7 +316,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void getMatchResultThrowsExceptionBeforeMatchFinishes() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
 
         assertThrows(IllegalStateException.class, match::getMatchResult);
@@ -324,7 +324,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void getMatchResultReturnsTotalScoresAfterMatchFinishes() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
         match.simulateCurrentPeriod();
         match.resumeAfterBreak();
@@ -338,7 +338,7 @@ public class TestAbstractMatch extends BaseTest {
 
     @Test
     void getPeriodResultsReturnsUnmodifiableList() {
-        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT));
+        AbstractMatch match = new DummyMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER));
         match.start();
         match.simulateCurrentPeriod();
 
@@ -386,7 +386,7 @@ public class TestAbstractMatch extends BaseTest {
         org.mockito.Mockito.when(mockEngine.simulatePeriod(org.mockito.Mockito.any(), org.mockito.Mockito.any()))
                 .thenReturn(new PeriodResult(1, 0));
 
-        AbstractMatch match = new MockEngineMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT), mockEngine);
+        AbstractMatch match = new MockEngineMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), mockEngine);
         match.start();
         assertEquals(AbstractMatch.MatchState.IN_PROGRESS, match.getState());
 
@@ -406,7 +406,7 @@ public class TestAbstractMatch extends BaseTest {
     @Test
     void mockEngine_startTwiceThrowsException() {
         com.sportsmanager.core.interfaces.IMatchEngine mockEngine = org.mockito.Mockito.mock(com.sportsmanager.core.interfaces.IMatchEngine.class);
-        AbstractMatch match = new MockEngineMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT), mockEngine);
+        AbstractMatch match = new MockEngineMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), mockEngine);
         
         match.start();
         assertThrows(IllegalStateException.class, match::start);
@@ -418,7 +418,7 @@ public class TestAbstractMatch extends BaseTest {
         org.mockito.Mockito.when(mockEngine.simulatePeriod(org.mockito.Mockito.any(), org.mockito.Mockito.any()))
                 .thenReturn(new PeriodResult(1, 1));
 
-        AbstractMatch match = new MockEngineMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT), mockEngine);
+        AbstractMatch match = new MockEngineMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), mockEngine);
         match.start();
         match.simulateCurrentPeriod(); // Now in BETWEEN_PERIODS
 
@@ -428,7 +428,7 @@ public class TestAbstractMatch extends BaseTest {
     @Test
     void mockEngine_substituteHomeWithInvalidPlayerThrowsException() {
         com.sportsmanager.core.interfaces.IMatchEngine mockEngine = org.mockito.Mockito.mock(com.sportsmanager.core.interfaces.IMatchEngine.class);
-        AbstractMatch match = new MockEngineMatch(generateTeam(DEFAULT_SPORT), generateTeam(DEFAULT_SPORT), mockEngine);
+        AbstractMatch match = new MockEngineMatch(generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), generateTeam(DEFAULT_SPORT, DEFAULT_GENDER), mockEngine);
         match.start();
 
         assertThrows(IllegalArgumentException.class, () -> {

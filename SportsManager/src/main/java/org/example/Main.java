@@ -9,17 +9,27 @@ import com.sportsmanager.util.RandomGenerator;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sportsmanager.util.RandomGenerator.DEFAULT_GENDER;
+
 public class Main {
     public static void main(String[] args) {
         System.out.println("=== AngryFM - Football Manager Simulation ===\n");
-
         ISport sport = SportFactory.createSport("football");
+        /* frontend'e taşınırken bu kısımda user inputla hangi cinsiyetin ligini
+        oynamak istediğini soracağız ve userın inputladığı cinsiyeti
+        generateTeam(sport, gender) parametresine alıp ona göre yaptırtacağız:
+        */
+
+        /*
+        Gender gender;
+        */
 
         // 4 takim olustur
         int teamCount = 4;
         List<AbstractTeam> teams = new ArrayList<>();
         for (int i = 0; i < teamCount; i++) {
-            AbstractTeam team = RandomGenerator.generateTeam(sport);
+            //frontende taşınınca buradaki DEFAULT_GENDER'ın yerini, değerini user inputtan alan gender variable'ı alacak
+            AbstractTeam team = RandomGenerator.generateTeam(sport, DEFAULT_GENDER);
             team.setCurrentTactic(sport.createDefaultTactic());
             teams.add(team);
         }
@@ -40,7 +50,12 @@ public class Main {
         }
 
         // Lig olustur ve fiksturu generate et
-        FootballLeague league = new FootballLeague("AngryFM Super Lig");
+        FootballLeague league = new FootballLeague("AngryFM Super League");
+
+        /*frontende taşınınca üsttekini silip bunlar aktive edilmeli, lig isimleri cinsiyete göre ayrılır
+        if(gender==Gender.MALE){FootballLeague league= new FootballLeague("AngryFM Men's Super League");}
+        * if(gender==Gender.FEMALE){FootballLeague league= new FootballLeague("AngryFM Women's Super League");}
+        * */
         league.generateFixtures(teams);
 
         System.out.printf("%nLeague: %s%n", league.getName());
