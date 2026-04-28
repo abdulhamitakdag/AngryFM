@@ -12,6 +12,7 @@ import static com.sportsmanager.util.ResourceLoader.*;
 public class RandomGenerator{
     private static final Random random= new Random();
     public static final ISport DEFAULT_SPORT = SportFactory.createSport("football");
+    public static final Gender DEFAULT_GENDER=Gender.MALE;
 
     private static final List<String> firstMaleNames = loadLinesFromTxt("malenames.txt");
     private static final List<String> firstFemaleNames = loadLinesFromTxt("femalenames.txt");
@@ -88,7 +89,7 @@ public class RandomGenerator{
         return generateMaleCoach(DEFAULT_SPORT);
     }
 
-    public static AbstractTeam generateTeam(ISport sport) {
+    public static AbstractTeam generateTeam(ISport sport, Gender gender) {
         String teamName = generateRandomTeamName();
         AbstractTeam team = sport.createTeam(teamName);
 
@@ -96,10 +97,10 @@ public class RandomGenerator{
         int coachCount = sport.getRecommendedCoachCount();
 
         for (int i = 0; i < squadSize; i++) {
-            AbstractPlayer player;
-            if (random.nextBoolean()) {
+            AbstractPlayer player=null;
+            if (gender==Gender.MALE) {
                 player = generateMalePlayer(sport);
-            } else {
+            } if(gender==Gender.FEMALE){
                 player = generateFemalePlayer(sport);
             }
             team.addPlayer(player);
@@ -119,6 +120,6 @@ public class RandomGenerator{
     }
 
     public static AbstractTeam generateTeam() {
-        return generateTeam(DEFAULT_SPORT);
+        return generateTeam(DEFAULT_SPORT, DEFAULT_GENDER);
     }
 }
