@@ -1,5 +1,6 @@
 package com.sportsmanager.sport.football;
 
+import com.sportsmanager.core.interfaces.ILeague;
 import com.sportsmanager.core.interfaces.IMatchEngine;
 import com.sportsmanager.core.interfaces.ISport;
 import com.sportsmanager.core.model.*;
@@ -11,6 +12,12 @@ import java.util.Random;
 public class FootballSport implements ISport {
 
     private final Random rng = new Random();
+
+    @Override
+    public AbstractLeague createLeague(String leaguename) {
+        return new FootballLeague(leaguename);
+
+    }
 
     @Override
     public String getSportId() {

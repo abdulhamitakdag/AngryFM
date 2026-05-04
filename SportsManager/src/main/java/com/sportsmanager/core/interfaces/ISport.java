@@ -33,4 +33,5 @@ public interface ISport {
     int getRecommendedSquadSize();
 
     int getRecommendedCoachCount();
+    AbstractLeague createLeague(String leaguename);
 }
