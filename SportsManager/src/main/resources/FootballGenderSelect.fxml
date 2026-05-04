@@ -7,11 +7,11 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: PINK; -fx-background-color: DARKRED;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sportsmanager.ui.NewGameController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: PINK; -fx-background-color: DARKRED;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sportsmanager.ui.FootballGenderSelectController">
     <children>
         <HBox alignment="CENTER" layoutX="85.0" layoutY="237.0" prefHeight="74.0" prefWidth="444.0" spacing="100.0" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="84.0" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="236.0">
             <children>
-                <Button mnemonicParsing="false" onMouseClicked="#footballbutton" prefHeight="72.0" prefWidth="155.0" style="-fx-background-color: SKYBLUE;" text="Football">
+                <Button mnemonicParsing="false" onMouseClicked="#malebutton" prefHeight="72.0" prefWidth="155.0" style="-fx-background-color: SKYBLUE;" text="Male">
                     <font>
                         <Font name="Century Schoolbook" size="19.0" />
                     </font>
@@ -37,7 +37,7 @@
                         </LinearGradient>
                     </textFill>
                 </Button>
-                <Button alignment="CENTER" mnemonicParsing="false" prefHeight="72.0" prefWidth="145.0" style="-fx-background-color: LIGHTGREEN;" text="Basketball">
+                <Button alignment="CENTER" mnemonicParsing="false" onMouseClicked="#femalebutton" prefHeight="72.0" prefWidth="145.0" style="-fx-background-color: LIGHTGREEN;" text="Female">
                     <font>
                         <Font name="Century Schoolbook" size="21.0" />
                     </font>
@@ -69,7 +69,7 @@
             </children>
         </HBox>
         <Button layoutX="530.0" layoutY="352.0" mnemonicParsing="false" onMouseClicked="#exitbutton" prefHeight="33.0" prefWidth="55.0" text="Exit" AnchorPane.bottomAnchor="14.399999999999977" AnchorPane.rightAnchor="14.799999999999955" />
-        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="212.0" layoutY="35.0" prefHeight="68.0" prefWidth="175.0" text="Select Game Type" textAlignment="JUSTIFY" textFill="#00ffea" AnchorPane.leftAnchor="212.0" AnchorPane.rightAnchor="211.8" AnchorPane.topAnchor="35.0">
+        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="212.0" layoutY="35.0" prefHeight="68.0" prefWidth="175.0" text="Select Gender" textAlignment="JUSTIFY" textFill="#00ffea" AnchorPane.leftAnchor="212.0" AnchorPane.rightAnchor="211.8" AnchorPane.topAnchor="35.0">
             <font>
                 <Font size="17.0" />
             </font>
@@ -77,7 +77,7 @@
                 <Glow level="0.96" />
             </effect>
         </Label>
-      <Button layoutX="22.0" layoutY="343.0" mnemonicParsing="false" onMouseClicked="#returnbutton" prefHeight="34.0" prefWidth="55.0" text="Return" AnchorPane.bottomAnchor="22.6" AnchorPane.leftAnchor="22.0" />
+        <Button layoutX="22.0" layoutY="343.0" mnemonicParsing="false" onMouseClicked="#returnbutton" prefHeight="34.0" prefWidth="55.0" text="Return" AnchorPane.bottomAnchor="22.6" AnchorPane.leftAnchor="22.0" />
     </children>
     <effect>
         <DropShadow>
