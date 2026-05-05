@@ -165,6 +165,20 @@ public abstract class AbstractTeam {
     public int getGoalDifference(){ return goalsScored - goalsConceded; }
     public int getMatchesPlayed() { return wins + draws + losses; }
 
+    public int getAvgOvr(){
+
+        int avgOvr = 0;
+
+        for (AbstractPlayer p : squad) {
+            if (p.getAttributes() != null) {
+                avgOvr += p.getAttributes().getOverallRating();
+            }
+        }
+        if (!squad.isEmpty())return avgOvr/squad.size();
+        return 0;
+    }
+
+
     // taktik
 
     public AbstractTactic getCurrentTactic() {

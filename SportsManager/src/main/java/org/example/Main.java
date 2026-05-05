@@ -36,14 +36,8 @@ public class Main {
 
         System.out.println("Teams:");
         for (AbstractTeam team : teams) {
-            int avgOvr = 0;
-            List<AbstractPlayer> squad = team.getSquad();
-            for (AbstractPlayer p : squad) {
-                if (p.getAttributes() != null) {
-                    avgOvr += p.getAttributes().getOverallRating();
-                }
-            }
-            avgOvr = squad.isEmpty() ? 0 : avgOvr / squad.size();
+            int avgOvr = team.getAvgOvr();
+
             System.out.printf("  %-25s | Squad: %d | Avg OVR: %d | Tactic: %s%n",
                     team.getName(), team.getCurrentSquadSize(), avgOvr,
                     team.getCurrentTactic() != null ? team.getCurrentTactic().getName() : "None");
