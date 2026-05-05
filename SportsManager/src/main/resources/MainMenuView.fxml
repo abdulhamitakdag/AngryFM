@@ -7,11 +7,11 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: PINK; -fx-background-color: LIGHTPINK;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sportsmanager.ui.UIController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: PINK; -fx-background-color: DARKRED;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sportsmanager.ui.MainMenuController">
    <children>
       <HBox alignment="CENTER" layoutX="85.0" layoutY="237.0" prefHeight="74.0" prefWidth="444.0" spacing="100.0" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="84.0" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="236.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="75.0" prefWidth="129.0" style="-fx-background-color: SKYBLUE;" text="New Game">
+            <Button mnemonicParsing="false" onMouseClicked="#newgamebutton" prefHeight="75.0" prefWidth="129.0" style="-fx-background-color: SKYBLUE;" text="New Game">
                <font>
                   <Font name="Century Schoolbook" size="19.0" />
                </font>
