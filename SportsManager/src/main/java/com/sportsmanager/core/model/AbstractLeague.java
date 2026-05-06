@@ -179,6 +179,11 @@ public abstract class AbstractLeague implements ILeague {
         return Collections.unmodifiableList(unplayed);
     }
 
+    // save/load restore için — injury decrement tetiklemez, haftayı doğrudan yükler
+    public void setCurrentWeekDirect(int week) {
+        this.currentWeek = week;
+    }
+
     public String getName()              { return name; }
     public List<AbstractTeam> getTeams() { return Collections.unmodifiableList(teams); }
     public List<Fixture> getFixtures()   { return Collections.unmodifiableList(fixtures); }

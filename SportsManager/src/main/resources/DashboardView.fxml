@@ -8,36 +8,46 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: PINK; -fx-background-color: LIGHTYELLOW;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sportsmanager.ui.DashboardController">
     <children>
-        <Button layoutX="530.0" layoutY="352.0" mnemonicParsing="false" onMouseClicked="#exitbutton" prefHeight="33.0" prefWidth="55.0" text="Exit" AnchorPane.bottomAnchor="14.399999999999977" AnchorPane.rightAnchor="14.799999999999955" />
-        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="212.0" layoutY="35.0" prefHeight="68.0" prefWidth="175.0" text="Game menu" textAlignment="JUSTIFY" textFill="#009487" AnchorPane.leftAnchor="212.0" AnchorPane.rightAnchor="211.8" AnchorPane.topAnchor="35.0">
-            <font>
-                <Font size="17.0" />
-            </font>
-            <effect>
-                <Glow level="0.96" />
-            </effect>
+        <Button layoutX="530.0" layoutY="352.0" mnemonicParsing="false" onAction="#exitbutton" prefHeight="33.0" prefWidth="55.0" text="Exit" AnchorPane.bottomAnchor="14.399999999999977" AnchorPane.rightAnchor="14.799999999999955" />
+
+        <!-- Takım adı -->
+        <Label fx:id="userTeamLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="212.0" layoutY="35.0" prefHeight="34.0" prefWidth="175.0" text="..." textFill="#009487" AnchorPane.leftAnchor="212.0" AnchorPane.rightAnchor="211.8" AnchorPane.topAnchor="35.0">
+            <font><Font size="17.0" /></font>
+            <effect><Glow level="0.96" /></effect>
         </Label>
-      <VBox layoutY="24.0" spacing="1.0" AnchorPane.leftAnchor="0.0">
-         <children>
-            <ToggleButton mnemonicParsing="false" text="Squad" />
-            <ToggleButton mnemonicParsing="false" text="Points Table" />
-            <ToggleButton mnemonicParsing="false" text="Fixture" />
-            <ToggleButton mnemonicParsing="false" text="Tactic" />
-            <ToggleButton mnemonicParsing="false" text="Train" />
-            <ToggleButton mnemonicParsing="false" text="Coach" />
-            <ToggleButton mnemonicParsing="false" text="Save &amp; Exit" />
-         </children>
-      </VBox>
-      <Button layoutX="209.0" layoutY="313.0" mnemonicParsing="false" prefHeight="68.0" prefWidth="174.0" text="Play" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="207.99999999999997" AnchorPane.rightAnchor="216.6" />
-      <VBox layoutX="496.0" layoutY="104.0" prefHeight="95.0" prefWidth="87.0" AnchorPane.bottomAnchor="200.8" AnchorPane.rightAnchor="16.799999999999997" AnchorPane.topAnchor="102.99999999999999">
-         <children>
-            <Label text="Next" />
-            <Label prefHeight="18.0" prefWidth="42.0" text="\%weekplayed%/%weekremaining%" />
-            <ProgressBar prefHeight="18.0" prefWidth="55.0" progress="0.3" />
-            <Label text="House" />
-            <Label text="Deplasman" />
-         </children>
-      </VBox>
+
+        <!-- Alt başlık: "Game menu" -->
+        <Label alignment="CENTER" layoutX="212.0" layoutY="70.0" prefHeight="20.0" prefWidth="175.0" text="Game menu" textFill="#777777" AnchorPane.leftAnchor="212.0" AnchorPane.rightAnchor="211.8">
+            <font><Font size="11.0" /></font>
+        </Label>
+
+        <!-- Sol sidebar -->
+        <VBox layoutY="24.0" spacing="1.0" AnchorPane.leftAnchor="0.0">
+            <children>
+                <ToggleButton mnemonicParsing="false" text="Squad" />
+                <ToggleButton mnemonicParsing="false" text="Points Table" />
+                <ToggleButton mnemonicParsing="false" text="Fixture" />
+                <ToggleButton mnemonicParsing="false" text="Tactic" />
+                <ToggleButton mnemonicParsing="false" text="Train" />
+                <ToggleButton mnemonicParsing="false" text="Coach" />
+                <ToggleButton mnemonicParsing="false" onAction="#saveandexitbutton" text="Save &amp; Exit" />
+            </children>
+        </VBox>
+
+        <!-- Play butonu -->
+        <Button layoutX="209.0" layoutY="313.0" mnemonicParsing="false" onAction="#playbutton" prefHeight="68.0" prefWidth="174.0" text="Play" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="207.99999999999997" AnchorPane.rightAnchor="216.6" />
+
+        <!-- Sağ panel: hafta + rakip bilgisi -->
+        <VBox layoutX="496.0" layoutY="104.0" prefWidth="90.0" spacing="4.0" AnchorPane.bottomAnchor="200.8" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="102.99999999999999">
+            <children>
+                <Label text="Sıradaki Maç" style="-fx-font-weight: bold;" />
+                <Label fx:id="weekLabel" text="Hafta 1" />
+                <ProgressBar prefHeight="10.0" prefWidth="80.0" progress="0.0" />
+                <Label fx:id="matchTypeLabel" text="" style="-fx-text-fill: #555;" />
+                <Label text="vs" />
+                <Label fx:id="opponentLabel" text="..." style="-fx-font-weight: bold;" />
+            </children>
+        </VBox>
     </children>
     <effect>
         <DropShadow>
