@@ -14,7 +14,8 @@ public class FootballGenderSelectController {
     @FXML
     public void malebutton()throws IOException{
         Gender male=Gender.MALE;
-        GameController starter=GameController.startNew("football",male,18);
+        GameController gc = GameController.startNew("football",male,18);
+        gc.setUserTeam(gc.getTeams().get(0));
         URL dashboardurl=getClass().getResource("/DashboardView.fxml");
         if (dashboardurl==null){
             System.out.println("DashboardView.fxml not found!");
@@ -26,7 +27,8 @@ public class FootballGenderSelectController {
     } @FXML
     public void femalebutton()throws IOException{
         Gender female=Gender.FEMALE;
-        GameController.startNew("football",female,18);
+        GameController gc = GameController.startNew("football",female,18);
+        gc.setUserTeam(gc.getTeams().get(0));
         URL dashboardurl=getClass().getResource("/DashboardView.fxml");
         if (dashboardurl==null){
             System.out.println("DashboardView.fxml not found!");

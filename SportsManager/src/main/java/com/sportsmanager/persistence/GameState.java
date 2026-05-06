@@ -128,6 +128,9 @@ public class GameState {
         private Double positioning;
         private Double diving;
         private Double handling;
+        // basketbol (FootballAttributes'taki defending ve physical ile paylaşılıyor)
+        private Double playmaking;
+        private Double rebounding;
         // sakatlık bilgisi
         private String injurySeverity;
         private int injuryGamesRemaining;
@@ -201,6 +204,16 @@ public class GameState {
             { return handling; }
         public void setHandling(Double handling)
             { this.handling = handling; }
+
+        public Double getPlaymaking()
+            { return playmaking; }
+        public void setPlaymaking(Double playmaking)
+            { this.playmaking = playmaking; }
+
+        public Double getRebounding()
+            { return rebounding; }
+        public void setRebounding(Double rebounding)
+            { this.rebounding = rebounding; }
 
         public String getInjurySeverity()
             { return injurySeverity; }

@@ -119,6 +119,10 @@ public class RandomGenerator{
         return team;
     }
 
+    public static AbstractTeam generateTeam(ISport sport) {
+        return generateTeam(sport, DEFAULT_GENDER);
+    }
+
     public static AbstractTeam generateTeam() {
         return generateTeam(DEFAULT_SPORT, DEFAULT_GENDER);
     }

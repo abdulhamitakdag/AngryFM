@@ -164,10 +164,10 @@ public abstract class AbstractSaveManager {
             }
         }
 
-        // haftayı doğru yere getiriyoruz
-        for (int i = 1; i < state.getCurrentWeek(); i++) {
-            league.advanceWeek();
-        }
+        // haftayı doğru yere getiriyoruz — advanceWeek() yerine direkt set ediyoruz,
+        // çünkü advanceWeek() injury decrement yapar ve save'den restore edilen
+        // gamesRemaining değerleri fazladan azaltılırdı (double-decrement bug)
+        league.setCurrentWeekDirect(state.getCurrentWeek());
 
         return league;
     }
