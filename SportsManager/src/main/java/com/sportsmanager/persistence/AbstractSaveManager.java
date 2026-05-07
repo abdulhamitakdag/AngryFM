@@ -53,10 +53,10 @@ public abstract class AbstractSaveManager {
     // .. / \ gibi şeyler varsa patlıyor
     private void validateSaveName(String saveName) {
         if (saveName == null || saveName.isBlank()) {
-            throw new IllegalArgumentException("Save ismi boş olamaz.");
+            throw new IllegalArgumentException("Save name cannot be empty.");
         }
         if (saveName.contains("..") || saveName.contains("/") || saveName.contains("\\")) {
-            throw new IllegalArgumentException("Save isminde geçersiz karakter var: " + saveName);
+            throw new IllegalArgumentException("Save name contains invalid characters: " + saveName);
         }
     }
 
@@ -74,12 +74,12 @@ public abstract class AbstractSaveManager {
         validateSaveName(saveName);
         Path savePath = saveDirectory.resolve(saveName + ".json");
         if (!Files.exists(savePath)) {
-            throw new IOException("Save dosyası bulunamadı: " + savePath);
+            throw new IOException("Save file not found: " + savePath);
         }
         try {
             return mapper.readValue(savePath.toFile(), GameState.class);
         } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-            throw new IOException("Save dosyası bozuk, okunamadı: " + saveName, e);
+            throw new IOException("Save file is corrupted, could not read: " + saveName, e);
         }
     }
 
@@ -109,18 +109,25 @@ public abstract class AbstractSaveManager {
     // takımları fikstürleri falan tek tek dönüştürüyor
     // aynı isimde takım varsa hata fırlatıyor çünkü restore sırasında karışıyor
     public GameState createState(AbstractLeague league, String userTeamName) {
+        return createState(league, userTeamName, null);
+    }
+
+    public GameState createState(AbstractLeague league, String userTeamName, Gender gender) {
         GameState state = new GameState();
         state.setSaveVersion(1);
         state.setSportType(getSportType());
         state.setLeagueName(league.getName());
         state.setCurrentWeek(league.getCurrentWeek());
         state.setUserTeamName(userTeamName);
+        if (gender != null) {
+            state.setGender(gender.name());
+        }
 
         Set<String> seenNames = new HashSet<>();
         List<GameState.TeamData> teamDataList = new ArrayList<>();
         for (AbstractTeam team : league.getTeams()) {
             if (!seenNames.add(team.getName())) {
-                throw new IllegalStateException("Aynı isimde iki takım var: " + team.getName());
+                throw new IllegalStateException("Two teams have the same name: " + team.getName());
             }
             teamDataList.add(convertTeam(team));
         }
@@ -144,7 +151,7 @@ public abstract class AbstractSaveManager {
 
         for (GameState.TeamData td : state.getTeams()) {
             if (teamsByName.containsKey(td.getName())) {
-                throw new IllegalStateException("Save dosyasında aynı isimde iki takım var: " + td.getName());
+                throw new IllegalStateException("Save file contains two teams with the same name: " + td.getName());
             }
             AbstractTeam team = restoreTeam(td);
             teamsByName.put(td.getName(), team);

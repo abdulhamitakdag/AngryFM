@@ -68,7 +68,7 @@ public abstract class AbstractTactic {
 
     @Override
     public String toString() {
-        return String.format("%s [%s] (hücum=%.2f, savunma=%.2f, press=%.2f)",
+        return String.format("%s [%s] (attack=%.2f, defense=%.2f, press=%.2f)",
                 name, getFormationString(), attackingWeight, defensiveWeight, pressureIntensity);
     }
 }

@@ -40,8 +40,8 @@
         <!-- Sağ panel: hafta + rakip bilgisi -->
         <VBox layoutX="496.0" layoutY="104.0" prefWidth="90.0" spacing="4.0" AnchorPane.bottomAnchor="200.8" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="102.99999999999999">
             <children>
-                <Label text="Sıradaki Maç" style="-fx-font-weight: bold;" />
-                <Label fx:id="weekLabel" text="Hafta 1" />
+                <Label text="Next Match" style="-fx-font-weight: bold;" />
+                <Label fx:id="weekLabel" text="Week 1" />
                 <ProgressBar prefHeight="10.0" prefWidth="80.0" progress="0.0" />
                 <Label fx:id="matchTypeLabel" text="" style="-fx-text-fill: #555;" />
                 <Label text="vs" />

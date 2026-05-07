@@ -30,16 +30,16 @@ public class DashboardController {
             userTeamLabel.setText(gc.getUserTeam().getName());
         }
 
-        weekLabel.setText("Hafta " + gc.getLeague().getCurrentWeek());
+        weekLabel.setText("Week " + gc.getLeague().getCurrentWeek());
 
         Fixture f = gc.getUserFixture();
         if (f != null) {
             boolean isHome = f.getHomeTeam().equals(gc.getUserTeam());
             opponentLabel.setText(isHome ? f.getAwayTeam().getName() : f.getHomeTeam().getName());
-            matchTypeLabel.setText(isHome ? "EV SAHİBİ" : "DEPLASMAN");
+            matchTypeLabel.setText(isHome ? "HOME" : "AWAY");
         } else if (gc.getLeague().isSeasonOver()) {
-            opponentLabel.setText("Sezon Bitti");
-            matchTypeLabel.setText("Şampiyon: " + gc.getLeague().getChampion().getName());
+            opponentLabel.setText("Season Over");
+            matchTypeLabel.setText("Champion: " + gc.getLeague().getChampion().getName());
         } else {
             opponentLabel.setText("-");
             matchTypeLabel.setText("");
@@ -54,7 +54,7 @@ public class DashboardController {
         if (gc.getLeague().isSeasonOver()) {
             List<TeamInLeagueTable> standings = gc.getLeague().getStandings();
             String champion = standings.isEmpty() ? "?" : standings.get(0).getTeam().getName();
-            showAlert("Sezon Bitti!", "Şampiyon: " + champion, "");
+            showAlert("Season Over!", "Champion: " + champion, "");
             return;
         }
 
@@ -74,11 +74,11 @@ public class DashboardController {
               .append("  ")
               .append(r.getAwayTeam().getName());
 
-            if (isUserMatch) sb.append("  ◀ SENİN MAÇIN");
+            if (isUserMatch) sb.append("  ◀ YOUR MATCH");
             sb.append("\n");
         }
 
-        showAlert("Hafta " + playedWeek + " Sonuçları", null, sb.toString());
+        showAlert("Week " + playedWeek + " Results", null, sb.toString());
         refresh();
     }
 
@@ -96,7 +96,7 @@ public class DashboardController {
             gc.saveGame("autosave");
             System.exit(0);
         } catch (Exception e) {
-            showAlert("Kayıt Hatası", "Oyun kaydedilemedi", e.getMessage());
+            showAlert("Save Error", "Could not save the game", e.getMessage());
         }
     }
 

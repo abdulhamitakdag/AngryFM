@@ -39,17 +39,17 @@ public abstract class AbstractTeam {
     // kadroya oyuncu ekler, zaten varsa veya kadro doluysa hata fırlatır
     public void addPlayer(AbstractPlayer player) {
         if (player == null) {
-            throw new IllegalArgumentException("Oyuncu null olamaz.");
+            throw new IllegalArgumentException("Player cannot be null.");
         }
         for (AbstractPlayer p : squad) {
             if (p.getId().equals(player.getId())) {
-                throw new IllegalStateException("Bu oyuncu zaten kadroda: " + player.getName());
+                throw new IllegalStateException("Player is already in the squad: " + player.getName());
             }
         }
         if (squad.size() >= getMaxSquadSize()) {
             throw new IllegalStateException(
-                    "Kadro dolu (maksimum " + getMaxSquadSize() + " oyuncu). " +
-                            player.getName() + " eklenemiyor."
+                    "Squad is full (maximum " + getMaxSquadSize() + " players). " +
+                            "Cannot add " + player.getName() + "."
             );
         }
         squad.add(player);
@@ -91,7 +91,7 @@ public abstract class AbstractTeam {
 
     public void addCoach(AbstractCoach coach) {
         if (coach == null) {
-            throw new IllegalArgumentException("Koç null olamaz.");
+            throw new IllegalArgumentException("Coach cannot be null.");
         }
         coaches.add(coach);
     }

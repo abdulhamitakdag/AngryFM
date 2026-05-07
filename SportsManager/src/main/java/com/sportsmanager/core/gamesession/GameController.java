@@ -36,6 +36,15 @@ public class GameController {
 
     public static GameController startNew(String sportId, Gender gender, int teamCount) {
         ISport sport = SportFactory.createSport(sportId);
+
+        if (teamCount > RandomGenerator.getAvailableTeamNameCount()) {
+            throw new IllegalArgumentException(
+                "Requested team count (" + teamCount + ") exceeds available team name count ("
+                + RandomGenerator.getAvailableTeamNameCount() + ").");
+        }
+
+        RandomGenerator.resetTeamNamePool();
+
         List<AbstractTeam> teams = new ArrayList<>();
         for (int i = 0; i < teamCount; i++) {
             AbstractTeam t = RandomGenerator.generateTeam(sport, gender);
@@ -57,7 +66,9 @@ public class GameController {
         GameState state = saveManager.load(saveName);
         AbstractLeague league = saveManager.restoreLeague(state);
         ISport sport = SportFactory.createSport(state.getSportType());
-        Gender gender = Gender.MALE; // save'de gender saklanmıyor, ileride eklenmeli
+        Gender gender = (state.getGender() != null)
+                ? Gender.valueOf(state.getGender())
+                : Gender.MALE;
         List<AbstractTeam> teams = new ArrayList<>(league.getTeams());
         instance = new GameController(sport, gender, league, teams);
         if (state.getUserTeamName() != null) {
@@ -75,7 +86,7 @@ public class GameController {
     public void saveGame(String saveName) throws IOException {
         FootballSaveManager saveManager = new FootballSaveManager();
         String userTeamName = (userTeam != null) ? userTeam.getName() : null;
-        GameState state = saveManager.createState(league, userTeamName);
+        GameState state = saveManager.createState(league, userTeamName, gender);
         saveManager.save(state, saveName);
     }
 

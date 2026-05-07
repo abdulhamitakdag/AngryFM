@@ -4,6 +4,10 @@ import com.sportsmanager.core.interfaces.ISport;
 import com.sportsmanager.core.model.*;
 import com.sportsmanager.factory.SportFactory;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 import java.util.Random;
 
@@ -19,8 +23,25 @@ public class RandomGenerator{
     private static final List<String> surnames= loadLinesFromTxt("surnames.txt");
 
     private static final List<String> teamNames= loadLinesFromTxt("teamnames.txt");
+
+    private static final Deque<String> teamNamePool = new ArrayDeque<>();
+
+    public static void resetTeamNamePool() {
+        teamNamePool.clear();
+        List<String> shuffled = new ArrayList<>(teamNames);
+        Collections.shuffle(shuffled, random);
+        teamNamePool.addAll(shuffled);
+    }
+
     public static String generateRandomTeamName(){
-        return teamNames.get(random.nextInt(teamNames.size()));
+        if (teamNamePool.isEmpty()) {
+            resetTeamNamePool();
+        }
+        return teamNamePool.pollFirst();
+    }
+
+    public static int getAvailableTeamNameCount() {
+        return teamNames.size();
     }
 
     public static String generateRandomFullMaleName(){
@@ -118,7 +139,6 @@ public class RandomGenerator{
 
         return team;
     }
-
     public static AbstractTeam generateTeam(ISport sport) {
         return generateTeam(sport, DEFAULT_GENDER);
     }

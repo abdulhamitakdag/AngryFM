@@ -25,6 +25,6 @@ public class BasketballLeague extends AbstractLeague {
     @Override
     protected AbstractMatch createMatch(AbstractTeam home, AbstractTeam away) {
         // TODO (Person B): return new BasketballMatch(home, away);
-        throw new UnsupportedOperationException("BasketballMatch henüz implement edilmedi.");
+        throw new UnsupportedOperationException("BasketballMatch is not implemented yet.");
     }
 }

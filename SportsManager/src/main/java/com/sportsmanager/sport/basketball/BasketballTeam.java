@@ -15,7 +15,7 @@ public class BasketballTeam extends AbstractTeam {
     @Override
     public void validateLineup(List<AbstractPlayer> lineup) {
         if (lineup == null || lineup.size() != 5) {
-            throw new IllegalArgumentException("Basketbol lineup'ı tam 5 oyuncu içermelidir.");
+            throw new IllegalArgumentException("Basketball lineup must contain exactly 5 players.");
         }
         boolean hasPG = false;
         boolean hasC  = false;
@@ -23,8 +23,8 @@ public class BasketballTeam extends AbstractTeam {
             if (BasketballPositions.PG.name().equals(p.getPosition())) hasPG = true;
             if (BasketballPositions.C.name().equals(p.getPosition()))  hasC  = true;
         }
-        if (!hasPG) throw new IllegalArgumentException("Lineup en az 1 PG içermelidir.");
-        if (!hasC)  throw new IllegalArgumentException("Lineup en az 1 C içermelidir.");
+        if (!hasPG) throw new IllegalArgumentException("Lineup must contain at least 1 PG.");
+        if (!hasC)  throw new IllegalArgumentException("Lineup must contain at least 1 C.");
     }
 
     @Override
