@@ -11,6 +11,8 @@ public abstract class AbstractTactic {
     private double defensiveWeight;   // her zaman 1.0 - attackingWeight
     private double pressureIntensity;
 
+    private double mismatchPenalty = 1.0;
+
     public AbstractTactic(String name, double attackingWeight, double pressureIntensity) {
         this.name              = name;
         this.attackingWeight   = clamp(attackingWeight);
@@ -23,19 +25,23 @@ public abstract class AbstractTactic {
     // kadro bu taktiğe uygun mu kontrol eder, eksik pozisyon varsa hata fırlatır
     public abstract void validateForSquad(List<AbstractPlayer> squad);
 
-    // maç motoru modifier'ları - hücum/savunma/pressing çarpanları
-
-    public double getOffensiveModifier() { // 0.80 - 1.20 arası
-        return 0.80 + attackingWeight * 0.40;
+    public int countMissingPositions(List<AbstractPlayer> squad) {
+        return 0;
     }
 
-    public double getDefensiveModifier() { // 0.80 - 1.20 arası
-        return 0.80 + defensiveWeight * 0.40;
+
+
+    public double getOffensiveModifier() { // 0.80 - 1.20 arası, penalty ile aşağı çekilebilir
+        return (0.80 + attackingWeight * 0.40) * mismatchPenalty;
+    }
+
+    public double getDefensiveModifier() { // 0.80 - 1.20 arası, penalty ile aşağı çekilebilir
+        return (0.80 + defensiveWeight * 0.40) * mismatchPenalty;
     }
 
     // yüksek press = daha çok top kapma ama kontra riski artar
-    public double getPressureModifier() { // 0.90 - 1.10 arası
-        return 0.90 + pressureIntensity * 0.20;
+    public double getPressureModifier() { // 0.90 - 1.10 arası, penalty ile aşağı çekilebilir
+        return (0.90 + pressureIntensity * 0.20) * mismatchPenalty;
     }
 
     // getter'lar
@@ -60,6 +66,9 @@ public abstract class AbstractTactic {
     public void setPressureIntensity(double pressureIntensity) {
         this.pressureIntensity = clamp(pressureIntensity);
     }
+
+    public double getMismatchPenalty()              { return mismatchPenalty; }
+    public void setMismatchPenalty(double penalty)  { this.mismatchPenalty = clamp(penalty); }
 
     // değeri 0.0 - 1.0 arasına sınırlar
     protected static double clamp(double v) {

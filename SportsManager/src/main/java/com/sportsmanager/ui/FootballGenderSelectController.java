@@ -14,29 +14,27 @@ public class FootballGenderSelectController {
     @FXML
     public void malebutton()throws IOException{
         Gender male=Gender.MALE;
-        GameController gc = GameController.startNew("football",male,18);
-        gc.setUserTeam(gc.getTeams().get(0));
-        URL dashboardurl=getClass().getResource("/DashboardView.fxml");
-        if (dashboardurl==null){
-            System.out.println("DashboardView.fxml not found!");
+        GameController.startNew("football",male,18);
+        URL teamurl=getClass().getResource("/TeamSelectView.fxml");
+        if (teamurl==null){
+            System.out.println("TeamSelectView.fxml not found!");
             return;
         }
-        Parent dashboardroot=FXMLLoader.load(dashboardurl);
-        Scene dashboardscene= new Scene(dashboardroot);
-        App.mainstage.setScene(dashboardscene);
+        Parent teamroot=FXMLLoader.load(teamurl);
+        Scene teamscene= new Scene(teamroot);
+        App.mainstage.setScene(teamscene);
     } @FXML
     public void femalebutton()throws IOException{
         Gender female=Gender.FEMALE;
-        GameController gc = GameController.startNew("football",female,18);
-        gc.setUserTeam(gc.getTeams().get(0));
-        URL dashboardurl=getClass().getResource("/DashboardView.fxml");
-        if (dashboardurl==null){
-            System.out.println("DashboardView.fxml not found!");
+        GameController.startNew("football",female,18);
+        URL teamurl=getClass().getResource("/TeamSelectView.fxml");
+        if (teamurl==null){
+            System.out.println("TeamSelectView.fxml not found!");
             return;
         }
-        Parent dashboardroot=FXMLLoader.load(dashboardurl);
-        Scene dashboardscene= new Scene(dashboardroot);
-        App.mainstage.setScene(dashboardscene);
+        Parent teamroot=FXMLLoader.load(teamurl);
+        Scene teamscene= new Scene(teamroot);
+        App.mainstage.setScene(teamscene);
 
     }
 

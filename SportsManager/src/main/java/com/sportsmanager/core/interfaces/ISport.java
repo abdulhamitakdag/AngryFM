@@ -2,7 +2,9 @@ package com.sportsmanager.core.interfaces;
 
 import com.sportsmanager.core.model.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 // spor branşlarının temel kurallarını belirleyen arayüz
 public interface ISport {
@@ -34,4 +36,8 @@ public interface ISport {
 
     int getRecommendedCoachCount();
     AbstractLeague createLeague(String leaguename);
+
+    default Map<String, Integer> getBaselineSquadPositions() {
+        return Collections.emptyMap();
+    }
 }

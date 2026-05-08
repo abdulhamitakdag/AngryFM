@@ -12,8 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// UI controller'larının tek erişim noktası — singleton
-// startNew() veya loadGame() çağrılana kadar getInstance() null döner
+
 public class GameController {
 
     private static GameController instance;
@@ -24,6 +23,8 @@ public class GameController {
     private final List<AbstractTeam> teams;
     private AbstractTeam userTeam;
 
+    private String currentSaveName;
+
     private GameController(ISport sport, Gender gender,
                            AbstractLeague league, List<AbstractTeam> teams) {
         this.sport = sport;
@@ -32,7 +33,7 @@ public class GameController {
         this.teams = teams;
     }
 
-    // ------- Fabrika / yükleme -------
+
 
     public static GameController startNew(String sportId, Gender gender, int teamCount) {
         ISport sport = SportFactory.createSport(sportId);
@@ -71,6 +72,7 @@ public class GameController {
                 : Gender.MALE;
         List<AbstractTeam> teams = new ArrayList<>(league.getTeams());
         instance = new GameController(sport, gender, league, teams);
+        instance.currentSaveName = saveName;
         if (state.getUserTeamName() != null) {
             for (AbstractTeam t : teams) {
                 if (t.getName().equals(state.getUserTeamName())) {
@@ -88,6 +90,11 @@ public class GameController {
         String userTeamName = (userTeam != null) ? userTeam.getName() : null;
         GameState state = saveManager.createState(league, userTeamName, gender);
         saveManager.save(state, saveName);
+        this.currentSaveName = saveName;
+    }
+
+    public String getCurrentSaveName() {
+        return currentSaveName;
     }
 
     // ------- Singleton erişimi -------

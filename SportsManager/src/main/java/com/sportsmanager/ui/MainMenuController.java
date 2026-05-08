@@ -29,7 +29,15 @@ public class MainMenuController {
     }
     @FXML
     public void resumebutton()throws IOException{
+        URL resumeurl = getClass().getResource("/ResumeView.fxml");
+        if (resumeurl==null){
+            System.out.println("ResumeView.fxml not found!");
+            return;
+        }
+        Parent  resumeroot = FXMLLoader.load(resumeurl);
+        Scene resumescene=new Scene(resumeroot);
 
+        App.mainstage.setScene(resumescene);
     }
 
 

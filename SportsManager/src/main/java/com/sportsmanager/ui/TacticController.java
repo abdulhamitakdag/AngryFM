@@ -1,0 +1,169 @@
+package com.sportsmanager.ui;
+
+import com.sportsmanager.core.gamesession.GameController;
+import com.sportsmanager.core.model.AbstractTactic;
+import com.sportsmanager.core.model.AbstractTeam;
+import com.sportsmanager.sport.football.FootballPositions;
+import com.sportsmanager.sport.football.FootballTactic;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class TacticController {
+
+    @FXML private Label teamnamelabel;
+    @FXML private Label currenttacticlabel;
+    @FXML private ListView<String> tacticlist;
+    @FXML private Label formationlabel;
+    @FXML private Label attackweightlabel;
+    @FXML private Label defenseweightlabel;
+    @FXML private Label pressureweightlabel;
+    @FXML private Label offmodlabel;
+    @FXML private Label defmodlabel;
+    @FXML private Label pressmodlabel;
+    @FXML private Label positionslabel;
+
+    // mevcut taktik fabrikalarına karşılık gelen isimler — listView'da gösteriyoruz
+    private static final String[] TACTIC_NAMES = {
+            "4-4-2", "4-2-3-1", "4-3-3", "4-2-4",
+            "3-5-2", "3-4-3", "5-3-2", "5-4-1"
+    };
+
+    @FXML
+    public void initialize(){
+        GameController gc = GameController.getInstance();
+        if (gc == null) return;
+        AbstractTeam team = gc.getUserTeam();
+        if (team == null) return;
+
+        teamnamelabel.setText(team.getName());
+        AbstractTactic current = team.getCurrentTactic();
+        currenttacticlabel.setText("Current: " + (current != null ? current.getName() : "-"));
+
+        tacticlist.setItems(FXCollections.observableArrayList(TACTIC_NAMES));
+
+        // seçim değişince detay paneli güncellensin
+        tacticlist.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
+            if (newSel != null) showdetails(newSel);
+        });
+
+        // başlangıçta mevcut taktik seçili gelsin (varsa)
+        if (current != null){
+            tacticlist.getSelectionModel().select(current.getName());
+        } else {
+            tacticlist.getSelectionModel().selectFirst();
+        }
+    }
+
+    private void showdetails(String tacticname){
+        FootballTactic t = createbyname(tacticname);
+        if (t == null) return;
+
+        formationlabel.setText("Formation: " + t.getFormationString());
+        attackweightlabel.setText("Attack: " + percent(t.getAttackingWeight()));
+        defenseweightlabel.setText("Defense: " + percent(t.getDefensiveWeight()));
+        pressureweightlabel.setText("Pressing: " + percent(t.getPressureIntensity()));
+        offmodlabel.setText("Offensive: " + formatmod(t.getOffensiveModifier()));
+        defmodlabel.setText("Defensive: " + formatmod(t.getDefensiveModifier()));
+        pressmodlabel.setText("Pressing: " + formatmod(t.getPressureModifier()));
+        positionslabel.setText(formatpositions(t.getRequiredPositions()));
+    }
+
+    @FXML
+    public void applybutton(){
+        String selected = tacticlist.getSelectionModel().getSelectedItem();
+        if (selected == null){
+            showalert("Tactic", "No tactic selected!");
+            return;
+        }
+        GameController gc = GameController.getInstance();
+        if (gc == null) return;
+        AbstractTeam team = gc.getUserTeam();
+        if (team == null) return;
+
+        FootballTactic t = createbyname(selected);
+        if (t == null) return;
+
+        // seçilen taktik kadromuza uyuyor mu — uymuyorsa hata mesajı göster
+        try {
+            t.validateForSquad(team.getSquad());
+        } catch (IllegalArgumentException e){
+            showalert("Tactic Error", e.getMessage());
+            return;
+        }
+
+        team.setCurrentTactic(t);
+        currenttacticlabel.setText("Current: " + t.getName());
+        showalert("Tactic Applied", "Your team will now play " + t.getName() + ".");
+    }
+
+    private FootballTactic createbyname(String name){
+        switch (name){
+            case "4-4-2":   return FootballTactic.create442();
+            case "4-2-3-1": return FootballTactic.create4231();
+            case "4-3-3":   return FootballTactic.create433();
+            case "4-2-4":   return FootballTactic.create424();
+            case "3-5-2":   return FootballTactic.create352();
+            case "3-4-3":   return FootballTactic.create343();
+            case "5-3-2":   return FootballTactic.create532();
+            case "5-4-1":   return FootballTactic.create541();
+            default:        return null;
+        }
+    }
+
+    private String percent(double v){
+        return Math.round(v * 100) + "%";
+    }
+
+    // 1.06 → "+6% (1.06x)", 0.85 → "-15% (0.85x)"
+    private String formatmod(double mod){
+        int pct = (int) Math.round((mod - 1.0) * 100);
+        String sign = pct >= 0 ? "+" : "";
+        return sign + pct + "% (" + String.format("%.2fx", mod) + ")";
+    }
+
+    private String formatpositions(Map<FootballPositions, Integer> positions){
+        List<String> parts = new ArrayList<>();
+        for (Map.Entry<FootballPositions, Integer> e : positions.entrySet()){
+            parts.add(e.getKey() + ":" + e.getValue());
+        }
+        return String.join(" · ", parts);
+    }
+
+    @FXML
+    public void returnbutton() throws IOException{
+        URL dashboardurl = getClass().getResource("/DashboardView.fxml");
+        if (dashboardurl==null){
+            System.out.println("DashboardView.fxml not found!");
+            return;
+        }
+        Parent dashboardroot = FXMLLoader.load(dashboardurl);
+        Scene dashboardscene = new Scene(dashboardroot);
+        App.mainstage.setScene(dashboardscene);
+    }
+
+    @FXML
+    public void exitbutton(){
+        System.out.println("Game has been closed");
+        System.exit(0);
+    }
+
+    private void showalert(String title, String content){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+}

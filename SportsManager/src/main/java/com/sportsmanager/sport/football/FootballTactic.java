@@ -25,6 +25,23 @@ public class FootballTactic extends AbstractTactic {
     }
 
     @Override
+    public int countMissingPositions(List<AbstractPlayer> squad) {
+        Map<FootballPositions, Integer> available = new HashMap<>();
+        for (AbstractPlayer p : squad) {
+            if (p instanceof FootballPlayer fp && !fp.isInjured()) {
+                FootballPositions pos = fp.getFootballPosition();
+                available.put(pos, available.getOrDefault(pos, 0) + 1);
+            }
+        }
+        int missing = 0;
+        for (Map.Entry<FootballPositions, Integer> e : requiredPositions.entrySet()) {
+            int diff = e.getValue() - available.getOrDefault(e.getKey(), 0);
+            if (diff > 0) missing += diff;
+        }
+        return missing;
+    }
+
+    @Override
     public void validateForSquad(List<AbstractPlayer> squad) {
         Map<FootballPositions, Integer> availablePositions = new HashMap<>();
 
