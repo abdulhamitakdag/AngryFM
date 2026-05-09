@@ -58,7 +58,7 @@ public class RandomGenerator{
 
     public static AbstractPlayer generateFemalePlayer(ISport sport){
         String name = generateRandomFullFemaleName();
-        int age = random.nextInt(35) + 16;
+        int age = random.nextInt(20) + 16;
         List<String> positions = sport.getValidPositions();
         String position = positions.get(random.nextInt(positions.size()));
         int shirtNumber = random.nextInt(99) + 1;
@@ -72,7 +72,7 @@ public class RandomGenerator{
 
     public static AbstractPlayer generateMalePlayer(ISport sport){
         String name = generateRandomFullMaleName();
-        int age = random.nextInt(35) + 16;
+        int age = random.nextInt(20) + 16;
         List<String> positions = sport.getValidPositions();
         String position = positions.get(random.nextInt(positions.size()));
         int shirtNumber = random.nextInt(99) + 1;
@@ -86,7 +86,7 @@ public class RandomGenerator{
 
     public static AbstractCoach generateFemaleCoach(ISport sport){
         String name = generateRandomFullFemaleName();
-        int age = random.nextInt(35) + 16;
+        int age = random.nextInt(30) + 40;
         CoachSpecialty[] specialties = CoachSpecialty.values();
         CoachSpecialty specialty = specialties[random.nextInt(specialties.length)];
         int level = random.nextInt(5) + 1;
@@ -99,7 +99,7 @@ public class RandomGenerator{
 
     public static AbstractCoach generateMaleCoach(ISport sport){
         String name = generateRandomFullMaleName();
-        int age = random.nextInt(35) + 16;
+        int age = random.nextInt(30) + 40;
         CoachSpecialty[] specialties = CoachSpecialty.values();
         CoachSpecialty specialty = specialties[random.nextInt(specialties.length)];
         int level = random.nextInt(5) + 1;
