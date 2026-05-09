@@ -31,16 +31,16 @@ public abstract class AbstractTactic {
 
 
 
-    public double getOffensiveModifier() { // 0.80 - 1.20 arası, penalty ile aşağı çekilebilir
+    public double getOffensiveModifier() { // 0.80 - 1.20 arası
         return (0.80 + attackingWeight * 0.40) * mismatchPenalty;
     }
 
-    public double getDefensiveModifier() { // 0.80 - 1.20 arası, penalty ile aşağı çekilebilir
+    public double getDefensiveModifier() { // 0.80 - 1.20 arası
         return (0.80 + defensiveWeight * 0.40) * mismatchPenalty;
     }
 
     // yüksek press = daha çok top kapma ama kontra riski artar
-    public double getPressureModifier() { // 0.90 - 1.10 arası, penalty ile aşağı çekilebilir
+    public double getPressureModifier() { // 0.90 - 1.10 arası
         return (0.90 + pressureIntensity * 0.20) * mismatchPenalty;
     }
 

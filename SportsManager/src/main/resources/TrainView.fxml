@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: PINK; -fx-background-color: LIGHTYELLOW;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sportsmanager.ui.TrainController">
+    <children>
+        <Label fx:id="teamnamelabel" alignment="CENTER" contentDisplay="CENTER" layoutX="100.0" layoutY="20.0" prefHeight="34.0" prefWidth="400.0" text="..." textFill="#009487" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="20.0">
+            <font><Font size="17.0" /></font>
+            <effect><Glow level="0.96" /></effect>
+        </Label>
+        <Label fx:id="sessionslabel" alignment="CENTER" layoutX="100.0" layoutY="55.0" prefHeight="20.0" prefWidth="400.0" text="Sessions left this week: 3 / 3" textFill="#777777" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="55.0">
+            <font><Font size="11.0" /></font>
+        </Label>
+
+        <VBox layoutX="14.0" layoutY="85.0" prefWidth="280.0" spacing="6.0" style="-fx-background-color: rgba(255,255,255,0.75); -fx-background-radius: 6; -fx-padding: 10; -fx-border-color: #888; -fx-border-radius: 6;" AnchorPane.bottomAnchor="105.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="85.0">
+            <children>
+                <Label style="-fx-font-weight: bold; -fx-font-size: 13;" text="Training Session" />
+                <Separator />
+                <Label fx:id="coachlabel" style="-fx-font-size: 11;" text="Coach: -" wrapText="true" />
+                <Label fx:id="coachmodlabel" style="-fx-font-size: 11;" text="Multiplier: -" />
+                <Separator />
+                <Label style="-fx-text-fill: #555; -fx-font-size: 10;" text="Intensity" />
+                <Slider fx:id="intensityslider" majorTickUnit="0.25" max="1.0" min="0.0" minorTickCount="4" showTickLabels="true" showTickMarks="true" value="0.7" />
+                <Label fx:id="intensitylabel" style="-fx-font-size: 11;" text="70%" />
+                <Separator />
+                <Label style="-fx-text-fill: #555; -fx-font-size: 10;" text="Estimated Effect" />
+                <Label fx:id="effectlabel" style="-fx-font-size: 11;" text="-" wrapText="true" />
+                <Button fx:id="runbutton" mnemonicParsing="false" onMouseClicked="#runbutton" prefWidth="240.0" style="-fx-background-color: SKYBLUE; -fx-font-weight: bold;" text="Run Training" />
+            </children>
+        </VBox>
+
+        <VBox layoutX="306.0" layoutY="85.0" prefWidth="280.0" spacing="6.0" style="-fx-background-color: rgba(255,255,255,0.75); -fx-background-radius: 6; -fx-padding: 10; -fx-border-color: #888; -fx-border-radius: 6;" AnchorPane.bottomAnchor="105.0" AnchorPane.leftAnchor="306.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="85.0">
+            <children>
+                <Label style="-fx-font-weight: bold; -fx-font-size: 13;" text="Last Result" />
+                <Separator />
+                <Label fx:id="resultheaderlabel" style="-fx-font-size: 11; -fx-text-fill: #555;" text="No training session run yet." wrapText="true" />
+                <Separator />
+                <Label style="-fx-text-fill: #555; -fx-font-size: 10;" text="Players Trained" />
+                <Label fx:id="trainedlabel" style="-fx-font-size: 11;" text="-" />
+                <Label style="-fx-text-fill: #555; -fx-font-size: 10;" text="Skipped (Injured)" />
+                <Label fx:id="skippedlabel" style="-fx-font-size: 11;" text="-" />
+                <Separator />
+                <Label style="-fx-text-fill: #555; -fx-font-size: 10;" text="Average OVR" />
+                <Label fx:id="ovrbeforelabel" style="-fx-font-size: 11;" text="Before: -" />
+                <Label fx:id="ovrafterlabel" style="-fx-font-size: 11;" text="After: -" />
+                <Label fx:id="ovrdeltalabel" style="-fx-font-weight: bold; -fx-font-size: 12;" text="Δ -" />
+                <Separator />
+                <Label style="-fx-text-fill: #555; -fx-font-size: 10;" text="Newly Injured" />
+                <Label fx:id="newinjuredlabel" style="-fx-font-size: 10;" text="-" wrapText="true" />
+            </children>
+        </VBox>
+
+        <Button layoutX="22.0" layoutY="343.0" mnemonicParsing="false" onMouseClicked="#returnbutton" prefHeight="34.0" prefWidth="55.0" text="Back" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="22.0" />
+        <Button layoutX="530.0" layoutY="352.0" mnemonicParsing="false" onMouseClicked="#exitbutton" prefHeight="33.0" prefWidth="55.0" text="Exit" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+    </children>
+    <effect>
+        <DropShadow>
+            <color>
+                <Color red="0.0873294323682785" green="0.8421052694320679" blue="0.26344379782676697" />
+            </color>
+        </DropShadow>
+    </effect>
+</AnchorPane>

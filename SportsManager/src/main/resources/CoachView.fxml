@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: PINK; -fx-background-color: LIGHTYELLOW;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sportsmanager.ui.CoachController">
+    <children>
+        <Label fx:id="teamnamelabel" alignment="CENTER" contentDisplay="CENTER" layoutX="100.0" layoutY="20.0" prefHeight="34.0" prefWidth="400.0" text="..." textFill="#009487" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="20.0">
+            <font><Font size="17.0" /></font>
+            <effect><Glow level="0.96" /></effect>
+        </Label>
+        <Label fx:id="activelabel" alignment="CENTER" layoutX="100.0" layoutY="55.0" prefHeight="20.0" prefWidth="400.0" text="Active Coach: -" textFill="#777777" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="55.0">
+            <font><Font size="11.0" /></font>
+        </Label>
+
+        <ListView fx:id="coachlist" layoutX="14.0" layoutY="85.0" prefHeight="220.0" prefWidth="220.0" AnchorPane.bottomAnchor="105.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="85.0" />
+
+        <VBox layoutX="250.0" layoutY="85.0" prefWidth="336.0" spacing="6.0" style="-fx-background-color: rgba(255,255,255,0.75); -fx-background-radius: 6; -fx-padding: 10; -fx-border-color: #888; -fx-border-radius: 6;" AnchorPane.bottomAnchor="105.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="85.0">
+            <children>
+                <Label fx:id="namelabel" style="-fx-font-weight: bold; -fx-font-size: 14;" text="-" />
+                <Separator />
+                <Label fx:id="agelabel" style="-fx-font-size: 11;" text="Age: -" />
+                <Label fx:id="genderlabel" style="-fx-font-size: 11;" text="Gender: -" />
+                <Label fx:id="specialtylabel" style="-fx-font-weight: bold; -fx-font-size: 12;" text="Specialty: -" />
+                <Label fx:id="levellabel" style="-fx-font-size: 11;" text="Level: -" />
+                <Label fx:id="modlabel" style="-fx-font-size: 11;" text="Train Multiplier: -" />
+                <Separator />
+                <Label style="-fx-text-fill: #555; -fx-font-size: 10;" text="Specialty Effect" />
+                <Label fx:id="specialtydesclabel" style="-fx-font-size: 11;" text="-" wrapText="true" />
+            </children>
+        </VBox>
+
+        <Button fx:id="setactivebutton" layoutX="240.0" layoutY="345.0" mnemonicParsing="false" onMouseClicked="#setactivebutton" prefHeight="34.0" prefWidth="120.0" style="-fx-background-color: SKYBLUE; -fx-font-weight: bold;" text="Set as Active" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="240.0" />
+
+        <Button layoutX="22.0" layoutY="343.0" mnemonicParsing="false" onMouseClicked="#returnbutton" prefHeight="34.0" prefWidth="55.0" text="Back" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="22.0" />
+        <Button layoutX="530.0" layoutY="352.0" mnemonicParsing="false" onMouseClicked="#exitbutton" prefHeight="33.0" prefWidth="55.0" text="Exit" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+    </children>
+    <effect>
+        <DropShadow>
+            <color>
+                <Color red="0.0873294323682785" green="0.8421052694320679" blue="0.26344379782676697" />
+            </color>
+        </DropShadow>
+    </effect>
+</AnchorPane>

@@ -11,6 +11,7 @@ import com.sportsmanager.util.RandomGenerator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 public class GameController {
@@ -24,6 +25,10 @@ public class GameController {
     private AbstractTeam userTeam;
 
     private String currentSaveName;
+
+    public static final int MAX_TRAININGS_PER_WEEK = 1;
+    private int trainingsThisWeek = 0;
+    private int trainingsCountedForWeek = 0;
 
     private GameController(ISport sport, Gender gender,
                            AbstractLeague league, List<AbstractTeam> teams) {
@@ -119,20 +124,44 @@ public class GameController {
         return null;
     }
 
-    // Bu haftanın tüm maçlarını simüle eder, sonuçları kaydeder, haftayı ilerletir
-    // TODO: spor agnostik hale getir (şimdilik sadece futbol)
-    public List<MatchResult> simulateFullWeek() {
+    private FootballMatch ongoingUserMatch;
+
+    public List<MatchResult> simulateOtherMatchesThisWeek() {
         List<MatchResult> results = new ArrayList<>();
         int week = league.getCurrentWeek();
         for (Fixture f : league.getFixtures()) {
             if (f.getWeek() == week && !f.isPlayed()) {
+                if (userTeam != null && (f.getHomeTeam().equals(userTeam) || f.getAwayTeam().equals(userTeam))) {
+                    continue;
+                }
                 MatchResult r = simulateFootballMatch(f.getHomeTeam(), f.getAwayTeam());
                 league.recordResult(r);
                 results.add(r);
             }
         }
-        league.advanceWeek();
         return results;
+    }
+
+    public PeriodResult startUserMatch() {
+        Fixture f = getUserFixture();
+        if (f == null) return null;
+        ongoingUserMatch = new FootballMatch(f.getHomeTeam(), f.getAwayTeam());
+        ongoingUserMatch.start();
+        return ongoingUserMatch.simulateCurrentPeriod();
+    }
+
+    public MatchResult finishUserMatch() {
+        if (ongoingUserMatch == null) return null;
+        ongoingUserMatch.resumeAfterBreak();
+        ongoingUserMatch.simulateCurrentPeriod();
+        MatchResult r = ongoingUserMatch.getMatchResult();
+        league.recordResult(r);
+        ongoingUserMatch = null;
+        return r;
+    }
+
+    public FootballMatch getOngoingUserMatch() {
+        return ongoingUserMatch;
     }
 
     private MatchResult simulateFootballMatch(AbstractTeam home, AbstractTeam away) {
@@ -147,6 +176,83 @@ public class GameController {
     // Haftayı ilerletir (sadece injury decrement + currentWeek++)
     public void advanceWeek() {
         league.advanceWeek();
+    }
+
+    // ------- Antrenman -------
+
+    private void syncTrainingWeek() {
+        int week = league.getCurrentWeek();
+        if (trainingsCountedForWeek != week) {
+            trainingsCountedForWeek = week;
+            trainingsThisWeek = 0;
+        }
+    }
+
+    public int getTrainingsLeft() {
+        syncTrainingWeek();
+        return MAX_TRAININGS_PER_WEEK - trainingsThisWeek;
+    }
+
+    public boolean canTrain() {
+        return getTrainingsLeft() > 0 && userTeam != null;
+    }
+
+    public TrainingReport trainTeam(double intensity) {
+        if (userTeam == null) {
+            throw new IllegalStateException("No user team");
+        }
+        syncTrainingWeek();
+        if (trainingsThisWeek >= MAX_TRAININGS_PER_WEEK) {
+            throw new IllegalStateException("No training sessions left this week");
+        }
+
+        List<AbstractPlayer> healthyBefore = new ArrayList<>(userTeam.getAvailablePlayers());
+
+        userTeam.runTrainingSession(intensity);
+        trainingsThisWeek++;
+
+        double injuryChance = intensity * intensity * 0.05;
+        List<AbstractPlayer> newlyInjured = new ArrayList<>();
+        for (AbstractPlayer p : healthyBefore) {
+            if (rng.nextDouble() < injuryChance) {
+                Injury.Severity sev = rollInjurySeverity();
+                int games = rollInjuryGames(sev);
+                p.setInjury(new Injury(sev, games));
+                newlyInjured.add(p);
+            }
+        }
+        return new TrainingReport(newlyInjured, injuryChance);
+    }
+
+    private final Random rng = new Random();
+
+    private Injury.Severity rollInjurySeverity() {
+        double r = rng.nextDouble();
+        if (r < 0.60) return Injury.Severity.MINOR;
+        if (r < 0.90) return Injury.Severity.MODERATE;
+        return Injury.Severity.SERIOUS;
+    }
+
+    private int rollInjuryGames(Injury.Severity sev) {
+        switch (sev) {
+            case MINOR:    return 1 + rng.nextInt(2);
+            case MODERATE: return 3 + rng.nextInt(3);
+            case SERIOUS:  return 6 + rng.nextInt(5);
+            default:       return 1;
+        }
+    }
+
+    public static class TrainingReport {
+        private final List<AbstractPlayer> newlyInjured;
+        private final double injuryChancePerPlayer;
+
+        public TrainingReport(List<AbstractPlayer> newlyInjured, double chance) {
+            this.newlyInjured = newlyInjured;
+            this.injuryChancePerPlayer = chance;
+        }
+
+        public List<AbstractPlayer> getNewlyInjured() { return newlyInjured; }
+        public double getInjuryChancePerPlayer()      { return injuryChancePerPlayer; }
     }
 
     // ------- Getter'lar -------

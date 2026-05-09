@@ -62,6 +62,7 @@ public class GameState {
         private List<PlayerData> players;
         private List<CoachData> coaches;
         private TacticData tactic;
+        private String activeCoachName;
         // sezon istatistikleri
         private int wins;
         private int draws;
@@ -88,6 +89,11 @@ public class GameState {
             { return tactic; }
         public void setTactic(TacticData tactic)
             { this.tactic = tactic; }
+
+        public String getActiveCoachName()
+            { return activeCoachName; }
+        public void setActiveCoachName(String activeCoachName)
+            { this.activeCoachName = activeCoachName; }
 
         public int getWins()
             { return wins; }

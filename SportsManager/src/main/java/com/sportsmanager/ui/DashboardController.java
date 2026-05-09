@@ -1,10 +1,15 @@
 package com.sportsmanager.ui;
 
 import com.sportsmanager.core.gamesession.GameController;
+import com.sportsmanager.core.model.AbstractCoach;
 import com.sportsmanager.core.model.AbstractTeam;
+import com.sportsmanager.core.model.CoachSpecialty;
 import com.sportsmanager.core.model.Fixture;
 import com.sportsmanager.core.model.MatchResult;
+import com.sportsmanager.core.model.PeriodResult;
 import com.sportsmanager.core.model.TeamInLeagueTable;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +21,7 @@ import javafx.scene.control.TextInputDialog;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +37,12 @@ public class DashboardController {
     @FXML private Label opponentRecordLabel;
     @FXML private Label userPositionLabel;
     @FXML private Label userRecordLabel;
+    @FXML private Label opponentOvrLabel;
+    @FXML private Label opponentMatchOvrLabel;
+    @FXML private Label userOvrLabel;
+    @FXML private Label userMatchOvrLabel;
+    @FXML private Label coachLabel;
+    @FXML private Label coachBoostLabel;
     @FXML private ProgressBar seasonProgress;
 
     // FXML yüklenince otomatik çağrılır
@@ -52,6 +64,10 @@ public class DashboardController {
         totalWeeksLabel.setText(String.valueOf(totalWeeks));
         seasonProgress.setProgress(totalWeeks > 0 ? Math.min(1.0, (week - 1.0) / totalWeeks) : 0.0);
 
+        AbstractTeam userTeam = gc.getUserTeam();
+        int onField = gc.getSport().getPlayersOnField();
+        int userOvr = userTeam != null ? userTeam.getAvgOvr(onField) : 0;
+
         if (gc.getLeague().isSeasonOver()) {
             AbstractTeam champion = gc.getLeague().getChampion();
             nextMatchTitleLabel.setText("SEASON OVER");
@@ -60,8 +76,13 @@ public class DashboardController {
             opponentLabel.setText("-");
             opponentPositionLabel.setText("");
             opponentRecordLabel.setText("");
-            userPositionLabel.setText("Final position: " + ordinal(positionOf(gc, gc.getUserTeam())));
-            userRecordLabel.setText("Form: " + formatRecord(findStat(gc, gc.getUserTeam())));
+            opponentOvrLabel.setText("");
+            opponentMatchOvrLabel.setText("");
+            userPositionLabel.setText("Final position: " + ordinal(positionOf(gc, userTeam)));
+            userRecordLabel.setText("Form: " + formatRecord(findStat(gc, userTeam)));
+            userOvrLabel.setText("OVR: " + userOvr);
+            fillMatchOvr(userMatchOvrLabel, userTeam);
+            fillCoachInfo(userTeam, userOvr);
             seasonProgress.setProgress(1.0);
             return;
         }
@@ -69,7 +90,7 @@ public class DashboardController {
         nextMatchTitleLabel.setText("NEXT MATCH");
         Fixture f = gc.getUserFixture();
         if (f != null) {
-            boolean isHome = f.getHomeTeam().equals(gc.getUserTeam());
+            boolean isHome = f.getHomeTeam().equals(userTeam);
             AbstractTeam opp = isHome ? f.getAwayTeam() : f.getHomeTeam();
             matchTypeLabel.setText(isHome ? "HOME" : "AWAY");
             matchTypeLabel.setStyle(isHome
@@ -78,18 +99,77 @@ public class DashboardController {
             opponentLabel.setText(opp.getName());
             opponentPositionLabel.setText("Position: " + ordinal(positionOf(gc, opp)));
             opponentRecordLabel.setText("Form: " + formatRecord(findStat(gc, opp)));
+            opponentOvrLabel.setText("OVR: " + opp.getAvgOvr(onField));
+            fillMatchOvr(opponentMatchOvrLabel, opp);
         } else {
             matchTypeLabel.setText("BYE");
             matchTypeLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #777; -fx-font-size: 12;");
             opponentLabel.setText("-");
             opponentPositionLabel.setText("");
             opponentRecordLabel.setText("");
+            opponentOvrLabel.setText("");
+            opponentMatchOvrLabel.setText("");
         }
-        userPositionLabel.setText("Position: " + ordinal(positionOf(gc, gc.getUserTeam())));
-        userRecordLabel.setText("Form: " + formatRecord(findStat(gc, gc.getUserTeam())));
+        userPositionLabel.setText("Position: " + ordinal(positionOf(gc, userTeam)));
+        userRecordLabel.setText("Form: " + formatRecord(findStat(gc, userTeam)));
+        userOvrLabel.setText("OVR: " + userOvr);
+        fillMatchOvr(userMatchOvrLabel, userTeam);
+        fillCoachInfo(userTeam, userOvr);
     }
 
-    // fikstürdeki en yüksek hafta numarası = sezonun toplam haftası
+    private void fillMatchOvr(Label label, AbstractTeam team) {
+        if (team == null) {
+            label.setText("");
+            return;
+        }
+        int injured = team.getInjuredPlayers().size();
+        if (injured == 0) {
+            label.setText("");
+            return;
+        }
+        GameController gc = GameController.getInstance();
+        int onField = gc != null ? gc.getSport().getPlayersOnField() : 11;
+        int matchOvr = team.getAvailableAvgOvr(onField);
+        label.setText("Match OVR: " + matchOvr + " (" + injured + " injured)");
+    }
+
+    private void fillCoachInfo(AbstractTeam team, int teamOvr) {
+        if (team == null) {
+            coachLabel.setText("-");
+            coachBoostLabel.setText("");
+            return;
+        }
+        AbstractCoach coach = team.getActiveCoach();
+        if (coach == null) {
+            coachLabel.setText("None — players self-train");
+            coachBoostLabel.setText("");
+            return;
+        }
+        coachLabel.setText(coach.getName() + " (" + coach.getSpecialty() + " L" + coach.getCoachingLevel() + ")");
+        coachBoostLabel.setText(formatCoachBoost(coach, teamOvr));
+    }
+
+    private String formatCoachBoost(AbstractCoach coach, int teamOvr) {
+        int lvl = coach.getCoachingLevel();
+        CoachSpecialty s = coach.getSpecialty();
+        if (s == CoachSpecialty.ATTACKING) {
+            int bonus = (int) Math.round(teamOvr * lvl * 0.02);
+            return "+" + bonus + " OVR offensive";
+        }
+        if (s == CoachSpecialty.DEFENDING) {
+            int bonus = (int) Math.round(teamOvr * lvl * 0.02);
+            return "+" + bonus + " OVR defensive";
+        }
+        if (s == CoachSpecialty.FITNESS) {
+            return "-" + (lvl * 10) + "% match injury risk";
+        }
+        if (s == CoachSpecialty.GENERAL) {
+            int bonus = (int) Math.round(teamOvr * lvl * 0.01);
+            return "+" + bonus + " OVR both ways";
+        }
+        return "";
+    }
+
     private int computeTotalWeeks(GameController gc) {
         int max = 0;
         for (Fixture f : gc.getLeague().getFixtures()) {
@@ -98,7 +178,6 @@ public class DashboardController {
         return max;
     }
 
-    // takımın güncel lig sırası (1-tabanlı), bulunamazsa -1
     private int positionOf(GameController gc, AbstractTeam team) {
         if (team == null) return -1;
         List<TeamInLeagueTable> standings = gc.getLeague().getStandings();
@@ -143,10 +222,25 @@ public class DashboardController {
         }
 
         int playedWeek = gc.getLeague().getCurrentWeek();
-        List<MatchResult> results = gc.simulateFullWeek();
+        List<MatchResult> allResults = new ArrayList<>();
+
+        Fixture userFixture = gc.getUserFixture();
+        MatchResult userResult = null;
+        if (userFixture != null) {
+            PeriodResult firstHalf = gc.startUserMatch();
+            if (firstHalf != null) {
+                showHalftimeDialog(userFixture, firstHalf, gc.getUserTeam());
+            }
+            userResult = gc.finishUserMatch();
+        }
+
+        List<MatchResult> otherResults = gc.simulateOtherMatchesThisWeek();
+        if (userResult != null) allResults.add(userResult);
+        allResults.addAll(otherResults);
+        gc.advanceWeek();
 
         StringBuilder sb = new StringBuilder();
-        for (MatchResult r : results) {
+        for (MatchResult r : allResults) {
             boolean isUserMatch = gc.getUserTeam() != null &&
                     (r.getHomeTeam().equals(gc.getUserTeam()) || r.getAwayTeam().equals(gc.getUserTeam()));
 
@@ -164,6 +258,22 @@ public class DashboardController {
 
         showAlert("Week " + playedWeek + " Results", null, sb.toString());
         refresh();
+    }
+
+    private void showHalftimeDialog(Fixture fixture, PeriodResult firstHalf, AbstractTeam userTeam) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/HalftimeView.fxml"));
+            Parent root = loader.load();
+            HalftimeController controller = loader.getController();
+            controller.setMatchInfo(fixture, firstHalf, userTeam);
+            Stage stage = new Stage();
+            stage.setTitle("Half Time");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+        } catch (IOException e) {
+            System.out.println("HalftimeView.fxml could not be loaded: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -218,6 +328,30 @@ public class DashboardController {
         Parent tacticroot = FXMLLoader.load(tacticurl);
         Scene tacticscene = new Scene(tacticroot);
         App.mainstage.setScene(tacticscene);
+    }
+
+    @FXML
+    public void trainbutton() throws IOException {
+        URL trainurl = getClass().getResource("/TrainView.fxml");
+        if (trainurl == null){
+            System.out.println("TrainView.fxml not found!");
+            return;
+        }
+        Parent trainroot = FXMLLoader.load(trainurl);
+        Scene trainscene = new Scene(trainroot);
+        App.mainstage.setScene(trainscene);
+    }
+
+    @FXML
+    public void coachbutton() throws IOException {
+        URL coachurl = getClass().getResource("/CoachView.fxml");
+        if (coachurl == null){
+            System.out.println("CoachView.fxml not found!");
+            return;
+        }
+        Parent coachroot = FXMLLoader.load(coachurl);
+        Scene coachscene = new Scene(coachroot);
+        App.mainstage.setScene(coachscene);
     }
 
     @FXML

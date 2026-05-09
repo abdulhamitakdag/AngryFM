@@ -199,6 +199,10 @@ public abstract class AbstractSaveManager {
         }
         td.setCoaches(coaches);
 
+        if (team.getActiveCoach() != null) {
+            td.setActiveCoachName(team.getActiveCoach().getName());
+        }
+
         if (team.getCurrentTactic() != null) {
             td.setTactic(convertTactic(team.getCurrentTactic()));
         }
@@ -223,6 +227,15 @@ public abstract class AbstractSaveManager {
 
         for (GameState.CoachData cd : td.getCoaches()) {
             team.addCoach(restoreCoach(cd));
+        }
+
+        if (td.getActiveCoachName() != null) {
+            for (AbstractCoach c : team.getCoaches()) {
+                if (c.getName().equals(td.getActiveCoachName())) {
+                    team.setActiveCoach(c);
+                    break;
+                }
+            }
         }
 
         if (td.getTactic() != null) {

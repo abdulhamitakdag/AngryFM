@@ -128,5 +128,35 @@ public class FootballAttributes extends AbstractPlayerAttributes {
         }
     }
 
+    public void applyAttackingBoost(double intensity) {
+        double boost = intensity * 0.5;
+        if (position == FootballPositions.GK) return;
+        this.shooting = limiter(this.shooting + boost, 0, 100);
+        this.pace = limiter(this.pace + boost, 0, 100);
+        this.passing = limiter(this.passing + boost, 0, 100);
+    }
+
+    public void applyDefendingBoost(double intensity) {
+        double boost = intensity * 0.5;
+        if (position == FootballPositions.GK) {
+            this.reflexes = limiter(this.reflexes + boost, 0, 100);
+            this.diving = limiter(this.diving + boost, 0, 100);
+            this.handling = limiter(this.handling + boost, 0, 100);
+            return;
+        }
+        this.defending = limiter(this.defending + boost, 0, 100);
+        this.physical = limiter(this.physical + boost, 0, 100);
+    }
+
+    public void applyFitnessBoost(double intensity) {
+        double boost = intensity * 0.5;
+        if (position == FootballPositions.GK) {
+            this.positioning = limiter(this.positioning + boost, 0, 100);
+            return;
+        }
+        this.physical = limiter(this.physical + boost, 0, 100);
+        this.pace = limiter(this.pace + boost, 0, 100);
+    }
+
 
 }

@@ -46,16 +46,9 @@ public class FootballMatchEngine implements IMatchEngine {
 
     // λ = (avgOVR / 100) * offensiveMod * defPenalty * 1.5
     private double calcLambda(AbstractTeam team, AbstractTeam opponent) {
-        List<AbstractPlayer> available = team.getAvailablePlayers();
-        if (available.isEmpty()) return 0.3; // kadro boşsa bile bişeyler olsun
+        if (team.getAvailablePlayers().isEmpty()) return 0.3; // kadro boşsa bile bişeyler olsun
 
-        double totalOvr = 0;
-        for (AbstractPlayer p : available) {
-            if (p.getAttributes() != null) {
-                totalOvr += p.getAttributes().getOverallRating();
-            }
-        }
-        double avgOvr = totalOvr / available.size();
+        double avgOvr = team.getAvailableAvgOvr(11);
 
         // taktik atanmamışsa 1.0 kabul ediyoruz
         double offensiveMod = 1.0;
@@ -69,7 +62,24 @@ public class FootballMatchEngine implements IMatchEngine {
             defPenalty = 2.0 - opponent.getCurrentTactic().getDefensiveModifier();
         }
 
+        offensiveMod *= (1.0 + coachOffensiveBonus(team.getActiveCoach()));
+        defPenalty   /= (1.0 + coachDefensiveBonus(opponent.getActiveCoach()));
+
         return (avgOvr / 100.0) * offensiveMod * defPenalty * 1.5;
+    }
+
+    private double coachOffensiveBonus(AbstractCoach coach) {
+        if (coach == null) return 0;
+        if (coach.getSpecialty() == CoachSpecialty.ATTACKING) return coach.getCoachingLevel() * 0.02;
+        if (coach.getSpecialty() == CoachSpecialty.GENERAL)   return coach.getCoachingLevel() * 0.01;
+        return 0;
+    }
+
+    private double coachDefensiveBonus(AbstractCoach coach) {
+        if (coach == null) return 0;
+        if (coach.getSpecialty() == CoachSpecialty.DEFENDING) return coach.getCoachingLevel() * 0.02;
+        if (coach.getSpecialty() == CoachSpecialty.GENERAL)   return coach.getCoachingLevel() * 0.01;
+        return 0;
     }
 
     private int poisson(double lambda) {
@@ -84,8 +94,13 @@ public class FootballMatchEngine implements IMatchEngine {
     }
 
     private void checkTeamInjuries(AbstractTeam team, List<Injury> injuries) {
+        double chance = 0.03;
+        AbstractCoach active = team.getActiveCoach();
+        if (active != null && active.getSpecialty() == CoachSpecialty.FITNESS) {
+            chance *= Math.max(0.10, 1.0 - active.getCoachingLevel() * 0.10);
+        }
         for (AbstractPlayer player : team.getAvailablePlayers()) {
-            if (rng.nextDouble() < 0.03) {
+            if (rng.nextDouble() < chance) {
                 Injury.Severity sev = rollSeverity();
                 int games = gamesForSeverity(sev);
                 Injury inj = new Injury(sev, games);

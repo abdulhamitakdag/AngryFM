@@ -12,6 +12,7 @@ public abstract class AbstractTeam {
     private final String name;
     private final List<AbstractPlayer> squad;
     private final List<AbstractCoach> coaches;
+    private AbstractCoach activeCoach;
     private AbstractTactic currentTactic;
 
     // Sezon istatistikleri
@@ -104,6 +105,19 @@ public abstract class AbstractTeam {
         return Collections.unmodifiableList(coaches);
     }
 
+    public AbstractCoach getActiveCoach() {
+        if (activeCoach != null) return activeCoach;
+        if (coaches.isEmpty()) return null;
+        return coaches.get(0);
+    }
+
+    public void setActiveCoach(AbstractCoach coach) {
+        if (coach != null && !coaches.contains(coach)) {
+            throw new IllegalArgumentException("Coach is not in this team's staff: " + coach.getName());
+        }
+        this.activeCoach = coach;
+    }
+
     // takıma antrenman yaptırır
     // koç varsa koçun metodunu çağırır, yoksa oyuncular kendi başına antrenman yapar (%80 yoğunlukla)
     // sakatlar atlanır
@@ -115,8 +129,9 @@ public abstract class AbstractTeam {
             return;
         }
 
-        if (!coaches.isEmpty()) {
-            coaches.get(0).conductTraining(this, clampedIntensity); // koç varsa onun antrenmanını çağır
+        AbstractCoach active = getActiveCoach();
+        if (active != null) {
+            active.conductTraining(this, clampedIntensity);
         } else {
             // koç yoksa %80 yoğunlukla kendi başına antrenman
             double reduced = clampedIntensity * 0.80;
@@ -176,6 +191,35 @@ public abstract class AbstractTeam {
         }
         if (!squad.isEmpty())return avgOvr/squad.size();
         return 0;
+    }
+
+    public int getAvgOvr(int playersOnField){
+        if (squad.isEmpty()) return 0;
+        List<AbstractPlayer> sorted = new ArrayList<>(squad);
+        sorted.sort((a, b) -> Integer.compare(ovrOf(b), ovrOf(a)));
+        int n = Math.min(playersOnField, sorted.size());
+        int total = 0;
+        for (int i = 0; i < n; i++) {
+            total += ovrOf(sorted.get(i));
+        }
+        return n == 0 ? 0 : total / n;
+    }
+
+    public int getAvailableAvgOvr(int playersOnField){
+        List<AbstractPlayer> available = getAvailablePlayers();
+        if (available.isEmpty()) return 0;
+        List<AbstractPlayer> sorted = new ArrayList<>(available);
+        sorted.sort((a, b) -> Integer.compare(ovrOf(b), ovrOf(a)));
+        int n = Math.min(playersOnField, sorted.size());
+        int total = 0;
+        for (int i = 0; i < n; i++) {
+            total += ovrOf(sorted.get(i));
+        }
+        return n == 0 ? 0 : total / n;
+    }
+
+    private static int ovrOf(AbstractPlayer p) {
+        return p.getAttributes() != null ? p.getAttributes().getOverallRating() : 0;
     }
 
 
