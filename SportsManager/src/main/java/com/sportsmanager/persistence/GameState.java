@@ -12,6 +12,7 @@ public class GameState {
     private String leagueName;
     private int currentWeek;
     private String userTeamName;
+    private String gender;
     private List<TeamData> teams;
     private List<FixtureData> fixtures;
 
@@ -40,6 +41,11 @@ public class GameState {
     public void setUserTeamName(String userTeamName)
         { this.userTeamName = userTeamName; }
 
+    public String getGender()
+        { return gender; }
+    public void setGender(String gender)
+        { this.gender = gender; }
+
     public List<TeamData> getTeams()
         { return teams; }
     public void setTeams(List<TeamData> teams)
@@ -56,6 +62,7 @@ public class GameState {
         private List<PlayerData> players;
         private List<CoachData> coaches;
         private TacticData tactic;
+        private String activeCoachName;
         // sezon istatistikleri
         private int wins;
         private int draws;
@@ -82,6 +89,11 @@ public class GameState {
             { return tactic; }
         public void setTactic(TacticData tactic)
             { this.tactic = tactic; }
+
+        public String getActiveCoachName()
+            { return activeCoachName; }
+        public void setActiveCoachName(String activeCoachName)
+            { this.activeCoachName = activeCoachName; }
 
         public int getWins()
             { return wins; }

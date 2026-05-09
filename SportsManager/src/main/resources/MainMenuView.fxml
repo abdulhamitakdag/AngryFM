@@ -37,7 +37,7 @@
                   </LinearGradient>
                </textFill>
             </Button>
-            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="72.0" prefWidth="128.0" style="-fx-background-color: LIGHTGREEN;" text="Resume">
+            <Button alignment="CENTER" mnemonicParsing="false" onMouseClicked="#resumebutton" prefHeight="72.0" prefWidth="128.0" style="-fx-background-color: LIGHTGREEN;" text="Resume">
                <font>
                   <Font name="Century Schoolbook" size="21.0" />
                </font>

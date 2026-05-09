@@ -12,6 +12,7 @@ public abstract class AbstractTeam {
     private final String name;
     private final List<AbstractPlayer> squad;
     private final List<AbstractCoach> coaches;
+    private AbstractCoach activeCoach;
     private AbstractTactic currentTactic;
 
     // Sezon istatistikleri
@@ -39,17 +40,17 @@ public abstract class AbstractTeam {
     // kadroya oyuncu ekler, zaten varsa veya kadro doluysa hata fırlatır
     public void addPlayer(AbstractPlayer player) {
         if (player == null) {
-            throw new IllegalArgumentException("Oyuncu null olamaz.");
+            throw new IllegalArgumentException("Player cannot be null.");
         }
         for (AbstractPlayer p : squad) {
             if (p.getId().equals(player.getId())) {
-                throw new IllegalStateException("Bu oyuncu zaten kadroda: " + player.getName());
+                throw new IllegalStateException("Player is already in the squad: " + player.getName());
             }
         }
         if (squad.size() >= getMaxSquadSize()) {
             throw new IllegalStateException(
-                    "Kadro dolu (maksimum " + getMaxSquadSize() + " oyuncu). " +
-                            player.getName() + " eklenemiyor."
+                    "Squad is full (maximum " + getMaxSquadSize() + " players). " +
+                            "Cannot add " + player.getName() + "."
             );
         }
         squad.add(player);
@@ -91,7 +92,7 @@ public abstract class AbstractTeam {
 
     public void addCoach(AbstractCoach coach) {
         if (coach == null) {
-            throw new IllegalArgumentException("Koç null olamaz.");
+            throw new IllegalArgumentException("Coach cannot be null.");
         }
         coaches.add(coach);
     }
@@ -102,6 +103,19 @@ public abstract class AbstractTeam {
 
     public List<AbstractCoach> getCoaches() {
         return Collections.unmodifiableList(coaches);
+    }
+
+    public AbstractCoach getActiveCoach() {
+        if (activeCoach != null) return activeCoach;
+        if (coaches.isEmpty()) return null;
+        return coaches.get(0);
+    }
+
+    public void setActiveCoach(AbstractCoach coach) {
+        if (coach != null && !coaches.contains(coach)) {
+            throw new IllegalArgumentException("Coach is not in this team's staff: " + coach.getName());
+        }
+        this.activeCoach = coach;
     }
 
     // takıma antrenman yaptırır
@@ -115,8 +129,9 @@ public abstract class AbstractTeam {
             return;
         }
 
-        if (!coaches.isEmpty()) {
-            coaches.get(0).conductTraining(this, clampedIntensity); // koç varsa onun antrenmanını çağır
+        AbstractCoach active = getActiveCoach();
+        if (active != null) {
+            active.conductTraining(this, clampedIntensity);
         } else {
             // koç yoksa %80 yoğunlukla kendi başına antrenman
             double reduced = clampedIntensity * 0.80;
@@ -176,6 +191,35 @@ public abstract class AbstractTeam {
         }
         if (!squad.isEmpty())return avgOvr/squad.size();
         return 0;
+    }
+
+    public int getAvgOvr(int playersOnField){
+        if (squad.isEmpty()) return 0;
+        List<AbstractPlayer> sorted = new ArrayList<>(squad);
+        sorted.sort((a, b) -> Integer.compare(ovrOf(b), ovrOf(a)));
+        int n = Math.min(playersOnField, sorted.size());
+        int total = 0;
+        for (int i = 0; i < n; i++) {
+            total += ovrOf(sorted.get(i));
+        }
+        return n == 0 ? 0 : total / n;
+    }
+
+    public int getAvailableAvgOvr(int playersOnField){
+        List<AbstractPlayer> available = getAvailablePlayers();
+        if (available.isEmpty()) return 0;
+        List<AbstractPlayer> sorted = new ArrayList<>(available);
+        sorted.sort((a, b) -> Integer.compare(ovrOf(b), ovrOf(a)));
+        int n = Math.min(playersOnField, sorted.size());
+        int total = 0;
+        for (int i = 0; i < n; i++) {
+            total += ovrOf(sorted.get(i));
+        }
+        return n == 0 ? 0 : total / n;
+    }
+
+    private static int ovrOf(AbstractPlayer p) {
+        return p.getAttributes() != null ? p.getAttributes().getOverallRating() : 0;
     }
 
 

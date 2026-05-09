@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: PINK; -fx-background-color: LIGHTYELLOW;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sportsmanager.ui.PointsTableController">
+    <children>
+        <Label fx:id="leaguenamelabel" alignment="CENTER" contentDisplay="CENTER" layoutX="100.0" layoutY="20.0" prefHeight="34.0" prefWidth="400.0" text="..." textFill="#009487" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="20.0">
+            <font><Font size="17.0" /></font>
+            <effect><Glow level="0.96" /></effect>
+        </Label>
+        <Label fx:id="weeklabel" alignment="CENTER" layoutX="100.0" layoutY="55.0" prefHeight="20.0" prefWidth="400.0" text="Week 1" textFill="#777777" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="55.0">
+            <font><Font size="11.0" /></font>
+        </Label>
+        <TableView fx:id="standingstable" layoutX="14.0" layoutY="85.0" prefHeight="270.0" prefWidth="572.0" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="85.0">
+            <columns>
+                <TableColumn fx:id="rankcol" prefWidth="35.0" text="#" />
+                <TableColumn fx:id="teamcol" prefWidth="200.0" text="Team" />
+                <TableColumn fx:id="pcol" prefWidth="40.0" text="P" />
+                <TableColumn fx:id="wcol" prefWidth="40.0" text="W" />
+                <TableColumn fx:id="dcol" prefWidth="40.0" text="D" />
+                <TableColumn fx:id="lcol" prefWidth="40.0" text="L" />
+                <TableColumn fx:id="gfcol" prefWidth="45.0" text="GF" />
+                <TableColumn fx:id="gacol" prefWidth="45.0" text="GA" />
+                <TableColumn fx:id="gdcol" prefWidth="45.0" text="GD" />
+                <TableColumn fx:id="ptscol" prefWidth="50.0" text="PTS" />
+            </columns>
+        </TableView>
+        <Button layoutX="22.0" layoutY="343.0" mnemonicParsing="false" onMouseClicked="#returnbutton" prefHeight="34.0" prefWidth="55.0" text="Back" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="22.0" />
+        <Button layoutX="530.0" layoutY="352.0" mnemonicParsing="false" onMouseClicked="#exitbutton" prefHeight="33.0" prefWidth="55.0" text="Exit" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+    </children>
+    <effect>
+        <DropShadow>
+            <color>
+                <Color red="0.0873294323682785" green="0.8421052694320679" blue="0.26344379782676697" />
+            </color>
+        </DropShadow>
+    </effect>
+</AnchorPane>

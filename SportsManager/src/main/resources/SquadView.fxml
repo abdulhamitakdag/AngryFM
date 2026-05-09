@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: PINK; -fx-background-color: LIGHTYELLOW;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sportsmanager.ui.SquadController">
+    <children>
+        <Label fx:id="teamnamelabel" alignment="CENTER" contentDisplay="CENTER" layoutX="180.0" layoutY="20.0" prefHeight="34.0" prefWidth="240.0" text="..." textFill="#009487" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="20.0">
+            <font><Font size="17.0" /></font>
+            <effect><Glow level="0.96" /></effect>
+        </Label>
+        <Label fx:id="squadcountlabel" alignment="CENTER" layoutX="180.0" layoutY="55.0" prefHeight="20.0" prefWidth="240.0" text="Squad: 0/0" textFill="#777777" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="55.0">
+            <font><Font size="11.0" /></font>
+        </Label>
+        <TableView fx:id="squadtable" layoutX="14.0" layoutY="85.0" prefHeight="270.0" prefWidth="572.0" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="85.0">
+            <columns>
+                <TableColumn fx:id="shirtcol" prefWidth="50.0" text="#" />
+                <TableColumn fx:id="namecol" prefWidth="180.0" text="Name" />
+                <TableColumn fx:id="agecol" prefWidth="50.0" text="Age" />
+                <TableColumn fx:id="poscol" prefWidth="60.0" text="Pos" />
+                <TableColumn fx:id="ovrcol" prefWidth="60.0" text="OVR" />
+                <TableColumn fx:id="statuscol" prefWidth="170.0" text="Status" />
+            </columns>
+        </TableView>
+        <Button layoutX="22.0" layoutY="343.0" mnemonicParsing="false" onMouseClicked="#returnbutton" prefHeight="34.0" prefWidth="55.0" text="Back" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="22.0" />
+        <Button layoutX="530.0" layoutY="352.0" mnemonicParsing="false" onMouseClicked="#exitbutton" prefHeight="33.0" prefWidth="55.0" text="Exit" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+    </children>
+    <effect>
+        <DropShadow>
+            <color>
+                <Color red="0.0873294323682785" green="0.8421052694320679" blue="0.26344379782676697" />
+            </color>
+        </DropShadow>
+    </effect>
+</AnchorPane>

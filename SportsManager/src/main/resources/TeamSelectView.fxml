@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: PINK; -fx-background-color: DARKRED;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sportsmanager.ui.TeamSelectController">
+    <children>
+        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="180.0" layoutY="35.0" prefHeight="68.0" prefWidth="240.0" text="Select Your Team" textAlignment="JUSTIFY" textFill="#00ffea" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="35.0">
+            <font>
+                <Font size="17.0" />
+            </font>
+            <effect>
+                <Glow level="0.96" />
+            </effect>
+        </Label>
+        <ListView fx:id="teamslist" layoutX="100.0" layoutY="110.0" prefHeight="160.0" prefWidth="400.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="110.0" />
+        <HBox alignment="CENTER" layoutX="100.0" layoutY="285.0" prefHeight="50.0" prefWidth="400.0" spacing="60.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="285.0">
+            <children>
+                <Button mnemonicParsing="false" onMouseClicked="#continuebutton" prefHeight="50.0" prefWidth="140.0" style="-fx-background-color: SKYBLUE;" text="Continue">
+                    <font>
+                        <Font name="Century Schoolbook" size="19.0" />
+                    </font>
+                    <textFill>
+                        <LinearGradient endX="1.0" endY="1.0">
+                            <stops>
+                                <Stop>
+                                    <color>
+                                        <Color red="0.9368420839309692" />
+                                    </color>
+                                </Stop>
+                                <Stop offset="0.007680491551459294">
+                                    <color>
+                                        <Color red="0.9368420839309692" />
+                                    </color>
+                                </Stop>
+                                <Stop offset="1.0">
+                                    <color>
+                                        <Color red="0.23497076332569122" green="0.5157894492149353" blue="0.5017485618591309" />
+                                    </color>
+                                </Stop>
+                            </stops>
+                        </LinearGradient>
+                    </textFill>
+                </Button>
+            </children>
+        </HBox>
+        <Button layoutX="22.0" layoutY="343.0" mnemonicParsing="false" onMouseClicked="#returnbutton" prefHeight="34.0" prefWidth="55.0" text="Back" AnchorPane.bottomAnchor="22.6" AnchorPane.leftAnchor="22.0" />
+        <Button layoutX="530.0" layoutY="352.0" mnemonicParsing="false" onMouseClicked="#exitbutton" prefHeight="33.0" prefWidth="55.0" text="Exit" AnchorPane.bottomAnchor="14.399999999999977" AnchorPane.rightAnchor="14.799999999999955" />
+    </children>
+    <effect>
+        <DropShadow>
+            <color>
+                <Color red="0.0873294323682785" green="0.8421052694320679" blue="0.26344379782676697" />
+            </color>
+        </DropShadow>
+    </effect>
+</AnchorPane>
