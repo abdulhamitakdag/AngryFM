@@ -49,7 +49,7 @@ public class BasketballSaveManager extends AbstractSaveManager {
         if (player.getAttributes() instanceof BasketballAttributes ba) {
             pd.setShooting(ba.getShooting());
             pd.setPlaymaking(ba.getPlaymaking());
-            pd.setDefending(ba.getDefense());
+            pd.setDefending(ba.getDefending());
             pd.setRebounding(ba.getRebounding());
             pd.setPhysical(ba.getPhysical());
         }
@@ -69,7 +69,7 @@ public class BasketballSaveManager extends AbstractSaveManager {
                 pos,
                 safe(pd.getShooting()),
                 safe(pd.getPlaymaking()),
-                safe(pd.getDefending()),   // defense alanı
+                safe(pd.getDefending()),
                 safe(pd.getRebounding()),
                 safe(pd.getPhysical()));
 
