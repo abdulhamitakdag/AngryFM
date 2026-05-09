@@ -53,6 +53,23 @@ public class SquadController {
         });
         statuscol.setCellValueFactory(c -> new SimpleStringProperty(formatstatus(c.getValue())));
 
+
+        List<String> sortOrder = java.util.Arrays.asList(
+                "GK", "LB", "CB", "RB", "CDM", "CM", "CAM", "LW", "RW", "ST",
+                "PG", "SG", "SF", "PF", "C"
+        );
+
+        poscol.setComparator((pos1, pos2) -> {
+            int index1 = sortOrder.indexOf(pos1);
+            int index2 = sortOrder.indexOf(pos2);
+
+            if (index1 == -1) index1 = 999;
+            if (index2 == -1) index2 = 999;
+
+            return Integer.compare(index1, index2);
+        });
+
+
         // sakat oyuncu satırlarını kırmızıya boyuyoruz, fit olanlar default kalıyor
         squadtable.setRowFactory(tv -> new TableRow<AbstractPlayer>(){
             @Override

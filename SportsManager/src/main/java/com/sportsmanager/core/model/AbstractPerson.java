@@ -22,7 +22,7 @@ public abstract class AbstractPerson implements ITrainable {
         if (gender == null) {
             throw new IllegalArgumentException("Gender cannot be null.");
         }
-        if (age < 16 || age > 50) {
+        if (age < 16 || age > 75) {
             throw new IllegalArgumentException("Age must be between 16 and 50.");
         }
         this.id = UUID.randomUUID();
