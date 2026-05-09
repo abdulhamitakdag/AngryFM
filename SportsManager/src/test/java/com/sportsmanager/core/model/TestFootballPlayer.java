@@ -1,51 +1,55 @@
 package com.sportsmanager.core.model;
 
-
 import com.sportsmanager.sport.football.FootballAttributes;
+import com.sportsmanager.sport.football.FootballPlayer;
+import com.sportsmanager.sport.football.FootballPositions;
 import org.junit.jupiter.api.Test;
 
-import static com.sportsmanager.util.RandomGenerator.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestFootballPlayer extends BaseTest {
 
-    @Test
-    void validPositionIsStoredCorrectly_Male() {
-        AbstractPlayer player = generateMalePlayer(DEFAULT_SPORT);
-        assertNotNull(player.getPosition());
+    private FootballPlayer createPlayer(int age, FootballPositions position) {
+        return new FootballPlayer("Player", age, Gender.MALE, 7, position,
+                new FootballAttributes(position, 70, 70, 70, 70, 70));
     }
 
     @Test
-    void validPositionIsStoredCorrectly_Female() {
-        AbstractPlayer player = generateFemalePlayer(DEFAULT_SPORT);
-        assertNotNull(player.getPosition());
+    void positionIsStoredAsEnumAndString() {
+        FootballPlayer player = createPlayer(22, FootballPositions.GK);
+
+        assertEquals(FootballPositions.GK, player.getFootballPosition());
+        assertEquals("GK", player.getPosition());
     }
 
     @Test
-    void invalidPositionThrowsException_Male() {
-        assertThrows(IllegalArgumentException.class, () ->
-                new com.sportsmanager.sport.football.FootballPlayer("John", 22, com.sportsmanager.core.model.Gender.MALE,
-                        10, com.sportsmanager.sport.football.FootballPositions.GK, new FootballAttributes(com.sportsmanager.sport.football.FootballPositions.GK, 70, 70, 70, 70, 70)));
+    void youngHealthyPlayerHasHigherTrainingEffectiveness() {
+        FootballPlayer player = createPlayer(22, FootballPositions.ST);
+
+        assertEquals(1.3, player.getTrainingEffectiveness(), 0.001);
     }
 
     @Test
-    void invalidPositionThrowsException_Female() {
-        assertThrows(IllegalArgumentException.class, () ->
-                new com.sportsmanager.sport.football.FootballPlayer("Jane", 22, com.sportsmanager.core.model.Gender.FEMALE,
-                        10, com.sportsmanager.sport.football.FootballPositions.GK, new FootballAttributes(com.sportsmanager.sport.football.FootballPositions.GK, 70, 70, 70, 70, 70)));
+    void olderHealthyPlayerHasLowerTrainingEffectiveness() {
+        FootballPlayer player = createPlayer(34, FootballPositions.CB);
+
+        assertEquals(0.7, player.getTrainingEffectiveness(), 0.001);
     }
 
     @Test
-    void overallRatingIsWithinRange_Male() {
-        AbstractPlayer player = generateMalePlayer(DEFAULT_SPORT);
+    void injuredPlayerHasZeroTrainingEffectiveness() {
+        FootballPlayer player = createPlayer(22, FootballPositions.CM);
+        player.setInjury(new Injury(Injury.Severity.MINOR, 2));
+
+        assertEquals(0.0, player.getTrainingEffectiveness(), 0.001);
+    }
+
+    @Test
+    void overallRatingIsWithinRange() {
+        FootballPlayer player = createPlayer(22, FootballPositions.LW);
+
         int overall = player.getAttributes().computeOverallRating();
-        assertWithinRange(overall, 0, 100, "overall");
-    }
 
-    @Test
-    void overallRatingIsWithinRange_Female() {
-        AbstractPlayer player = generateFemalePlayer(DEFAULT_SPORT);
-        int overall = player.getAttributes().computeOverallRating();
         assertWithinRange(overall, 0, 100, "overall");
     }
 }
