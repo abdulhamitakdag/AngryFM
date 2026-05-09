@@ -16,14 +16,14 @@ public class PlayerAttributesController {
     @FXML private VBox attributesContainer;
 
     public void setPlayer(AbstractPlayer player) {
-        playerDetailsLabel.setText(player.getName() + " (Age: " + player.getAge() + ", Pos: " + player.getPosition() + ")");
+        AbstractPlayerAttributes a = player.getAttributes();
         attributesContainer.getChildren().clear();
 
-        AbstractPlayerAttributes a = player.getAttributes();
         if (a == null) {
             attributesContainer.getChildren().add(new Text("Attributes not available."));
             return;
         }
+        playerDetailsLabel.setText(player.getName() + " (Age: " + player.getAge() + ", Pos: " + player.getPosition() + ") " + "OVR: " + a.getOverallRating());
 
         if (a instanceof FootballAttributes) {
             FootballAttributes fa = (FootballAttributes) a;
@@ -48,10 +48,10 @@ public class PlayerAttributesController {
     }
 
     private void addGKAttributes(FootballAttributes fa) {
+        addAttributeRow("REF (Reflexes)", fa.getReflexes());
+        addAttributeRow("POS (Positioning)", fa.getPositioning());
         addAttributeRow("DIV (Diving)", fa.getDiving());
         addAttributeRow("HAN (Handling)", fa.getHandling());
-        addAttributeRow("POS (Positioning)", fa.getPositioning());
-        addAttributeRow("REF (Reflexes)", fa.getReflexes());
     }
 
     private void addPlayerAttributes(BasketballAttributes ba) {

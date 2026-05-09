@@ -48,7 +48,7 @@ public class FootballAttributes extends AbstractPlayerAttributes {
         int newRating;
 
         if (position == FootballPositions.GK) {
-            rating = (reflexes * 0.20) + (diving * 0.30) + (positioning * 0.30) + (handling * 0.20);
+            rating = (reflexes * 0.20) + (positioning * 0.30) + (diving * 0.30) + (handling * 0.20);
         } else {
             switch (position) {
                 case ST:

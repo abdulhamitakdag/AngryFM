@@ -35,7 +35,7 @@ public class SquadController {
     @FXML private TableColumn<AbstractPlayer, String> statuscol;
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         GameController gc = GameController.getInstance();
         if (gc == null) return;
         AbstractTeam team = gc.getUserTeam();
@@ -72,25 +72,77 @@ public class SquadController {
 
 
         // sakat oyuncu satırlarını kırmızıya boyuyoruz, fit olanlar default kalıyor
-        squadtable.setRowFactory(tv -> new TableRow<AbstractPlayer>(){
-            @Override
-            protected void updateItem(AbstractPlayer p, boolean empty){
-                super.updateItem(p, empty);
-                if (p == null || empty){
-                    setStyle("");
-                } else if (p.isInjured()){
-                    setStyle("-fx-background-color: #ffd0d0;");
-                } else {
-                    setStyle("");
+        // double clickte attributes gösteren bi pencere eklendi.
+        squadtable.setRowFactory(tv -> {
+            TableRow<AbstractPlayer> row = new TableRow<AbstractPlayer>() {
+                @Override
+                protected void updateItem(AbstractPlayer p, boolean empty) {
+                    super.updateItem(p, empty);
+                    if (p == null || empty) {
+                        setStyle("");
+                    } else if (p.isInjured()) {
+                        setStyle("-fx-background-color: #ffd0d0;");
+                    } else {
+                        setStyle("");
+                    }
                 }
-            }
+            };
+
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    AbstractPlayer rowData = row.getItem();
+                    showPlayerAttributesWindow(rowData);
+                }
+            });
+
+            return row;
         });
 
-        // OVR'ye göre yüksekten düşüğe sırala
         List<AbstractPlayer> sorted = new ArrayList<>(team.getSquad());
         sorted.sort((a, b) -> Integer.compare(ovrof(b), ovrof(a)));
         squadtable.setItems(FXCollections.observableArrayList(sorted));
     }
+
+
+
+
+    private void showPlayerAttributesWindow(AbstractPlayer player) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/PlayerAttributesView.fxml"));
+            Parent root = loader.load();
+
+            PlayerAttributesController controller = loader.getController();
+            controller.setPlayer(player);
+
+            Stage stage = new Stage();
+            stage.setTitle("Player Attributes - " + player.getName());
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("PlayerAttributesView.fxml could not be found or loaded!");
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private String formatstatus(AbstractPlayer p){
         if (!p.isInjured()) return "Fit";
