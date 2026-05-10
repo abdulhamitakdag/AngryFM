@@ -7,7 +7,7 @@ import static com.sportsmanager.util.RandomGenerator.generateTeam;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestMatchResult extends BaseTest {
-    //MatchResult getter setterlar eksik ve bir sıkıntı var parametrelerde
+
 
     @Test
     void isHomeWinReturnsTrueWhenHomeScoreIsHigher() {

@@ -8,7 +8,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPeriodResult extends BaseTest {
-    //PeriodResult getter setter ve constructor eksik
+
 
     @Test
     void negativeHomeScoreIsClampedTo0() {
