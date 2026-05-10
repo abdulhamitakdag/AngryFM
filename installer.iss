@@ -15,13 +15,16 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 Source: "SportsManager\target\SportsManager-fat.jar"; DestDir: "{app}"; Flags: ignoreversion
+Source: "UserManual.html"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\AngryFM";         Filename: "{sys}\cmd.exe"; Parameters: "/c ""{app}\AngryFM.bat"""; WorkingDir: "{app}"
-Name: "{commondesktop}\AngryFM"; Filename: "{sys}\cmd.exe"; Parameters: "/c ""{app}\AngryFM.bat"""; WorkingDir: "{app}"
+Name: "{group}\AngryFM";              Filename: "{sys}\cmd.exe"; Parameters: "/c ""{app}\AngryFM.bat"""; WorkingDir: "{app}"
+Name: "{commondesktop}\AngryFM";      Filename: "{sys}\cmd.exe"; Parameters: "/c ""{app}\AngryFM.bat"""; WorkingDir: "{app}"
+Name: "{group}\AngryFM User Manual";  Filename: "{app}\UserManual.html"
 
 [Run]
-Filename: "{sys}\cmd.exe"; Parameters: "/c ""{app}\AngryFM.bat"""; Description: "Launch AngryFM"; Flags: nowait postinstall skipifsilent
+Filename: "{sys}\cmd.exe"; Parameters: "/c ""{app}\AngryFM.bat"""; Description: "Launch AngryFM";     Flags: nowait postinstall skipifsilent
+Filename: "{app}\UserManual.html";                                  Description: "View User Manual";  Flags: nowait postinstall skipifsilent shellexec unchecked
 
 [UninstallDelete]
 Type: files; Name: "{app}\AngryFM.bat"

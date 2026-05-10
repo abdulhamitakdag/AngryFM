@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AngryFM – User Manual</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; color: #222; }
+    h1 { font-size: 1.8em; margin-bottom: 4px; }
+    h2 { font-size: 1.2em; margin-top: 30px; margin-bottom: 6px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+    h3 { font-size: 1em; margin-top: 14px; margin-bottom: 4px; }
+    p, li { font-size: 0.95em; line-height: 1.6; }
+    ul, ol { margin: 6px 0 10px 22px; }
+    table { border-collapse: collapse; margin: 8px 0; font-size: 0.9em; }
+    th, td { border: 1px solid #bbb; padding: 6px 12px; text-align: left; }
+    th { background: #f0f0f0; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 30px 0; }
+  </style>
+</head>
+<body>
+
+<h1>AngryFM – User Manual</h1>
+<p>Version 1.0</p>
+
+<hr>
+
+<h2>1. Getting Started</h2>
+<p>AngryFM is a sports management game. You manage a team, set tactics, train players, and compete in a league. Java 21 or later must be installed. Launch the game from the desktop shortcut or Start Menu.</p>
+
+<h2>2. Main Menu</h2>
+<ul>
+  <li><b>New Game</b> – Start a new season.</li>
+  <li><b>Continue</b> – Load a saved game.</li>
+  <li><b>Exit</b> – Close the application.</li>
+</ul>
+
+<h2>3. New Game</h2>
+<ol>
+  <li>Select a sport: <b>Football</b> or <b>Basketball</b>.</li>
+  <li>Select a gender category: <b>Male</b> or <b>Female</b>.</li>
+  <li>Select your team from the list.</li>
+</ol>
+
+<h2>4. Dashboard</h2>
+<p>The main screen during a season. Shows current week, next match, and season record. Use the buttons on the left to navigate to Squad, Tactic, Coach, Train, Fixture, and Points Table screens.</p>
+<ul>
+  <li><b>Play Week</b> – Simulate the current matchday.</li>
+  <li><b>Save &amp; Menu</b> – Save the game and return to Main Menu.</li>
+</ul>
+
+<h2>5. Squad</h2>
+<p>Shows your Starting Lineup and Bench. Injured players are highlighted in red and cannot start.</p>
+<ul>
+  <li>Select one player from Starting and one from Bench, then click <b>Swap</b> to exchange them.</li>
+  <li>Click <b>Auto Set</b> to automatically fill the lineup with the best available players.</li>
+  <li>Double-click a player to see their full attributes.</li>
+</ul>
+
+<h2>6. Tactics</h2>
+<p>Select a tactic from the list to apply it to your team. Tactics affect attacking and defensive performance in matches.</p>
+<table>
+  <tr><th>Football</th><th>Basketball</th></tr>
+  <tr><td>4-4-2 Balanced</td><td>Balanced</td></tr>
+  <tr><td>4-3-3 Offensive</td><td>Offensive</td></tr>
+  <tr><td>5-3-2 Defensive</td><td>Defensive</td></tr>
+  <tr><td>4-2-3-1 Counter</td><td></td></tr>
+  <tr><td>3-5-2 Pressing</td><td></td></tr>
+</table>
+
+<h2>7. Coaches</h2>
+<p>Select a coach and click <b>Set Active</b>. Each coach has a specialty that provides bonuses:</p>
+<ul>
+  <li><b>Attacking</b> – Boosts offensive performance.</li>
+  <li><b>Defending</b> – Reduces opponent effectiveness.</li>
+  <li><b>Fitness</b> – Lowers injury risk during matches.</li>
+  <li><b>General</b> – Small bonus to both attack and defense.</li>
+</ul>
+
+<h2>8. Training</h2>
+<p>Set the intensity with the slider and click <b>Train</b>. Higher intensity improves player attributes more. Injured players are skipped automatically.</p>
+
+<h2>9. Playing a Match</h2>
+<p>Click <b>Play Week</b> from the Dashboard. Football is played in 2 halves; basketball in 4 quarters. A break screen appears between periods where you can make substitutions and change tactics.</p>
+<ul>
+  <li>Football: up to 5 substitutions per match.</li>
+  <li>Basketball: unlimited substitutions.</li>
+</ul>
+<p>After the match, a summary shows the score, goal scorers or key performers, and any injuries.</p>
+
+<h2>10. Standings &amp; Fixtures</h2>
+<ul>
+  <li><b>Points Table</b> – Full league standings with points, wins, draws, losses, and goal difference.</li>
+  <li><b>Fixture</b> – All scheduled matches and results.</li>
+</ul>
+
+<h2>11. Save &amp; Load</h2>
+<p>Use <b>Save &amp; Menu</b> on the Dashboard to save. Save files are stored in <code>%APPDATA%\AngryFM\saves\</code>. To load, go to Main Menu → Continue, select your save, and click Continue. You can also delete saves from this screen.</p>
+
+<h2>12. End of Season</h2>
+<p>When all fixtures are played, the season ends and the champion is announced. You can start a new season with the same teams or return to the Main Menu.</p>
+
+<hr>
+<p style="color:#888; font-size:0.85em;">AngryFM Team – Version 1.0</p>
+
+</body>
+</html>
