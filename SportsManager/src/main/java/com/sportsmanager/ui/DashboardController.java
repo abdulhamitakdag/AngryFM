@@ -227,8 +227,12 @@ public class DashboardController {
         AbstractTeam userTeam = gc.getUserTeam();
 
         if (userTeam != null && userTeam.getStartingLineup().size() < requiredPlayers) {
-            showAlert("Incomplete Squad", "You can not play with an incomplete lineup.",
-                    "Please complete your squad (" + requiredPlayers + " players) from the 'Squad' screen first.");
+            int injured = userTeam.getInjuredPlayers().size();
+            String detail = "Please complete your squad (" + requiredPlayers + " players) from the 'Squad' screen first.";
+            if (injured > 0) {
+                detail = injured + " player(s) injured. " + detail;
+            }
+            showAlert("Incomplete Squad", "You can not play with an incomplete lineup.", detail);
             return;
         }
 

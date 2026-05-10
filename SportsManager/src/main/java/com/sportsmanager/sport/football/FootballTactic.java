@@ -20,6 +20,15 @@ public class FootballTactic extends AbstractTactic {
         { return requiredPositions; }
 
     @Override
+    public Map<String, Integer> getRequiredPositionNames() {
+        Map<String, Integer> result = new HashMap<>();
+        for (Map.Entry<FootballPositions, Integer> e : requiredPositions.entrySet()) {
+            result.put(e.getKey().name(), e.getValue());
+        }
+        return result;
+    }
+
+    @Override
     public String getFormationString() {
         return this.getName();
     }

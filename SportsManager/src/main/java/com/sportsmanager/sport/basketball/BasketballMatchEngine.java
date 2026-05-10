@@ -95,7 +95,7 @@ public class BasketballMatchEngine implements IMatchEngine {
     }
 
     private void checkTeamInjuries(AbstractTeam team, List<Injury> injuries) {
-        double chance = 0.02;
+        double chance = 0.005;
         AbstractCoach active = team.getActiveCoach();
         if (active != null && active.getSpecialty() == CoachSpecialty.FITNESS) {
             chance *= Math.max(0.10, 1.0 - active.getCoachingLevel() * 0.10);

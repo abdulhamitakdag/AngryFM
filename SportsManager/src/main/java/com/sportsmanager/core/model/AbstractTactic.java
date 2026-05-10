@@ -1,6 +1,8 @@
 package com.sportsmanager.core.model;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 // takımın maç stratejisi - hücum/savunma ağırlığı ve pressing yoğunluğu burada tutuluyor
 // üç değer de 0.0-1.0 arasına clamp'leniyor, maç motoru modifier'ları buradan okuyor
@@ -27,6 +29,10 @@ public abstract class AbstractTactic {
 
     public int countMissingPositions(List<AbstractPlayer> squad) {
         return 0;
+    }
+
+    public Map<String, Integer> getRequiredPositionNames() {
+        return Collections.emptyMap();
     }
 
 

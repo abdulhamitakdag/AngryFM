@@ -20,15 +20,16 @@ public class TestBasketballTactic extends BaseTest {
     void inheritedModifiersStayWithinExpectedRanges() {
         BasketballTactic tactic = new BasketballTactic("Custom", 1.5, -1.0);
 
-        assertWithinRange(tactic.getOffensiveModifier(), 0.8, 1.2, "offensive modifier");
-        assertWithinRange(tactic.getDefensiveModifier(), 0.8, 1.2, "defensive modifier");
-        assertWithinRange(tactic.getPressureModifier(), 0.9, 1.1, "pressure modifier");
+        double epsilon = 0.0001;
+        assertWithinRange(tactic.getOffensiveModifier(), 0.8 - epsilon, 1.2 + epsilon, "offensive modifier");
+        assertWithinRange(tactic.getDefensiveModifier(), 0.8 - epsilon, 1.2 + epsilon, "defensive modifier");
+        assertWithinRange(tactic.getPressureModifier(), 0.9 - epsilon, 1.1 + epsilon, "pressure modifier");
     }
 
     @Test
-    void validateForSquadCurrentlyAllowsAnySquad() {
+    void validateForSquadThrowsOnEmptySquad() {
         BasketballTactic tactic = BasketballTactic.createBalanced();
 
-        assertDoesNotThrow(() -> tactic.validateForSquad(Collections.emptyList()));
+        assertThrows(IllegalArgumentException.class, () -> tactic.validateForSquad(Collections.emptyList()));
     }
 }

@@ -29,9 +29,8 @@ public class FootballMatch extends AbstractMatch {
         return engine.simulatePeriod(home, away);
     }
 
-    // engine sakatlıkları direkt oyunculara atıyor, biz sadece çağırıyoruz. listeyi kullanmıyoruz
     @Override
-    protected void applyInjuries(AbstractTeam home, AbstractTeam away) {
+    protected void applyPeriodInjuries(AbstractTeam home, AbstractTeam away) {
         engine.determineInjuries(home, away);
     }
 

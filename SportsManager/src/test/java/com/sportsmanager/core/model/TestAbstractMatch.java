@@ -33,7 +33,7 @@ public class TestAbstractMatch extends BaseTest {
         }
 
         @Override
-        protected void applyInjuries(AbstractTeam home, AbstractTeam away) {
+        protected void applyPeriodInjuries(AbstractTeam home, AbstractTeam away) {
             injuriesApplied = true;
         }
 
@@ -372,7 +372,7 @@ public class TestAbstractMatch extends BaseTest {
         }
 
         @Override
-        protected void applyInjuries(AbstractTeam home, AbstractTeam away) {
+        protected void applyPeriodInjuries(AbstractTeam home, AbstractTeam away) {
             engine.determineInjuries(home, away);
         }
 

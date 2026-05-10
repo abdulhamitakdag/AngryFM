@@ -3,10 +3,8 @@ package com.sportsmanager.core.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-import com.sportsmanager.sport.football.*;
-import com.sportsmanager.sport.basketball.*;
-import java.util.*;
 
 // takımların temel yapısı - kadro, antrenman, sezon istatistikleri burada
 public abstract class AbstractTeam {
@@ -230,42 +228,23 @@ public abstract class AbstractTeam {
     public void autoSetLineup(int playersOnField) {
         startingLineup.clear();
         List<AbstractPlayer> availablePlayers = new ArrayList<>(getAvailablePlayers());
-
         availablePlayers.sort((a, b) -> Integer.compare(ovrOf(b), ovrOf(a)));
 
         List<AbstractPlayer> newStarting = new ArrayList<>();
 
         if (currentTactic != null) {
-            if (currentTactic instanceof FootballTactic) {
-                FootballTactic ft = (FootballTactic) currentTactic;
-                for (Map.Entry<FootballPositions, Integer> entry : ft.getRequiredPositions().entrySet()) {
-                    String requiredPositions = entry.getKey().name();
-                    int count = entry.getValue();
-                    for (int i = 0; i < count; i++) {
-                        AbstractPlayer pl = null;
-                        for (AbstractPlayer p : availablePlayers) {
-                            if (p.getPosition().equals(requiredPositions)) { pl = p; break; }
-                        }
-                        if (pl != null) {
-                            newStarting.add(pl);
-                            availablePlayers.remove(pl);
-                        }
+            Map<String, Integer> positionNeeds = currentTactic.getRequiredPositionNames();
+            for (Map.Entry<String, Integer> entry : positionNeeds.entrySet()) {
+                String reqPos = entry.getKey();
+                int count = entry.getValue();
+                for (int i = 0; i < count; i++) {
+                    AbstractPlayer found = null;
+                    for (AbstractPlayer p : availablePlayers) {
+                        if (p.getPosition().equals(reqPos)) { found = p; break; }
                     }
-                }
-            } else if (currentTactic instanceof BasketballTactic) {
-                BasketballTactic bt = (BasketballTactic) currentTactic;
-                for (Map.Entry<BasketballPositions, Integer> entry : bt.getRequiredPositions().entrySet()) {
-                    String reqPos = entry.getKey().name();
-                    int count = entry.getValue();
-                    for (int i = 0; i < count; i++) {
-                        AbstractPlayer pl = null;
-                        for (AbstractPlayer p : availablePlayers) {
-                            if (p.getPosition().equals(reqPos)) { pl = p; break; }
-                        }
-                        if (pl != null) {
-                            newStarting.add(pl);
-                            availablePlayers.remove(pl);
-                        }
+                    if (found != null) {
+                        newStarting.add(found);
+                        availablePlayers.remove(found);
                     }
                 }
             }
@@ -280,8 +259,15 @@ public abstract class AbstractTeam {
 
 
     public List<AbstractPlayer> getStartingLineup() {
+        List<AbstractPlayer> healthy = new ArrayList<>();
+        for (AbstractPlayer p : startingLineup) {
+            if (!p.isInjured()) healthy.add(p);
+        }
+        return Collections.unmodifiableList(healthy);
+    }
+
+    private void purgeInjuredFromLineup() {
         startingLineup.removeIf(AbstractPlayer::isInjured);
-        return Collections.unmodifiableList(startingLineup);
     }
 
     public List<AbstractPlayer> getBench() {
@@ -294,7 +280,7 @@ public abstract class AbstractTeam {
     }
 
     public boolean swapStartingWithBench(AbstractPlayer out, AbstractPlayer in) {
-        startingLineup.removeIf(AbstractPlayer::isInjured);
+        purgeInjuredFromLineup();
         if (in == null || in.isInjured() || startingLineup.contains(in)) return false;
         if (out == null) {
             startingLineup.add(in);

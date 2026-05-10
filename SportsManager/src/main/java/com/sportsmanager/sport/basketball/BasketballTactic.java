@@ -24,6 +24,15 @@ public class BasketballTactic extends AbstractTactic {
         return requiredPositions;
     }
 
+    @Override
+    public Map<String, Integer> getRequiredPositionNames() {
+        Map<String, Integer> result = new HashMap<>();
+        for (Map.Entry<BasketballPositions, Integer> e : requiredPositions.entrySet()) {
+            result.put(e.getKey().name(), e.getValue());
+        }
+        return result;
+    }
+
     private static Map<BasketballPositions, Integer> getStandardLineup() {
         Map<BasketballPositions, Integer> pos = new HashMap<>();
         pos.put(BasketballPositions.PG, 1);

@@ -40,8 +40,8 @@ public abstract class AbstractMatch {
     // alt sınıf kendi engine'ini kullanarak simüle edecek
     protected abstract PeriodResult simulatePeriodInternal(AbstractTeam home, AbstractTeam away);
 
-    // maç sonu sakatlık hesabı
-    protected abstract void applyInjuries(AbstractTeam home, AbstractTeam away);
+    // periyod sonu sakatlık hesabı (her periyod sonunda çağrılır)
+    protected abstract void applyPeriodInjuries(AbstractTeam home, AbstractTeam away);
 
     public abstract int getMaxSubstitutions();
 
@@ -62,9 +62,10 @@ public abstract class AbstractMatch {
         PeriodResult result = simulatePeriodInternal(homeTeam, awayTeam);
         periodResults.add(result);
 
+        trackNewInjuries(() -> applyPeriodInjuries(homeTeam, awayTeam));
+
         if (currentPeriod >= getTotalPeriods()) {
             state = MatchState.FINISHED;
-            finalizeMatch();
         } else {
             state = MatchState.BETWEEN_PERIODS;
         }
@@ -104,12 +105,12 @@ public abstract class AbstractMatch {
         }
     }
 
-    protected void finalizeMatch() {
+    private void trackNewInjuries(Runnable injuryAction) {
         List<AbstractPlayer> healthyBefore = new ArrayList<>();
         for (AbstractPlayer p : homeTeam.getAvailablePlayers()) healthyBefore.add(p);
         for (AbstractPlayer p : awayTeam.getAvailablePlayers()) healthyBefore.add(p);
 
-        applyInjuries(homeTeam, awayTeam);
+        injuryAction.run();
 
         for (AbstractPlayer p : healthyBefore) {
             if (p.isInjured()) matchInjuries.add(p);

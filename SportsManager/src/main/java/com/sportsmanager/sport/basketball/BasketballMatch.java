@@ -53,7 +53,7 @@ public class BasketballMatch extends AbstractMatch {
     }
 
     @Override
-    protected void applyInjuries(AbstractTeam home, AbstractTeam away) {
+    protected void applyPeriodInjuries(AbstractTeam home, AbstractTeam away) {
         engine.determineInjuries(home, away);
     }
 

@@ -204,6 +204,8 @@ public class GameController {
         match.start();
         while (match.getState() != AbstractMatch.MatchState.FINISHED) {
             if (match.getState() == AbstractMatch.MatchState.BETWEEN_PERIODS) {
+                autoSubstituteInjured(home);
+                autoSubstituteInjured(away);
                 match.resumeAfterBreak();
             }
             if (match.getState() == AbstractMatch.MatchState.IN_PROGRESS) {
@@ -211,6 +213,19 @@ public class GameController {
             }
         }
         return match.getMatchResult();
+    }
+
+    private void autoSubstituteInjured(AbstractTeam team) {
+        int playersOnField = sport.getPlayersOnField();
+        List<AbstractPlayer> currentLineup = team.getStartingLineup();
+        if (currentLineup.size() >= playersOnField) return;
+
+        List<AbstractPlayer> bench = team.getBench();
+        for (AbstractPlayer sub : bench) {
+            if (currentLineup.size() >= playersOnField) break;
+            team.swapStartingWithBench(null, sub);
+            currentLineup = team.getStartingLineup();
+        }
     }
 
     public void advanceWeek() {
