@@ -16,6 +16,10 @@ public class BasketballTactic extends AbstractTactic {
         this.requiredPositions = requiredPositions;
     }
 
+    public BasketballTactic(String name, double attackingWeight, double pressureIntensity) {
+        this(name, attackingWeight, pressureIntensity, getStandardLineup());
+    }
+
     public Map<BasketballPositions, Integer> getRequiredPositions() {
         return requiredPositions;
     }
@@ -42,10 +46,25 @@ public class BasketballTactic extends AbstractTactic {
         return new BasketballTactic("Balanced", 0.50, 0.50, getStandardLineup());
     }
 
+    public static BasketballTactic createStandard() {
+        return new BasketballTactic("Standard", 0.50, 0.50, getStandardLineup());
+    }
+
+    public static BasketballTactic createZone() {
+        return new BasketballTactic("2-1-2", 0.35, 0.55, getStandardLineup());
+    }
+
+    public static BasketballTactic createTrap() {
+        return new BasketballTactic("1-3-1", 0.40, 0.70, getStandardLineup());
+    }
+
+    public static BasketballTactic createBig() {
+        return new BasketballTactic("2-3", 0.45, 0.45, getStandardLineup());
+    }
 
     @Override
     public String getFormationString() {
-        return "Standard 5";
+        return getName();
     }
 
     @Override

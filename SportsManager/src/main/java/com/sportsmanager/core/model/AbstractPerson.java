@@ -11,11 +11,6 @@ public abstract class AbstractPerson implements ITrainable {
     private final Gender gender;
 
     public AbstractPerson(String name, int age, Gender gender) {
-        //burada bizim teknik direktör, sporcularla aynı yaş kısıtlamasına sahip oluyor
-        //buradaki kısıtlamayı AbstractPlayer'a taşıyabiliriz, ne dersiniz
-        //değiştirirsek testleri de ona göre değiştirmem gerekecek so
-        //burayı değiştirirseniz pls ping me in the project gc
-
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty.");
         }
@@ -23,7 +18,7 @@ public abstract class AbstractPerson implements ITrainable {
             throw new IllegalArgumentException("Gender cannot be null.");
         }
         if (age < 16 || age > 75) {
-            throw new IllegalArgumentException("Age must be between 16 and 50.");
+            throw new IllegalArgumentException("Age must be between 16 and 75.");
         }
         this.id = UUID.randomUUID();
         this.name = name;

@@ -2,6 +2,7 @@ package com.sportsmanager.ui;
 
 import com.sportsmanager.core.gamesession.GameController;
 import com.sportsmanager.core.model.AbstractCoach;
+import com.sportsmanager.core.model.AbstractPlayer;
 import com.sportsmanager.core.model.AbstractTeam;
 import com.sportsmanager.core.model.CoachSpecialty;
 import com.sportsmanager.core.model.Fixture;
@@ -24,11 +25,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import javafx.scene.Scene;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
 
 public class DashboardController {
 
     @FXML private Label userTeamLabel;
+    @FXML private Label sportLabel;
     @FXML private Label weekLabel;
     @FXML private Label totalWeeksLabel;
     @FXML private Label opponentLabel;
@@ -58,6 +63,9 @@ public class DashboardController {
         if (gc.getUserTeam() != null) {
             userTeamLabel.setText(gc.getUserTeam().getName());
         }
+
+        String sportId = gc.getSport().getSportId();
+        sportLabel.setText(sportId.substring(0, 1).toUpperCase() + sportId.substring(1));
 
         int week = gc.getLeague().getCurrentWeek();
         int totalWeeks = computeTotalWeeks(gc);
@@ -227,51 +235,52 @@ public class DashboardController {
             return;
         }
 
-        int playedWeek = gc.getLeague().getCurrentWeek();
-        List<MatchResult> allResults = new ArrayList<>();
-
         Fixture userFixture = gc.getUserFixture();
         MatchResult userResult = null;
         if (userFixture != null) {
-            PeriodResult firstHalf = gc.startUserMatch();
-            if (firstHalf != null) {
-                showHalftimeDialog(userFixture, firstHalf, gc.getUserTeam());
+            boolean isBasketball = "basketball".equals(gc.getSport().getSportId());
+            if (isBasketball) {
+                int cumH = 0, cumA = 0;
+                PeriodResult q1 = gc.startUserMatch();
+                cumH += q1.getHomeScore(); cumA += q1.getAwayScore();
+                showHalftimeDialog(userFixture, new PeriodResult(cumH, cumA), gc.getUserTeam(),
+                        true, "END OF Q1", "Continue Q2");
+
+                PeriodResult q2 = gc.simulateNextPeriodOfUserMatch();
+                if (q2 != null) { cumH += q2.getHomeScore(); cumA += q2.getAwayScore(); }
+                showHalftimeDialog(userFixture, new PeriodResult(cumH, cumA), gc.getUserTeam(),
+                        true, "HALF TIME", "Continue Q3");
+
+                PeriodResult q3 = gc.simulateNextPeriodOfUserMatch();
+                if (q3 != null) { cumH += q3.getHomeScore(); cumA += q3.getAwayScore(); }
+                showHalftimeDialog(userFixture, new PeriodResult(cumH, cumA), gc.getUserTeam(),
+                        true, "END OF Q3", "Continue Q4");
+            } else {
+                PeriodResult firstPeriod = gc.startUserMatch();
+                if (firstPeriod != null) {
+                    showHalftimeDialog(userFixture, firstPeriod, gc.getUserTeam(), false, "HALF TIME", "Continue 2nd Half");
+                }
             }
             userResult = gc.finishUserMatch();
         }
 
-        List<MatchResult> otherResults = gc.simulateOtherMatchesThisWeek();
-        if (userResult != null) allResults.add(userResult);
-        allResults.addAll(otherResults);
-        gc.advanceWeek();
+        gc.simulateOtherMatchesThisWeek();
 
-        StringBuilder sb = new StringBuilder();
-        for (MatchResult r : allResults) {
-            boolean isUserMatch = gc.getUserTeam() != null &&
-                    (r.getHomeTeam().equals(gc.getUserTeam()) || r.getAwayTeam().equals(gc.getUserTeam()));
-
-            sb.append(r.getHomeTeam().getName())
-              .append("  ")
-              .append(r.getHomeScore())
-              .append(" - ")
-              .append(r.getAwayScore())
-              .append("  ")
-              .append(r.getAwayTeam().getName());
-
-            if (isUserMatch) sb.append("  ◀ YOUR MATCH");
-            sb.append("\n");
+        if (userResult != null) {
+            showMatchSummary(userResult, gc);
         }
 
-        showAlert("Week " + playedWeek + " Results", null, sb.toString());
+        gc.advanceWeek();
         refresh();
     }
 
-    private void showHalftimeDialog(Fixture fixture, PeriodResult firstHalf, AbstractTeam userTeam) {
+    private void showHalftimeDialog(Fixture fixture, PeriodResult score, AbstractTeam userTeam,
+                                    boolean isBasketball, String breakTitle, String continueText) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/HalftimeView.fxml"));
             Parent root = loader.load();
             HalftimeController controller = loader.getController();
-            controller.setMatchInfo(fixture, firstHalf, userTeam);
+            controller.setMatchInfo(fixture, score, userTeam, isBasketball, breakTitle, continueText);
             Stage stage = new Stage();
             stage.setTitle("Half Time");
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -361,6 +370,32 @@ public class DashboardController {
     }
 
     @FXML
+    public void saveandmenubutton() {
+        GameController gc = GameController.getInstance();
+        if (gc == null) return;
+
+        String savename = gc.getCurrentSaveName();
+        if (savename == null) {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Save Game");
+            dialog.setHeaderText("Enter a name for your save");
+            dialog.setContentText("Save name:");
+            Optional<String> result = dialog.showAndWait();
+            if (result.isEmpty() || result.get().isBlank()) return;
+            savename = result.get().trim();
+        }
+
+        try {
+            gc.saveGame(savename);
+            URL url = getClass().getResource("/MainMenuView.fxml");
+            if (url == null) { System.out.println("MainMenuView.fxml not found!"); return; }
+            App.mainstage.setScene(new Scene(FXMLLoader.load(url)));
+        } catch (Exception e) {
+            showAlert("Save Error", "Could not save the game", e.getMessage());
+        }
+    }
+
+    @FXML
     public void saveandexitbutton() {
         GameController gc = GameController.getInstance();
         if (gc == null) { System.exit(0); return; }
@@ -383,6 +418,150 @@ public class DashboardController {
             System.exit(0);
         } catch (Exception e) {
             showAlert("Save Error", "Could not save the game", e.getMessage());
+        }
+    }
+
+    private void showMatchSummary(MatchResult result, GameController gc) {
+        AbstractTeam userTeam = gc.getUserTeam();
+        boolean isHome = result.getHomeTeam().equals(userTeam);
+        AbstractTeam oppTeam = isHome ? result.getAwayTeam() : result.getHomeTeam();
+        boolean isBasketball = "basketball".equals(gc.getSport().getSportId());
+        List<PeriodResult> periods = gc.getLastUserMatchPeriods();
+        List<AbstractPlayer> injuries = gc.getLastUserMatchInjuries();
+        Random rng = new Random();
+
+        StringBuilder sb = new StringBuilder();
+
+        // Skor başlığı
+        sb.append(result.getHomeTeam().getName())
+          .append("  ").append(result.getHomeScore())
+          .append(" - ").append(result.getAwayScore())
+          .append("  ").append(result.getAwayTeam().getName()).append("\n");
+
+        if (result.isHomeWin()) {
+            sb.append(isHome ? "Victory\n" : "Defeat\n");
+        } else if (result.isAwayWin()) {
+            sb.append(isHome ? "Defeat\n" : "Victory\n");
+        } else {
+            sb.append("Draw\n");
+        }
+
+        // Periyot dökümü
+        sb.append("\n");
+        if (isBasketball) {
+            sb.append("Quarter Scores:\n");
+            String[] labels = {"Q1", "Q2", "Q3", "Q4", "OT"};
+            for (int i = 0; i < periods.size(); i++) {
+                String lbl = i < labels.length ? labels[i] : ("OT" + i);
+                sb.append("  ").append(lbl).append(": ")
+                  .append(periods.get(i).getHomeScore())
+                  .append(" - ").append(periods.get(i).getAwayScore()).append("\n");
+            }
+        } else {
+            sb.append("Half Scores:\n");
+            String[] halves = {"1st Half", "2nd Half"};
+            for (int i = 0; i < periods.size(); i++) {
+                String lbl = i < halves.length ? halves[i] : ("Period " + (i + 1));
+                sb.append("  ").append(lbl).append(": ")
+                  .append(periods.get(i).getHomeScore())
+                  .append(" - ").append(periods.get(i).getAwayScore()).append("\n");
+            }
+        }
+
+        // Goller / Performanslar
+        sb.append("\n");
+        if (isBasketball) {
+            sb.append("Key Performers:\n");
+            int userTotal = isHome ? result.getHomeScore() : result.getAwayScore();
+            int oppTotal  = isHome ? result.getAwayScore() : result.getHomeScore();
+            appendTopPerformers(sb, userTeam, userTotal, "Your Team", 3);
+            appendTopPerformers(sb, oppTeam, oppTotal, oppTeam.getName(), 2);
+        } else {
+            sb.append("Goals:\n");
+            boolean anyGoal = false;
+            String[] halfNames = {"1st Half", "2nd Half"};
+            for (int i = 0; i < periods.size(); i++) {
+                String half = i < halfNames.length ? halfNames[i] : ("Period " + (i + 1));
+                PeriodResult p = periods.get(i);
+                for (int g = 0; g < p.getHomeScore(); g++) {
+                    List<AbstractPlayer> squad = result.getHomeTeam().getSquad();
+                    if (!squad.isEmpty()) {
+                        sb.append("  ").append(squad.get(rng.nextInt(squad.size())).getName())
+                          .append(" (").append(result.getHomeTeam().getName())
+                          .append(", ").append(half).append(")\n");
+                        anyGoal = true;
+                    }
+                }
+                for (int g = 0; g < p.getAwayScore(); g++) {
+                    List<AbstractPlayer> squad = result.getAwayTeam().getSquad();
+                    if (!squad.isEmpty()) {
+                        sb.append("  ").append(squad.get(rng.nextInt(squad.size())).getName())
+                          .append(" (").append(result.getAwayTeam().getName())
+                          .append(", ").append(half).append(")\n");
+                        anyGoal = true;
+                    }
+                }
+            }
+            if (!anyGoal) sb.append("  No goals scored.\n");
+        }
+
+        // Sakatlıklar
+        sb.append("\n");
+        List<AbstractPlayer> userInjuries = new ArrayList<>();
+        List<AbstractPlayer> oppInjuries  = new ArrayList<>();
+        for (AbstractPlayer p : injuries) {
+            if (userTeam.getSquad().contains(p)) userInjuries.add(p);
+            else oppInjuries.add(p);
+        }
+        if (userInjuries.isEmpty() && oppInjuries.isEmpty()) {
+            sb.append("No injuries this match.\n");
+        } else {
+            if (!userInjuries.isEmpty()) {
+                sb.append("Your Injuries:\n");
+                for (AbstractPlayer p : userInjuries) {
+                    sb.append("  ").append(p.getName())
+                      .append(" - ").append(p.getInjury().getSeverity())
+                      .append(" (").append(p.getInjury().getGamesRemaining()).append(" games)\n");
+                }
+            }
+            if (!oppInjuries.isEmpty()) {
+                sb.append("Opponent Injuries:\n");
+                for (AbstractPlayer p : oppInjuries) {
+                    sb.append("  ").append(p.getName())
+                      .append(" - ").append(p.getInjury().getSeverity())
+                      .append(" (").append(p.getInjury().getGamesRemaining()).append(" games)\n");
+                }
+            }
+        }
+
+        // TextArea ile kaydırılabilir dialog
+        TextArea textArea = new TextArea(sb.toString());
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setPrefSize(480, 340);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Match Report");
+        alert.setHeaderText(null);
+        alert.getDialogPane().setContent(new VBox(textArea));
+        alert.getDialogPane().setPrefSize(520, 420);
+        alert.showAndWait();
+    }
+
+    private void appendTopPerformers(StringBuilder sb, AbstractTeam team, int totalScore,
+                                     String label, int count) {
+        List<AbstractPlayer> squad = new ArrayList<>(team.getSquad());
+        if (squad.isEmpty()) return;
+        squad.sort((a, b) -> Double.compare(
+                b.getAttributes().getOverallRating(),
+                a.getAttributes().getOverallRating()));
+        count = Math.min(count, squad.size());
+        double[] weights = {0.40, 0.35, 0.25};
+        sb.append("  ").append(label).append(":\n");
+        for (int i = 0; i < count; i++) {
+            int pts = (int) Math.round(totalScore * weights[i]);
+            sb.append("    ").append(squad.get(i).getName())
+              .append(" - ").append(pts).append(" pts\n");
         }
     }
 

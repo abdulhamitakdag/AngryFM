@@ -18,6 +18,7 @@ public abstract class AbstractMatch {
 
     private int homeSubCount;
     private int awaySubCount;
+    private final List<AbstractPlayer> matchInjuries = new ArrayList<>();
 
     public AbstractMatch(AbstractTeam homeTeam, AbstractTeam awayTeam) {
         if (homeTeam == null || awayTeam == null) {
@@ -42,7 +43,7 @@ public abstract class AbstractMatch {
     // maç sonu sakatlık hesabı
     protected abstract void applyInjuries(AbstractTeam home, AbstractTeam away);
 
-    protected abstract int getMaxSubstitutions();
+    public abstract int getMaxSubstitutions();
 
     /*maçı başlat*/
     public void start() {
@@ -103,9 +104,16 @@ public abstract class AbstractMatch {
         }
     }
 
-    // maç bitti, sakatlık falan hesaplansın
     protected void finalizeMatch() {
+        List<AbstractPlayer> healthyBefore = new ArrayList<>();
+        for (AbstractPlayer p : homeTeam.getAvailablePlayers()) healthyBefore.add(p);
+        for (AbstractPlayer p : awayTeam.getAvailablePlayers()) healthyBefore.add(p);
+
         applyInjuries(homeTeam, awayTeam);
+
+        for (AbstractPlayer p : healthyBefore) {
+            if (p.isInjured()) matchInjuries.add(p);
+        }
     }
 
     // tüm devrelerin skorunu toplayıp MatchResult döndürüyoruz
@@ -122,11 +130,12 @@ public abstract class AbstractMatch {
         return new MatchResult(homeTeam, awayTeam, totalHome, totalAway);
     }
 
-    public AbstractTeam getHomeTeam()            { return homeTeam; }
-    public AbstractTeam getAwayTeam()            { return awayTeam; }
-    public MatchState getState()                 { return state; }
-    public int getCurrentPeriod()                { return currentPeriod; }
-    public List<PeriodResult> getPeriodResults() { return Collections.unmodifiableList(periodResults); }
-    public int getHomeSubCount()                 { return homeSubCount; }
-    public int getAwaySubCount()                 { return awaySubCount; }
+    public AbstractTeam getHomeTeam()                    { return homeTeam; }
+    public AbstractTeam getAwayTeam()                    { return awayTeam; }
+    public MatchState getState()                         { return state; }
+    public int getCurrentPeriod()                        { return currentPeriod; }
+    public List<PeriodResult> getPeriodResults()         { return Collections.unmodifiableList(periodResults); }
+    public List<AbstractPlayer> getMatchInjuries()       { return Collections.unmodifiableList(matchInjuries); }
+    public int getHomeSubCount()                         { return homeSubCount; }
+    public int getAwaySubCount()                         { return awaySubCount; }
 }

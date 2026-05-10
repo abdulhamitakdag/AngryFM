@@ -18,7 +18,7 @@ public class MainMenuController {
     public void newgamebutton()throws IOException{
         URL newgameurl = getClass().getResource("/NewGameView.fxml");
         if (newgameurl==null){
-            System.out.println("NewGameViev.fxml not found!");
+            System.out.println("NewGameView.fxml not found!");
             return;
         }
         Parent  newgameroot = FXMLLoader.load(newgameurl);

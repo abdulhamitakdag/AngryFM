@@ -13,12 +13,17 @@ import javafx.scene.control.ListView;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ResumeMenuController {
 
     @FXML
     private ListView<String> saveslist;
+
+    // maps display label → actual save name
+    private final Map<String, String> displayToSaveName = new LinkedHashMap<>();
 
     @FXML
     public void initialize(){
@@ -26,14 +31,26 @@ public class ResumeMenuController {
     }
 
     private void refreshlist(){
+        displayToSaveName.clear();
         try{
             FootballSaveManager savemanager = new FootballSaveManager();
             List<String> saves = savemanager.listSaves();
-            ObservableList<String> items = FXCollections.observableArrayList(saves);
-            saveslist.setItems(items);
+            for (String saveName : saves) {
+                String sportType = savemanager.getSportTypeForSave(saveName);
+                String label = formatSportLabel(sportType);
+                String display = saveName + "  [" + label + "]";
+                displayToSaveName.put(display, saveName);
+            }
+            saveslist.setItems(FXCollections.observableArrayList(displayToSaveName.keySet()));
         } catch (IOException e){
             System.out.println("Could not list saves: " + e.getMessage());
         }
+    }
+
+    private String formatSportLabel(String sportType) {
+        if ("basketball".equalsIgnoreCase(sportType)) return "Basketball";
+        if ("football".equalsIgnoreCase(sportType))   return "Football";
+        return sportType;
     }
 
     @FXML
@@ -43,8 +60,9 @@ public class ResumeMenuController {
             shownosavealert();
             return;
         }
+        String saveName = displayToSaveName.getOrDefault(selected, selected);
         try{
-            GameController.loadGame(selected);
+            GameController.loadGame(saveName);
         } catch (IOException e){
             System.out.println("Could not load save: " + e.getMessage());
             return;
@@ -66,9 +84,10 @@ public class ResumeMenuController {
             shownosavealert();
             return;
         }
+        String saveName = displayToSaveName.getOrDefault(selected, selected);
         try{
             FootballSaveManager savemanager = new FootballSaveManager();
-            savemanager.delete(selected);
+            savemanager.delete(saveName);
         } catch (IOException e){
             System.out.println("Could not delete save: " + e.getMessage());
             return;

@@ -48,7 +48,9 @@ public class FootballMatchEngine implements IMatchEngine {
     private double calcLambda(AbstractTeam team, AbstractTeam opponent) {
         if (team.getAvailablePlayers().isEmpty()) return 0.3; // kadro boşsa bile bişeyler olsun
 
-        double avgOvr = team.getAvailableAvgOvr(11);
+        double avgOvr = team.getStartingLineup().isEmpty()
+                ? team.getAvailableAvgOvr(11)
+                : team.getStartingAvgOvr();
 
         // taktik atanmamışsa 1.0 kabul ediyoruz
         double offensiveMod = 1.0;
@@ -99,7 +101,9 @@ public class FootballMatchEngine implements IMatchEngine {
         if (active != null && active.getSpecialty() == CoachSpecialty.FITNESS) {
             chance *= Math.max(0.10, 1.0 - active.getCoachingLevel() * 0.10);
         }
-        for (AbstractPlayer player : team.getAvailablePlayers()) {
+        List<AbstractPlayer> onPitch = team.getStartingLineup().isEmpty()
+                ? team.getAvailablePlayers() : team.getStartingLineup();
+        for (AbstractPlayer player : onPitch) {
             if (rng.nextDouble() < chance) {
                 Injury.Severity sev = rollSeverity();
                 int games = gamesForSeverity(sev);

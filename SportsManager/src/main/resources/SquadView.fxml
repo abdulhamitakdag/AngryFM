@@ -6,27 +6,49 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: PINK; -fx-background-color: LIGHTYELLOW;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sportsmanager.ui.SquadController">
+<AnchorPane prefHeight="460.0" prefWidth="720.0" style="-fx-border-color: PINK; -fx-background-color: LIGHTYELLOW;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sportsmanager.ui.SquadController">
     <children>
-        <Label fx:id="teamnamelabel" alignment="CENTER" contentDisplay="CENTER" layoutX="180.0" layoutY="20.0" prefHeight="34.0" prefWidth="240.0" text="..." textFill="#009487" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="20.0">
-            <font><Font size="17.0" /></font>
+
+        <Label fx:id="teamnamelabel" alignment="CENTER" layoutX="240.0" layoutY="14.0" prefWidth="240.0" text="..." textFill="#009487" AnchorPane.leftAnchor="240.0" AnchorPane.rightAnchor="240.0" AnchorPane.topAnchor="14.0">
+            <font><Font size="16.0" /></font>
             <effect><Glow level="0.96" /></effect>
         </Label>
-        <Label fx:id="squadcountlabel" alignment="CENTER" layoutX="180.0" layoutY="55.0" prefHeight="20.0" prefWidth="240.0" text="Squad: 0/0" textFill="#777777" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="55.0">
-            <font><Font size="11.0" /></font>
+
+        <Label fx:id="squadcountlabel" alignment="CENTER" layoutX="240.0" layoutY="42.0" prefWidth="240.0" text="Squad: 0/0" textFill="#777777" AnchorPane.leftAnchor="240.0" AnchorPane.rightAnchor="240.0" AnchorPane.topAnchor="42.0">
+            <font><Font size="10.0" /></font>
         </Label>
-        <TableView fx:id="squadtable" layoutX="14.0" layoutY="85.0" prefHeight="270.0" prefWidth="572.0" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="85.0">
+
+        <!-- Starting Lineup -->
+        <Label layoutX="14.0" layoutY="66.0" style="-fx-font-weight: bold; -fx-font-size: 11;" text="Starting Lineup" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="66.0" />
+        <TableView fx:id="startingtable" layoutX="14.0" layoutY="84.0" prefHeight="290.0" prefWidth="346.0" AnchorPane.bottomAnchor="74.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="84.0">
             <columns>
-                <TableColumn fx:id="shirtcol" prefWidth="50.0" text="#" />
-                <TableColumn fx:id="namecol" prefWidth="180.0" text="Name" />
-                <TableColumn fx:id="agecol" prefWidth="50.0" text="Age" />
-                <TableColumn fx:id="poscol" prefWidth="60.0" text="Pos" />
-                <TableColumn fx:id="ovrcol" prefWidth="60.0" text="OVR" />
-                <TableColumn fx:id="statuscol" prefWidth="170.0" text="Status" />
+                <TableColumn fx:id="s_namecol"   prefWidth="160.0" text="Name" />
+                <TableColumn fx:id="s_poscol"    prefWidth="54.0"  text="Pos" />
+                <TableColumn fx:id="s_ovrcol"    prefWidth="50.0"  text="OVR" />
+                <TableColumn fx:id="s_statuscol" prefWidth="80.0"  text="Status" />
             </columns>
         </TableView>
-        <Button layoutX="22.0" layoutY="343.0" mnemonicParsing="false" onMouseClicked="#returnbutton" prefHeight="34.0" prefWidth="55.0" text="Back" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="22.0" />
-        <Button layoutX="530.0" layoutY="352.0" mnemonicParsing="false" onMouseClicked="#exitbutton" prefHeight="33.0" prefWidth="55.0" text="Exit" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+
+        <!-- Bench -->
+        <Label layoutX="374.0" layoutY="66.0" style="-fx-font-weight: bold; -fx-font-size: 11;" text="Bench" AnchorPane.leftAnchor="374.0" AnchorPane.topAnchor="66.0" />
+        <TableView fx:id="benchtable" layoutX="374.0" layoutY="84.0" prefHeight="290.0" prefWidth="332.0" AnchorPane.bottomAnchor="74.0" AnchorPane.leftAnchor="374.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="84.0">
+            <columns>
+                <TableColumn fx:id="b_namecol"   prefWidth="150.0" text="Name" />
+                <TableColumn fx:id="b_poscol"    prefWidth="50.0"  text="Pos" />
+                <TableColumn fx:id="b_ovrcol"    prefWidth="50.0"  text="OVR" />
+                <TableColumn fx:id="b_statuscol" prefWidth="80.0"  text="Status" />
+            </columns>
+        </TableView>
+
+        <!-- Info label -->
+        <Label fx:id="infolabel" layoutX="14.0" layoutY="386.0" style="-fx-font-size: 10; -fx-text-fill: #555;" text="Double-click a player to view attributes." AnchorPane.bottomAnchor="56.0" AnchorPane.leftAnchor="14.0" />
+
+        <!-- Bottom buttons -->
+        <Button layoutX="14.0" layoutY="418.0" mnemonicParsing="false" onMouseClicked="#returnbutton" prefHeight="30.0" prefWidth="55.0" text="Back" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="14.0" />
+        <Button layoutX="200.0" layoutY="418.0" mnemonicParsing="false" onMouseClicked="#swapbutton" prefHeight="30.0" prefWidth="140.0" style="-fx-background-color: SKYBLUE;" text="Swap Selected" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="200.0" />
+        <Button layoutX="360.0" layoutY="418.0" mnemonicParsing="false" onMouseClicked="#autosetbutton" prefHeight="30.0" prefWidth="140.0" style="-fx-background-color: LIGHTGREEN;" text="Auto-set Best XI" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="360.0" />
+        <Button layoutX="651.0" layoutY="418.0" mnemonicParsing="false" onMouseClicked="#exitbutton" prefHeight="30.0" prefWidth="55.0" text="Exit" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="14.0" />
+
     </children>
     <effect>
         <DropShadow>

@@ -3,6 +3,8 @@ package com.sportsmanager.ui;
 import com.sportsmanager.core.gamesession.GameController;
 import com.sportsmanager.core.model.AbstractTactic;
 import com.sportsmanager.core.model.AbstractTeam;
+import com.sportsmanager.sport.basketball.BasketballPositions;
+import com.sportsmanager.sport.basketball.BasketballTactic;
 import com.sportsmanager.sport.football.FootballPositions;
 import com.sportsmanager.sport.football.FootballTactic;
 import javafx.collections.FXCollections;
@@ -34,40 +36,47 @@ public class TacticController {
     @FXML private Label pressmodlabel;
     @FXML private Label positionslabel;
 
-    // mevcut taktik fabrikalarına karşılık gelen isimler — listView'da gösteriyoruz
-    private static final String[] TACTIC_NAMES = {
+    private static final String[] FOOTBALL_TACTIC_NAMES = {
             "4-4-2", "4-2-3-1", "4-3-3", "4-2-4",
             "3-5-2", "3-4-3", "5-3-2", "5-4-1"
     };
 
+    private static final String[] BASKETBALL_TACTIC_NAMES = {
+            "Standard", "Offensive", "Defensive Wall",
+            "2-1-2", "1-3-1", "2-3"
+    };
+
+    private boolean isBasketball;
+
     @FXML
-    public void initialize(){
+    public void initialize() {
         GameController gc = GameController.getInstance();
         if (gc == null) return;
         AbstractTeam team = gc.getUserTeam();
         if (team == null) return;
 
+        isBasketball = "basketball".equals(gc.getSport().getSportId());
+
         teamnamelabel.setText(team.getName());
         AbstractTactic current = team.getCurrentTactic();
         currenttacticlabel.setText("Current: " + (current != null ? current.getName() : "-"));
 
-        tacticlist.setItems(FXCollections.observableArrayList(TACTIC_NAMES));
+        String[] names = isBasketball ? BASKETBALL_TACTIC_NAMES : FOOTBALL_TACTIC_NAMES;
+        tacticlist.setItems(FXCollections.observableArrayList(names));
 
-        // seçim değişince detay paneli güncellensin
         tacticlist.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
             if (newSel != null) showdetails(newSel);
         });
 
-        // başlangıçta mevcut taktik seçili gelsin (varsa)
-        if (current != null){
+        if (current != null) {
             tacticlist.getSelectionModel().select(current.getName());
         } else {
             tacticlist.getSelectionModel().selectFirst();
         }
     }
 
-    private void showdetails(String tacticname){
-        FootballTactic t = createbyname(tacticname);
+    private void showdetails(String tacticname) {
+        AbstractTactic t = createbyname(tacticname);
         if (t == null) return;
 
         formationlabel.setText("Formation: " + t.getFormationString());
@@ -77,13 +86,20 @@ public class TacticController {
         offmodlabel.setText("Offensive: " + formatmod(t.getOffensiveModifier()));
         defmodlabel.setText("Defensive: " + formatmod(t.getDefensiveModifier()));
         pressmodlabel.setText("Pressing: " + formatmod(t.getPressureModifier()));
-        positionslabel.setText(formatpositions(t.getRequiredPositions()));
+
+        if (isBasketball && t instanceof BasketballTactic bt) {
+            positionslabel.setText(formatBasketballPositions(bt.getRequiredPositions()));
+        } else if (!isBasketball && t instanceof FootballTactic ft) {
+            positionslabel.setText(formatFootballPositions(ft.getRequiredPositions()));
+        } else {
+            positionslabel.setText("");
+        }
     }
 
     @FXML
-    public void applybutton(){
+    public void applybutton() {
         String selected = tacticlist.getSelectionModel().getSelectedItem();
-        if (selected == null){
+        if (selected == null) {
             showalert("Tactic", "No tactic selected!");
             return;
         }
@@ -92,13 +108,12 @@ public class TacticController {
         AbstractTeam team = gc.getUserTeam();
         if (team == null) return;
 
-        FootballTactic t = createbyname(selected);
+        AbstractTactic t = createbyname(selected);
         if (t == null) return;
 
-        // seçilen taktik kadromuza uyuyor mu — uymuyorsa hata mesajı göster
         try {
             t.validateForSquad(team.getSquad());
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             showalert("Tactic Error", e.getMessage());
             return;
         }
@@ -108,43 +123,63 @@ public class TacticController {
         showalert("Tactic Applied", "Your team will now play " + t.getName() + ".");
     }
 
-    private FootballTactic createbyname(String name){
-        switch (name){
-            case "4-4-2":   return FootballTactic.create442();
-            case "4-2-3-1": return FootballTactic.create4231();
-            case "4-3-3":   return FootballTactic.create433();
-            case "4-2-4":   return FootballTactic.create424();
-            case "3-5-2":   return FootballTactic.create352();
-            case "3-4-3":   return FootballTactic.create343();
-            case "5-3-2":   return FootballTactic.create532();
-            case "5-4-1":   return FootballTactic.create541();
-            default:        return null;
+    private AbstractTactic createbyname(String name) {
+        if (isBasketball) {
+            switch (name) {
+                case "Standard":      return BasketballTactic.createStandard();
+                case "Offensive":     return BasketballTactic.createOffensive();
+                case "Defensive Wall":return BasketballTactic.createDefensive();
+                case "Balanced":      return BasketballTactic.createBalanced();
+                case "2-1-2":         return BasketballTactic.createZone();
+                case "1-3-1":         return BasketballTactic.createTrap();
+                case "2-3":           return BasketballTactic.createBig();
+                default:              return null;
+            }
+        } else {
+            switch (name) {
+                case "4-4-2":   return FootballTactic.create442();
+                case "4-2-3-1": return FootballTactic.create4231();
+                case "4-3-3":   return FootballTactic.create433();
+                case "4-2-4":   return FootballTactic.create424();
+                case "3-5-2":   return FootballTactic.create352();
+                case "3-4-3":   return FootballTactic.create343();
+                case "5-3-2":   return FootballTactic.create532();
+                case "5-4-1":   return FootballTactic.create541();
+                default:        return null;
+            }
         }
     }
 
-    private String percent(double v){
+    private String percent(double v) {
         return Math.round(v * 100) + "%";
     }
 
-    // 1.06 → "+6% (1.06x)", 0.85 → "-15% (0.85x)"
-    private String formatmod(double mod){
+    private String formatmod(double mod) {
         int pct = (int) Math.round((mod - 1.0) * 100);
         String sign = pct >= 0 ? "+" : "";
         return sign + pct + "% (" + String.format("%.2fx", mod) + ")";
     }
 
-    private String formatpositions(Map<FootballPositions, Integer> positions){
+    private String formatFootballPositions(Map<FootballPositions, Integer> positions) {
         List<String> parts = new ArrayList<>();
-        for (Map.Entry<FootballPositions, Integer> e : positions.entrySet()){
+        for (Map.Entry<FootballPositions, Integer> e : positions.entrySet()) {
+            parts.add(e.getKey() + ":" + e.getValue());
+        }
+        return String.join(" · ", parts);
+    }
+
+    private String formatBasketballPositions(Map<BasketballPositions, Integer> positions) {
+        List<String> parts = new ArrayList<>();
+        for (Map.Entry<BasketballPositions, Integer> e : positions.entrySet()) {
             parts.add(e.getKey() + ":" + e.getValue());
         }
         return String.join(" · ", parts);
     }
 
     @FXML
-    public void returnbutton() throws IOException{
+    public void returnbutton() throws IOException {
         URL dashboardurl = getClass().getResource("/DashboardView.fxml");
-        if (dashboardurl==null){
+        if (dashboardurl == null) {
             System.out.println("DashboardView.fxml not found!");
             return;
         }
@@ -154,12 +189,12 @@ public class TacticController {
     }
 
     @FXML
-    public void exitbutton(){
+    public void exitbutton() {
         System.out.println("Game has been closed");
         System.exit(0);
     }
 
-    private void showalert(String title, String content){
+    private void showalert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);

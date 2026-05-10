@@ -31,6 +31,8 @@ public class GameController {
     private int trainingsCountedForWeek = 0;
 
     private AbstractMatch ongoingUserMatch;
+    private List<PeriodResult> lastUserMatchPeriods = new ArrayList<>();
+    private List<AbstractPlayer> lastUserMatchInjuries = new ArrayList<>();
 
     private final Random rng = new Random();
 
@@ -160,6 +162,18 @@ public class GameController {
         return ongoingUserMatch.simulateCurrentPeriod();
     }
 
+    // Bir sonraki period'u simüle eder (basketbol Q1 sonrası Q2 için kullanılır)
+    public PeriodResult simulateNextPeriodOfUserMatch() {
+        if (ongoingUserMatch == null) return null;
+        if (ongoingUserMatch.getState() == AbstractMatch.MatchState.BETWEEN_PERIODS) {
+            ongoingUserMatch.resumeAfterBreak();
+        }
+        if (ongoingUserMatch.getState() == AbstractMatch.MatchState.IN_PROGRESS) {
+            return ongoingUserMatch.simulateCurrentPeriod();
+        }
+        return null;
+    }
+
     // Kalan tüm period'ları oynar ve sonucu döner
     // Football: sadece 2. yarı | Basketball: Q2, Q3, Q4 (+ OT varsa)
     public MatchResult finishUserMatch() {
@@ -173,6 +187,8 @@ public class GameController {
             }
         }
         MatchResult r = ongoingUserMatch.getMatchResult();
+        lastUserMatchPeriods = new ArrayList<>(ongoingUserMatch.getPeriodResults());
+        lastUserMatchInjuries = new ArrayList<>(ongoingUserMatch.getMatchInjuries());
         league.recordResult(r);
         ongoingUserMatch = null;
         return r;
@@ -288,6 +304,17 @@ public class GameController {
     }
 
     // ------- Getter'lar -------
+
+    public void makeSubstitution(AbstractPlayer playerOut, AbstractPlayer playerIn) {
+        if (ongoingUserMatch == null || userTeam == null) return;
+        boolean isHome = ongoingUserMatch.getHomeTeam().equals(userTeam);
+        if (isHome) ongoingUserMatch.substituteHome(playerOut, playerIn);
+        else        ongoingUserMatch.substituteAway(playerOut, playerIn);
+        userTeam.swapStartingWithBench(playerOut, playerIn);
+    }
+
+    public List<PeriodResult> getLastUserMatchPeriods()    { return lastUserMatchPeriods; }
+    public List<AbstractPlayer> getLastUserMatchInjuries() { return lastUserMatchInjuries; }
 
     public void setUserTeam(AbstractTeam team)   { this.userTeam = team; }
     public AbstractTeam getUserTeam()            { return userTeam; }

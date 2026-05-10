@@ -89,6 +89,16 @@ public abstract class AbstractSaveManager {
         return Files.deleteIfExists(savePath);
     }
 
+    public String getSportTypeForSave(String saveName) {
+        try {
+            GameState state = load(saveName);
+            String type = state.getSportType();
+            return type != null ? type : "unknown";
+        } catch (IOException e) {
+            return "unknown";
+        }
+    }
+
     // klasördeki bütün save dosyalarını bulup isimlerini döndürüyor
     public List<String> listSaves() throws IOException {
         if (!Files.exists(saveDirectory)) {
@@ -214,6 +224,10 @@ public abstract class AbstractSaveManager {
         td.setGoalsScored(team.getGoalsScored());
         td.setGoalsConceded(team.getGoalsConceded());
 
+        List<String> startingNames = new ArrayList<>();
+        for (AbstractPlayer p : team.getStartingLineup()) startingNames.add(p.getName());
+        td.setStartingLineupNames(startingNames);
+
         return td;
     }
 
@@ -242,8 +256,11 @@ public abstract class AbstractSaveManager {
             team.setCurrentTactic(restoreTactic(td.getTactic()));
         }
 
-        // sezon istatistikleri, maçlar league.recordResult ile tekrar işlendiği için
-        // burada dışarıdan set etmeye gerek yok, yoksa istatistikler ikiye katlanır.
+        if (td.getStartingLineupNames() != null && !td.getStartingLineupNames().isEmpty()) {
+            team.restoreStartingLineup(td.getStartingLineupNames());
+        } else {
+            team.autoSetLineup(team.getSquad().size() <= 5 ? 5 : 11);
+        }
 
         return team;
     }

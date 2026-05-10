@@ -63,6 +63,7 @@ public class GameState {
         private List<CoachData> coaches;
         private TacticData tactic;
         private String activeCoachName;
+        private List<String> startingLineupNames;
         // sezon istatistikleri
         private int wins;
         private int draws;
@@ -94,6 +95,11 @@ public class GameState {
             { return activeCoachName; }
         public void setActiveCoachName(String activeCoachName)
             { this.activeCoachName = activeCoachName; }
+
+        public List<String> getStartingLineupNames()
+            { return startingLineupNames; }
+        public void setStartingLineupNames(List<String> startingLineupNames)
+            { this.startingLineupNames = startingLineupNames; }
 
         public int getWins()
             { return wins; }

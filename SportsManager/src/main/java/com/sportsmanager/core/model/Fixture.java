@@ -63,6 +63,5 @@ public class Fixture {
     }
 
 
-    //AbstractTeam abstract class ı oluşturulmadığı için hata veriyor şimdilik.
-    // Class eklendiğinde otomatik fixlenecek
+
 }

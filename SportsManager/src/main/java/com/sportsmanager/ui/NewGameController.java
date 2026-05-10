@@ -27,6 +27,17 @@ public class NewGameController {
         System.exit(0);
     }
     @FXML
+    public void basketballbutton() throws IOException {
+        URL basketballurl = getClass().getResource("/BasketballGenderSelect.fxml");
+        if (basketballurl == null) {
+            System.out.println("BasketballGenderSelect.fxml not found!");
+            return;
+        }
+        Parent basketballroot = FXMLLoader.load(basketballurl);
+        Scene basketballscene = new Scene(basketballroot);
+        App.mainstage.setScene(basketballscene);
+    }
+    @FXML
     public void footballbutton()throws IOException{
     URL footballurl= getClass().getResource("/FootballGenderSelect.fxml");
     if (footballurl==null) {

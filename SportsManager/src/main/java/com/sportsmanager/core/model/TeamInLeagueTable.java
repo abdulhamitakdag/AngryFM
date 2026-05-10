@@ -70,7 +70,10 @@ public class TeamInLeagueTable implements Comparable<TeamInLeagueTable> {
         if (this.points != other.points) {
             return Integer.compare(other.points, this.points);
         }
-        return Integer.compare(other.getGoalDifference(), this.getGoalDifference());
+        if (this.getGoalDifference() != other.getGoalDifference()) {
+            return Integer.compare(other.getGoalDifference(), this.getGoalDifference());
+        }
+        return this.team.getName().compareTo(other.team.getName());
     }
 
     @Override

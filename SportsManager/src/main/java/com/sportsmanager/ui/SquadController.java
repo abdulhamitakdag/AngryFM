@@ -11,180 +11,157 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SquadController {
 
     @FXML private Label teamnamelabel;
     @FXML private Label squadcountlabel;
-    @FXML private TableView<AbstractPlayer> squadtable;
-    @FXML private TableColumn<AbstractPlayer, String> shirtcol;
-    @FXML private TableColumn<AbstractPlayer, String> namecol;
-    @FXML private TableColumn<AbstractPlayer, String> agecol;
-    @FXML private TableColumn<AbstractPlayer, String> poscol;
-    @FXML private TableColumn<AbstractPlayer, String> ovrcol;
-    @FXML private TableColumn<AbstractPlayer, String> statuscol;
+    @FXML private Label infolabel;
+
+    @FXML private TableView<AbstractPlayer> startingtable;
+    @FXML private TableColumn<AbstractPlayer, String> s_namecol;
+    @FXML private TableColumn<AbstractPlayer, String> s_poscol;
+    @FXML private TableColumn<AbstractPlayer, String> s_ovrcol;
+    @FXML private TableColumn<AbstractPlayer, String> s_statuscol;
+
+    @FXML private TableView<AbstractPlayer> benchtable;
+    @FXML private TableColumn<AbstractPlayer, String> b_namecol;
+    @FXML private TableColumn<AbstractPlayer, String> b_poscol;
+    @FXML private TableColumn<AbstractPlayer, String> b_ovrcol;
+    @FXML private TableColumn<AbstractPlayer, String> b_statuscol;
+
+    private AbstractTeam team;
+    private int playersOnField;
 
     @FXML
     public void initialize() {
         GameController gc = GameController.getInstance();
         if (gc == null) return;
-        AbstractTeam team = gc.getUserTeam();
+        team = gc.getUserTeam();
         if (team == null) return;
+        playersOnField = gc.getSport().getPlayersOnField();
 
         teamnamelabel.setText(team.getName());
-        squadcountlabel.setText("Squad: " + team.getCurrentSquadSize() + "/" + team.getMaxSquadSize());
+        squadcountlabel.setText("Squad: " + team.getCurrentSquadSize() + "/" + team.getMaxSquadSize()
+                + "  |  Starting: " + team.getStartingLineup().size() + "  |  Bench: " + team.getBench().size());
 
-        shirtcol.setCellValueFactory(c -> new SimpleStringProperty("#" + c.getValue().getShirtNumber()));
-        namecol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
-        agecol.setCellValueFactory(c -> new SimpleStringProperty(String.valueOf(c.getValue().getAge())));
-        poscol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPosition()));
-        ovrcol.setCellValueFactory(c -> {
+        setupColumns(s_namecol, s_poscol, s_ovrcol, s_statuscol, startingtable);
+        setupColumns(b_namecol, b_poscol, b_ovrcol, b_statuscol, benchtable);
+
+        refresh();
+    }
+
+    private void setupColumns(TableColumn<AbstractPlayer, String> nameCol,
+                               TableColumn<AbstractPlayer, String> posCol,
+                               TableColumn<AbstractPlayer, String> ovrCol,
+                               TableColumn<AbstractPlayer, String> statusCol,
+                               TableView<AbstractPlayer> table) {
+        nameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
+        posCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPosition()));
+        ovrCol.setCellValueFactory(c -> {
             AbstractPlayerAttributes a = c.getValue().getAttributes();
             return new SimpleStringProperty(a == null ? "-" : String.valueOf(a.getOverallRating()));
         });
-        statuscol.setCellValueFactory(c -> new SimpleStringProperty(formatstatus(c.getValue())));
+        statusCol.setCellValueFactory(c -> new SimpleStringProperty(formatStatus(c.getValue())));
 
-
-        List<String> sortOrder = java.util.Arrays.asList(
-                "GK", "LB", "CB", "RB", "CDM", "CM", "CAM", "LW", "RW", "ST",
-                "PG", "SG", "SF", "PF", "C"
-        );
-
-        poscol.setComparator((pos1, pos2) -> {
-            int index1 = sortOrder.indexOf(pos1);
-            int index2 = sortOrder.indexOf(pos2);
-
-            if (index1 == -1) index1 = 999;
-            if (index2 == -1) index2 = 999;
-
-            return Integer.compare(index1, index2);
-        });
-
-        shirtcol.setComparator((shirtStr1, shirtStr2) -> {
-
-            String number1 = shirtStr1.replace("#", "").trim();
-            String number2 = shirtStr2.replace("#", "").trim();
-
-            try {
-                int val1 = Integer.parseInt(number1);
-                int val2 = Integer.parseInt(number2);
-
-                return Integer.compare(val1, val2);
-            } catch (NumberFormatException e) {
-                return shirtStr1.compareTo(shirtStr2);
-            }
-        });
-
-
-        // sakat oyuncu satırlarını kırmızıya boyuyoruz, fit olanlar default kalıyor
-        // double clickte attributes gösteren bi pencere eklendi.
-        squadtable.setRowFactory(tv -> {
+        table.setRowFactory(tv -> {
             TableRow<AbstractPlayer> row = new TableRow<AbstractPlayer>() {
                 @Override
                 protected void updateItem(AbstractPlayer p, boolean empty) {
                     super.updateItem(p, empty);
-                    if (p == null || empty) {
-                        setStyle("");
-                    } else if (p.isInjured()) {
-                        setStyle("-fx-background-color: #ffd0d0;");
-                    } else {
-                        setStyle("");
-                    }
+                    if (p == null || empty) setStyle("");
+                    else if (p.isInjured()) setStyle("-fx-background-color: #ffd0d0;");
+                    else setStyle("");
                 }
             };
-
             row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                    AbstractPlayer rowData = row.getItem();
-                    showPlayerAttributesWindow(rowData);
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    showPlayerAttributesWindow(row.getItem());
                 }
             });
-
             return row;
         });
-
-        List<AbstractPlayer> sorted = new ArrayList<>(team.getSquad());
-        sorted.sort((a, b) -> Integer.compare(ovrof(b), ovrof(a)));
-        squadtable.setItems(FXCollections.observableArrayList(sorted));
     }
 
+    private void refresh() {
+        if (team == null) return;
+        startingtable.setItems(FXCollections.observableArrayList(team.getStartingLineup()));
+        benchtable.setItems(FXCollections.observableArrayList(team.getBench()));
+        squadcountlabel.setText("Squad: " + team.getCurrentSquadSize() + "/" + team.getMaxSquadSize()
+                + "  |  Starting: " + team.getStartingLineup().size() + "  |  Bench: " + team.getBench().size());
+    }
 
+    @FXML
+    public void swapbutton() {
+        AbstractPlayer out = startingtable.getSelectionModel().getSelectedItem();
+        AbstractPlayer in  = benchtable.getSelectionModel().getSelectedItem();
+        if (out == null || in == null) {
+            showAlert("Select players", "Select one player from Starting and one from Bench.");
+            return;
+        }
+        boolean ok = team.swapStartingWithBench(out, in);
+        if (!ok) {
+            showAlert("Swap failed", "Could not swap — player may be injured or already starting.");
+        }
+        refresh();
+    }
 
+    @FXML
+    public void autosetbutton() {
+        team.autoSetLineup(playersOnField);
+        refresh();
+    }
 
     private void showPlayerAttributesWindow(AbstractPlayer player) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/PlayerAttributesView.fxml"));
             Parent root = loader.load();
-
             PlayerAttributesController controller = loader.getController();
             controller.setPlayer(player);
-
             Stage stage = new Stage();
             stage.setTitle("Player Attributes - " + player.getName());
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
             stage.showAndWait();
-
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("PlayerAttributesView.fxml could not be found or loaded!");
+            System.out.println("PlayerAttributesView.fxml could not be loaded.");
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private String formatstatus(AbstractPlayer p){
+    private String formatStatus(AbstractPlayer p) {
         if (!p.isInjured()) return "Fit";
         Injury inj = p.getInjury();
-        return "Out — " + inj.getSeverity() + " (" + inj.getGamesRemaining() + "w)";
+        return "Out - " + inj.getSeverity() + " (" + inj.getGamesRemaining() + "w)";
     }
 
-    private int ovrof(AbstractPlayer p){
-        AbstractPlayerAttributes a = p.getAttributes();
-        return a == null ? 0 : a.getOverallRating();
-    }
-
-    @FXML
-    public void returnbutton() throws IOException{
-        URL dashboardurl = getClass().getResource("/DashboardView.fxml");
-        if (dashboardurl==null){
-            System.out.println("DashboardView.fxml not found!");
-            return;
-        }
-        Parent dashboardroot = FXMLLoader.load(dashboardurl);
-        Scene dashboardscene = new Scene(dashboardroot);
-        App.mainstage.setScene(dashboardscene);
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML
-    public void exitbutton(){
-        System.out.println("Game has been closed");
+    public void returnbutton() throws IOException {
+        URL url = getClass().getResource("/DashboardView.fxml");
+        if (url == null) { System.out.println("DashboardView.fxml not found!"); return; }
+        App.mainstage.setScene(new Scene(FXMLLoader.load(url)));
+    }
+
+    @FXML
+    public void exitbutton() {
         System.exit(0);
     }
 }

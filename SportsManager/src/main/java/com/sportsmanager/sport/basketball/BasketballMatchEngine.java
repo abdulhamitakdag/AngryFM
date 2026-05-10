@@ -44,7 +44,9 @@ public class BasketballMatchEngine implements IMatchEngine {
     private double calcLambda(AbstractTeam team, AbstractTeam opponent) {
         if (team.getAvailablePlayers().isEmpty()) return 15.0;
 
-        double avgOvr = team.getAvailableAvgOvr(5);
+        double avgOvr = team.getStartingLineup().isEmpty()
+                ? team.getAvailableAvgOvr(5)
+                : team.getStartingAvgOvr();
 
         double offensiveMod = 1.0;
         double defPenalty   = 1.0;
@@ -98,7 +100,9 @@ public class BasketballMatchEngine implements IMatchEngine {
         if (active != null && active.getSpecialty() == CoachSpecialty.FITNESS) {
             chance *= Math.max(0.10, 1.0 - active.getCoachingLevel() * 0.10);
         }
-        for (AbstractPlayer player : team.getAvailablePlayers()) {
+        List<AbstractPlayer> onCourt = team.getStartingLineup().isEmpty()
+                ? team.getAvailablePlayers() : team.getStartingLineup();
+        for (AbstractPlayer player : onCourt) {
             if (rng.nextDouble() < chance) {
                 Injury.Severity sev = rollSeverity();
                 int games = gamesForSeverity(sev);

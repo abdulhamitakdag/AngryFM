@@ -202,6 +202,7 @@ public class RandomGenerator{
             team.addCoach(coach);
         }
 
+        team.autoSetLineup(sport.getPlayersOnField());
         return team;
     }
     public static AbstractTeam generateTeam(ISport sport) {

@@ -20,7 +20,7 @@ public class FootballMatch extends AbstractMatch {
     }
 
     @Override
-    protected int getMaxSubstitutions() {
+    public int getMaxSubstitutions() {
         return MAX_SUBS;
     }
 

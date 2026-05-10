@@ -14,6 +14,7 @@ public abstract class AbstractTeam {
     private final List<AbstractCoach> coaches;
     private AbstractCoach activeCoach;
     private AbstractTactic currentTactic;
+    private final List<AbstractPlayer> startingLineup = new ArrayList<>();
 
     // Sezon istatistikleri
     private int wins;
@@ -222,6 +223,63 @@ public abstract class AbstractTeam {
         return p.getAttributes() != null ? p.getAttributes().getOverallRating() : 0;
     }
 
+
+    // starting lineup yönetimi
+
+    public void autoSetLineup(int playersOnField) {
+        startingLineup.clear();
+        List<AbstractPlayer> available = new ArrayList<>(getAvailablePlayers());
+        available.sort((a, b) -> Integer.compare(ovrOf(b), ovrOf(a)));
+        int count = Math.min(playersOnField, available.size());
+        for (int i = 0; i < count; i++) {
+            startingLineup.add(available.get(i));
+        }
+    }
+
+    public List<AbstractPlayer> getStartingLineup() {
+        startingLineup.removeIf(AbstractPlayer::isInjured);
+        return Collections.unmodifiableList(startingLineup);
+    }
+
+    public List<AbstractPlayer> getBench() {
+        List<AbstractPlayer> starting = getStartingLineup();
+        List<AbstractPlayer> bench = new ArrayList<>();
+        for (AbstractPlayer p : getAvailablePlayers()) {
+            if (!starting.contains(p)) bench.add(p);
+        }
+        return Collections.unmodifiableList(bench);
+    }
+
+    public boolean swapStartingWithBench(AbstractPlayer out, AbstractPlayer in) {
+        startingLineup.removeIf(AbstractPlayer::isInjured);
+        if (!startingLineup.contains(out)) return false;
+        if (startingLineup.contains(in)) return false;
+        if (in.isInjured()) return false;
+        int idx = startingLineup.indexOf(out);
+        startingLineup.set(idx, in);
+        return true;
+    }
+
+    public int getStartingAvgOvr() {
+        List<AbstractPlayer> active = getStartingLineup();
+        if (active.isEmpty()) return 0;
+        int total = 0;
+        for (AbstractPlayer p : active) total += ovrOf(p);
+        return total / active.size();
+    }
+
+    // oyuncu adından starting lineup'a ekler (save/load için)
+    public void restoreStartingLineup(List<String> names) {
+        startingLineup.clear();
+        for (String name : names) {
+            for (AbstractPlayer p : squad) {
+                if (p.getName().equals(name)) {
+                    startingLineup.add(p);
+                    break;
+                }
+            }
+        }
+    }
 
     // taktik
 

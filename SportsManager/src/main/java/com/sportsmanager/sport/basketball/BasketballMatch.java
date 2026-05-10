@@ -76,7 +76,7 @@ public class BasketballMatch extends AbstractMatch {
 
     // basketbolda değişiklik sınırı yok
     @Override
-    protected int getMaxSubstitutions() {
+    public int getMaxSubstitutions() {
         return Integer.MAX_VALUE;
     }
 
