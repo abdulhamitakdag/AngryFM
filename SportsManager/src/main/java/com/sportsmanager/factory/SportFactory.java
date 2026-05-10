@@ -1,6 +1,7 @@
 package com.sportsmanager.factory;
 
 import com.sportsmanager.core.interfaces.ISport;
+import com.sportsmanager.sport.basketball.BasketballSport;
 import com.sportsmanager.sport.football.FootballSport;
 
 public class SportFactory {
@@ -14,6 +15,8 @@ public class SportFactory {
         switch (sportId.toLowerCase()) {
             case "football":
                 return new FootballSport();
+            case "basketball":
+                return new BasketballSport();
             default:
                 throw new IllegalArgumentException("Unknown sport: " + sportId);
         }
