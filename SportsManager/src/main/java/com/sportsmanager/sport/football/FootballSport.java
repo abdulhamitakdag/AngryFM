@@ -132,9 +132,9 @@ public class FootballSport implements ISport {
                 physical = randStat(40, 70);
                 break;
             case CB:
-                pace = randStat(35, 70);
-                shooting = randStat(20, 45);
-                passing = randStat(35, 65);
+                pace = randStat(45, 80);
+                shooting = randStat(20, 50);
+                passing = randStat(45, 75);
                 defending = randStat(65, 95);
                 physical = randStat(60, 90);
                 break;
@@ -149,17 +149,17 @@ public class FootballSport implements ISport {
             case CDM:
                 pace = randStat(40, 70);
                 shooting = randStat(30, 60);
-                passing = randStat(55, 85);
-                defending = randStat(60, 90);
+                passing = randStat(65, 95);
+                defending = randStat(55, 85);
                 physical = randStat(60, 90);
                 break;
             default:
 
-                pace = randStat(45, 80);
-                shooting = randStat(45, 80);
-                passing = randStat(45, 80);
-                defending = randStat(45, 80);
-                physical = randStat(45, 80);
+                pace = randStat(45, 85);
+                shooting = randStat(45, 85);
+                passing = randStat(45, 85);
+                defending = randStat(45, 85);
+                physical = randStat(45, 85);
                 break;
         }
 

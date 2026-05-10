@@ -73,7 +73,7 @@ public class BasketballSport implements ISport {
 
     @Override
     public AbstractTactic createDefaultTactic() {
-        return BasketballTactic.createStandard();
+        return BasketballTactic.createBalanced();
     }
 
     @Override
@@ -99,7 +99,7 @@ public class BasketballSport implements ISport {
 
         switch (pos) {
             case PG:
-                shooting   = rand(45, 80);
+                shooting   = rand(50, 85);
                 playmaking = rand(65, 95);
                 defending  = rand(40, 70);
                 rebounding = rand(25, 50);

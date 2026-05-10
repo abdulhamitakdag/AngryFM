@@ -3,39 +3,70 @@ package com.sportsmanager.sport.basketball;
 import com.sportsmanager.core.model.AbstractPlayer;
 import com.sportsmanager.core.model.AbstractTactic;
 
+import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 
-// TODO (Person B): formasyon logic'ini ve validateForSquad'ı tamamla
 public class BasketballTactic extends AbstractTactic {
 
-    public BasketballTactic(String name, double attackingWeight, double pressureIntensity) {
+    private final Map<BasketballPositions, Integer> requiredPositions;
+
+    public BasketballTactic(String name, double attackingWeight, double pressureIntensity, Map<BasketballPositions, Integer> requiredPositions) {
         super(name, attackingWeight, pressureIntensity);
+        this.requiredPositions = requiredPositions;
     }
 
-    // Static factory metodları — Person B gerekirse ekleyebilir
-    public static BasketballTactic createStandard() {
-        return new BasketballTactic("1-2-2", 0.5, 0.5);
+    public Map<BasketballPositions, Integer> getRequiredPositions() {
+        return requiredPositions;
     }
 
-    public static BasketballTactic createZone() {
-        return new BasketballTactic("2-1-2", 0.4, 0.6);
+    private static Map<BasketballPositions, Integer> getStandardLineup() {
+        Map<BasketballPositions, Integer> pos = new HashMap<>();
+        pos.put(BasketballPositions.PG, 1);
+        pos.put(BasketballPositions.SG, 1);
+        pos.put(BasketballPositions.SF, 1);
+        pos.put(BasketballPositions.PF, 1);
+        pos.put(BasketballPositions.C, 1);
+        return pos;
     }
 
-    public static BasketballTactic createTrap() {
-        return new BasketballTactic("1-3-1", 0.45, 0.75);
+    public static BasketballTactic createOffensive() {
+        return new BasketballTactic("Offensive", 0.70, 0.60, getStandardLineup());
     }
 
-    public static BasketballTactic createBig() {
-        return new BasketballTactic("2-3", 0.35, 0.5);
+    public static BasketballTactic createDefensive() {
+        return new BasketballTactic("Defensive Wall", 0.30, 0.40, getStandardLineup());
     }
+
+    public static BasketballTactic createBalanced() {
+        return new BasketballTactic("Balanced", 0.50, 0.50, getStandardLineup());
+    }
+
 
     @Override
     public String getFormationString() {
-        return getName();
+        return "Standard 5";
     }
 
     @Override
     public void validateForSquad(List<AbstractPlayer> squad) {
-        // TODO (Person B): pozisyon gereksinimleri kontrolü
+        Map<BasketballPositions, Integer> availablePositions = new HashMap<>();
+
+        for (AbstractPlayer p : squad) {
+            if (p instanceof BasketballPlayer bp && !bp.isInjured()) {
+                BasketballPositions pos = bp.getBasketballPosition();
+                availablePositions.put(pos, availablePositions.getOrDefault(pos, 0) + 1);
+            }
+        }
+
+        for (Map.Entry<BasketballPositions, Integer> entry : requiredPositions.entrySet()) {
+            BasketballPositions requiredPos = entry.getKey();
+            int requiredCount = entry.getValue();
+            int availableCount = availablePositions.getOrDefault(requiredPos, 0);
+
+            if (availableCount < requiredCount) {
+                throw new IllegalArgumentException("Tactic error! " + this.getName() + " Insufficient " + requiredPos + " Required " + requiredCount + " Current " + availableCount);
+            }
+        }
     }
 }
