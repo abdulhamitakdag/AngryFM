@@ -10,8 +10,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestFootballPlayer extends BaseTest {
 
     private FootballPlayer createPlayer(int age, FootballPositions position) {
-        return new FootballPlayer("Player", age, Gender.MALE, 7, position,
-                new FootballAttributes(position, 70, 70, 70, 70, 70));
+        FootballAttributes attrs = (position == FootballPositions.GK)
+                ? new FootballAttributes(position, 70, 70, 70, 70)
+                : new FootballAttributes(position, 70, 70, 70, 70, 70);
+        return new FootballPlayer("Player", age, Gender.MALE, 7, position, attrs);
     }
 
     @Test

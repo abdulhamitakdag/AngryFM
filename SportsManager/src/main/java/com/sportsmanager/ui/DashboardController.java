@@ -497,18 +497,18 @@ public class DashboardController {
                 String half = i < halfNames.length ? halfNames[i] : ("Period " + (i + 1));
                 PeriodResult p = periods.get(i);
                 for (int g = 0; g < p.getHomeScore(); g++) {
-                    List<AbstractPlayer> squad = result.getHomeTeam().getSquad();
-                    if (!squad.isEmpty()) {
-                        sb.append("  ").append(squad.get(rng.nextInt(squad.size())).getName())
+                    List<AbstractPlayer> pool = getScorers(result.getHomeTeam());
+                    if (!pool.isEmpty()) {
+                        sb.append("  ").append(pool.get(rng.nextInt(pool.size())).getName())
                           .append(" (").append(result.getHomeTeam().getName())
                           .append(", ").append(half).append(")\n");
                         anyGoal = true;
                     }
                 }
                 for (int g = 0; g < p.getAwayScore(); g++) {
-                    List<AbstractPlayer> squad = result.getAwayTeam().getSquad();
-                    if (!squad.isEmpty()) {
-                        sb.append("  ").append(squad.get(rng.nextInt(squad.size())).getName())
+                    List<AbstractPlayer> pool = getScorers(result.getAwayTeam());
+                    if (!pool.isEmpty()) {
+                        sb.append("  ").append(pool.get(rng.nextInt(pool.size())).getName())
                           .append(" (").append(result.getAwayTeam().getName())
                           .append(", ").append(half).append(")\n");
                         anyGoal = true;
@@ -534,7 +534,7 @@ public class DashboardController {
                 for (AbstractPlayer p : userInjuries) {
                     sb.append("  ").append(p.getName())
                       .append(" - ").append(p.getInjury().getSeverity())
-                      .append(" (").append(p.getInjury().getGamesRemaining()).append(" games)\n");
+                      .append(" (").append(injuryWeeksText(p.getInjury().getGamesRemaining())).append(")\n");
                 }
             }
             if (!oppInjuries.isEmpty()) {
@@ -542,7 +542,7 @@ public class DashboardController {
                 for (AbstractPlayer p : oppInjuries) {
                     sb.append("  ").append(p.getName())
                       .append(" - ").append(p.getInjury().getSeverity())
-                      .append(" (").append(p.getInjury().getGamesRemaining()).append(" games)\n");
+                      .append(" (").append(injuryWeeksText(p.getInjury().getGamesRemaining())).append(")\n");
                 }
             }
         }
@@ -561,9 +561,20 @@ public class DashboardController {
         alert.showAndWait();
     }
 
+    private String injuryWeeksText(int gamesRemaining) {
+        int future = gamesRemaining - 1;
+        if (future <= 0) return "back next week";
+        return future + (future == 1 ? " week" : " weeks");
+    }
+
+    private List<AbstractPlayer> getScorers(AbstractTeam team) {
+        List<AbstractPlayer> starters = team.getStartingLineup();
+        return starters.isEmpty() ? new ArrayList<>(team.getSquad()) : new ArrayList<>(starters);
+    }
+
     private void appendTopPerformers(StringBuilder sb, AbstractTeam team, int totalScore,
                                      String label, int count) {
-        List<AbstractPlayer> squad = new ArrayList<>(team.getSquad());
+        List<AbstractPlayer> squad = getScorers(team);
         if (squad.isEmpty()) return;
         squad.sort((a, b) -> Double.compare(
                 b.getAttributes().getOverallRating(),

@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -21,6 +22,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -83,6 +85,24 @@ public class SquadController {
         });
 
         nameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
+        nameCol.setCellFactory(col -> new TableCell<AbstractPlayer, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    AbstractPlayer p = getTableView().getItems().get(getIndex());
+                    if (p != null && p.isInjured()) {
+                        setStyle("-fx-text-fill: #cc0000; -fx-font-weight: bold;");
+                    } else {
+                        setStyle("");
+                    }
+                }
+            }
+        });
 
         posCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPosition()));
         posCol.setComparator((pos1, pos2) -> {
@@ -106,7 +126,7 @@ public class SquadController {
                 protected void updateItem(AbstractPlayer p, boolean empty) {
                     super.updateItem(p, empty);
                     if (p == null || empty) setStyle("");
-                    else if (p.isInjured()) setStyle("-fx-background-color: #ffd0d0;");
+                    else if (p.isInjured()) setStyle("-fx-background-color: #ffb3b3;");
                     else setStyle("");
                 }
             };
@@ -121,14 +141,24 @@ public class SquadController {
 
     private void refresh() {
         if (team == null) return;
-        startingtable.setItems(FXCollections.observableArrayList(team.getStartingLineup()));
-        benchtable.setItems(FXCollections.observableArrayList(team.getBench()));
+        List<AbstractPlayer> starting = team.getStartingLineup();
+        startingtable.setItems(FXCollections.observableArrayList(starting));
+
+        // Sakat olanlar dahil starting dışındaki tüm kadro
+        List<AbstractPlayer> rest = new ArrayList<>();
+        for (AbstractPlayer p : team.getSquad()) {
+            if (!starting.contains(p)) rest.add(p);
+        }
+        benchtable.setItems(FXCollections.observableArrayList(rest));
         updateCounts();
     }
 
     private void updateCounts() {
+        long injured = team.getSquad().stream().filter(AbstractPlayer::isInjured).count();
         squadcountlabel.setText("Squad: " + team.getCurrentSquadSize() + "/" + team.getMaxSquadSize()
-                + "  |  Starting: " + team.getStartingLineup().size() + "  |  Bench: " + team.getBench().size());
+                + "  |  Starting: " + team.getStartingLineup().size()
+                + "  |  Bench: " + team.getBench().size()
+                + (injured > 0 ? "  |  Injured: " + injured : ""));
     }
 
 

@@ -171,19 +171,15 @@ public abstract class AbstractSaveManager {
         AbstractLeague league = createLeague(state.getLeagueName());
         league.generateFixtures(teamList);
 
-        // oynanan maçları sırayla geri kaydediyoruz
         for (GameState.FixtureData fd : state.getFixtures()) {
             if (fd.isPlayed()) {
                 AbstractTeam home = teamsByName.get(fd.getHomeTeamName());
                 AbstractTeam away = teamsByName.get(fd.getAwayTeamName());
                 MatchResult result = new MatchResult(home, away, fd.getHomeScore(), fd.getAwayScore());
-                league.recordResult(result);
+                league.recordResultForRestore(result);
             }
         }
 
-        // haftayı doğru yere getiriyoruz — advanceWeek() yerine direkt set ediyoruz,
-        // çünkü advanceWeek() injury decrement yapar ve save'den restore edilen
-        // gamesRemaining değerleri fazladan azaltılırdı (double-decrement bug)
         league.setCurrentWeekDirect(state.getCurrentWeek());
 
         return league;
@@ -261,6 +257,9 @@ public abstract class AbstractSaveManager {
         } else {
             team.autoSetLineup(team.getSquad().size() <= 5 ? 5 : 11);
         }
+
+        team.restoreSeasonStats(td.getWins(), td.getDraws(), td.getLosses(),
+                td.getGoalsScored(), td.getGoalsConceded());
 
         return team;
     }

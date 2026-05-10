@@ -200,9 +200,33 @@ public abstract class AbstractLeague implements ILeague {
         return Collections.unmodifiableList(unplayed);
     }
 
-    // save/load restore için — injury decrement tetiklemez, haftayı doğrudan yükler
     public void setCurrentWeekDirect(int week) {
         this.currentWeek = week;
+    }
+
+    public void recordResultForRestore(MatchResult result) {
+        Fixture fixture = null;
+        for (Fixture f : fixtures) {
+            if (!f.isPlayed()
+                    && f.getHomeTeam().equals(result.getHomeTeam())
+                    && f.getAwayTeam().equals(result.getAwayTeam())) {
+                fixture = f;
+                break;
+            }
+        }
+        if (fixture == null) return;
+        fixture.setResult(result);
+
+        TeamInLeagueTable homeEntry = teamMap.get(fixture.getHomeTeam().getId());
+        TeamInLeagueTable awayEntry = teamMap.get(fixture.getAwayTeam().getId());
+        if (homeEntry == null || awayEntry == null) return;
+
+        homeEntry.addResult(result.isHomeWin(), result.isDraw(),
+                result.getHomeScore(), result.getAwayScore(),
+                getWinPoints(), getDrawPoints());
+        awayEntry.addResult(result.isAwayWin(), result.isDraw(),
+                result.getAwayScore(), result.getHomeScore(),
+                getWinPoints(), getDrawPoints());
     }
 
     public String getName()              { return name; }

@@ -18,7 +18,7 @@ public class TestSportFactory extends BaseTest {
 
     @Test
     void createSportThrowsExceptionForUnknownSport() {
-        assertThrows(IllegalArgumentException.class, () -> SportFactory.createSport("basketball"));
+        assertThrows(IllegalArgumentException.class, () -> SportFactory.createSport("volleyball"));
     }
 
     @Test
