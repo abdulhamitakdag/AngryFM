@@ -38,7 +38,7 @@ public class TestAbstractMatch extends BaseTest {
         }
 
         @Override
-        protected int getMaxSubstitutions() {
+        public int getMaxSubstitutions() {
             return 2;
         }
 
@@ -377,7 +377,7 @@ public class TestAbstractMatch extends BaseTest {
         }
 
         @Override
-        protected int getMaxSubstitutions() { return 3; }
+        public int getMaxSubstitutions() { return 3; }
     }
 
     @Test

@@ -48,7 +48,7 @@ public class BasketballTactic extends AbstractTactic {
 
     @Override
     public String getFormationString() {
-        return "Standard 5";
+        return getName();
     }
 
     @Override

@@ -11,10 +11,9 @@ public class TestBasketballTactic extends BaseTest {
 
     @Test
     void factoryMethodsReturnExpectedFormationNames() {
-        assertEquals("1-2-2", BasketballTactic.createStandard().getFormationString());
-        assertEquals("2-1-2", BasketballTactic.createZone().getFormationString());
-        assertEquals("1-3-1", BasketballTactic.createTrap().getFormationString());
-        assertEquals("2-3", BasketballTactic.createBig().getFormationString());
+        assertEquals("Balanced", BasketballTactic.createBalanced().getFormationString());
+        assertEquals("Offensive", BasketballTactic.createOffensive().getFormationString());
+        assertEquals("Defensive", BasketballTactic.createDefensive().getFormationString());
     }
 
     @Test
@@ -28,7 +27,7 @@ public class TestBasketballTactic extends BaseTest {
 
     @Test
     void validateForSquadCurrentlyAllowsAnySquad() {
-        BasketballTactic tactic = BasketballTactic.createStandard();
+        BasketballTactic tactic = BasketballTactic.createBalanced();
 
         assertDoesNotThrow(() -> tactic.validateForSquad(Collections.emptyList()));
     }

@@ -4,7 +4,6 @@ import com.sportsmanager.core.model.AbstractLeague;
 import com.sportsmanager.core.model.AbstractMatch;
 import com.sportsmanager.core.model.AbstractTeam;
 
-// TODO (Person B): createMatch'i BasketballMatch ile tamamla
 public class BasketballLeague extends AbstractLeague {
 
     public BasketballLeague(String name) {
