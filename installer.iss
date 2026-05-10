@@ -9,7 +9,6 @@ OutputBaseFilename=AngryFM_Setup
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
-UninstallDisplayIcon={app}\AngryFM.bat
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -18,8 +17,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Source: "SportsManager\target\SportsManager-fat.jar"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\AngryFM";         Filename: "{sys}\cmd.exe"; Parameters: "/c ""{app}\AngryFM.bat"""; WorkingDir: "{app}"; IconFilename: "{sys}\cmd.exe"
-Name: "{commondesktop}\AngryFM"; Filename: "{sys}\cmd.exe"; Parameters: "/c ""{app}\AngryFM.bat"""; WorkingDir: "{app}"; IconFilename: "{sys}\cmd.exe"
+Name: "{group}\AngryFM";         Filename: "{sys}\cmd.exe"; Parameters: "/c ""{app}\AngryFM.bat"""; WorkingDir: "{app}"
+Name: "{commondesktop}\AngryFM"; Filename: "{sys}\cmd.exe"; Parameters: "/c ""{app}\AngryFM.bat"""; WorkingDir: "{app}"
 
 [Run]
 Filename: "{sys}\cmd.exe"; Parameters: "/c ""{app}\AngryFM.bat"""; Description: "Launch AngryFM"; Flags: nowait postinstall skipifsilent
