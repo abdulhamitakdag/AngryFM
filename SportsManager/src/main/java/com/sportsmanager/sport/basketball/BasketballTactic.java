@@ -35,7 +35,7 @@ public class BasketballTactic extends AbstractTactic {
     }
 
     public static BasketballTactic createDefensive() {
-        return new BasketballTactic("Defensive Wall", 0.30, 0.40, getStandardLineup());
+        return new BasketballTactic("Defensive", 0.30, 0.40, getStandardLineup());
     }
 
     public static BasketballTactic createBalanced() {

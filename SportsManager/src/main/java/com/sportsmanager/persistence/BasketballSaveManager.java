@@ -96,15 +96,22 @@ public class BasketballSaveManager extends AbstractSaveManager {
     }
 
     // taktik adından fabrika metodunu seçiyor
-    // requiredPositions basketbolda kullanılmıyor — formasyon adı yeterli
     @Override
     protected AbstractTactic restoreTactic(GameState.TacticData td) {
         BasketballTactic tactic;
         switch (td.getName()) {
-            case "2-1-2": tactic = BasketballTactic.createZone();     break;
-            case "1-3-1": tactic = BasketballTactic.createTrap();     break;
-            case "2-3":   tactic = BasketballTactic.createBig();      break;
-            default:      tactic = BasketballTactic.createStandard(); break;
+            case "Offensive":
+                tactic = BasketballTactic.createOffensive();
+                break;
+            case "Defensive":
+                tactic = BasketballTactic.createDefensive();
+                break;
+            case "Balanced":
+                tactic = BasketballTactic.createBalanced();
+                break;
+            default:
+                tactic = BasketballTactic.createBalanced();
+                break;
         }
         tactic.setAttackingWeight(td.getAttackingWeight());
         tactic.setPressureIntensity(td.getPressureIntensity());
