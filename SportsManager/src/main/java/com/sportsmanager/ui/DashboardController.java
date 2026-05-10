@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javafx.scene.Scene;
 
 public class DashboardController {
 
@@ -215,9 +216,14 @@ public class DashboardController {
         if (gc == null) return;
 
         if (gc.getLeague().isSeasonOver()) {
-            List<TeamInLeagueTable> standings = gc.getLeague().getStandings();
-            String champion = standings.isEmpty() ? "?" : standings.get(0).getTeam().getName();
-            showAlert("Season Over!", "Champion: " + champion, "");
+            try {
+                URL url = getClass().getResource("/EndOfSeasonView.fxml");
+                if (url == null) { showAlert("Season Over!", "Champion: ?", ""); return; }
+                Parent root = FXMLLoader.load(url);
+                App.mainstage.setScene(new Scene(root));
+            } catch (IOException e) {
+                showAlert("Error", "Could not load end of season screen", e.getMessage());
+            }
             return;
         }
 

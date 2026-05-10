@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(mvn compile *)",
-      "PowerShell(& \"C:\\\\Program Files\\\\JetBrains\\\\IntelliJ IDEA Community Edition 2024.2.3\\\\plugins\\\\maven\\\\lib\\\\maven3\\\\bin\\\\mvn.cmd\" -f \"C:\\\\Users\\\\avcia\\\\Documents\\\\GitHub\\\\AngryFM\\\\SportsManager\\\\pom.xml\" compile -q 2>&1)"
+      "PowerShell(& \"C:\\\\Program Files\\\\JetBrains\\\\IntelliJ IDEA Community Edition 2024.2.3\\\\plugins\\\\maven\\\\lib\\\\maven3\\\\bin\\\\mvn.cmd\" -f \"C:\\\\Users\\\\avcia\\\\Documents\\\\GitHub\\\\AngryFM\\\\SportsManager\\\\pom.xml\" compile -q 2>&1)",
+      "Bash(Remove-Item \"C:\\\\Users\\\\avcia\\\\Documents\\\\GitHub\\\\AngryFM\\\\SportsManager\\\\src\\\\main\\\\java\\\\com\\\\sportsmanager\\\\ui\\\\BasketballGenderSelectController.java\" -ErrorAction SilentlyContinue)",
+      "Bash(Remove-Item \"C:\\\\Users\\\\avcia\\\\Documents\\\\GitHub\\\\AngryFM\\\\SportsManager\\\\src\\\\main\\\\resources\\\\BasketballGenderSelect.fxml\" -ErrorAction SilentlyContinue)"
     ]
   }
 }

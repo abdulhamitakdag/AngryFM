@@ -3,16 +3,16 @@ package com.sportsmanager.core.gamesession;
 import com.sportsmanager.core.interfaces.ISport;
 import com.sportsmanager.core.model.*;
 import com.sportsmanager.factory.SportFactory;
+import com.sportsmanager.persistence.AbstractSaveManager;
+import com.sportsmanager.persistence.BasketballSaveManager;
 import com.sportsmanager.persistence.FootballSaveManager;
 import com.sportsmanager.persistence.GameState;
-import com.sportsmanager.sport.football.FootballMatch;
 import com.sportsmanager.util.RandomGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 
 public class GameController {
 
@@ -30,6 +30,10 @@ public class GameController {
     private int trainingsThisWeek = 0;
     private int trainingsCountedForWeek = 0;
 
+    private AbstractMatch ongoingUserMatch;
+
+    private final Random rng = new Random();
+
     private GameController(ISport sport, Gender gender,
                            AbstractLeague league, List<AbstractTeam> teams) {
         this.sport = sport;
@@ -37,8 +41,6 @@ public class GameController {
         this.league = league;
         this.teams = teams;
     }
-
-
 
     public static GameController startNew(String sportId, Gender gender, int teamCount) {
         ISport sport = SportFactory.createSport(sportId);
@@ -66,11 +68,15 @@ public class GameController {
         return instance;
     }
 
-    // Kaydedilmiş oyunu yükler ve singleton'ı günceller
     public static GameController loadGame(String saveName) throws IOException {
-        FootballSaveManager saveManager = new FootballSaveManager();
-        GameState state = saveManager.load(saveName);
+        // Herhangi bir save manager ile JSON'ı oku (format her sporda aynı)
+        FootballSaveManager probe = new FootballSaveManager();
+        GameState state = probe.load(saveName);
+
+        // Sport tipine göre doğru save manager ile ligi geri oluştur
+        AbstractSaveManager saveManager = createSaveManagerForSport(state.getSportType());
         AbstractLeague league = saveManager.restoreLeague(state);
+
         ISport sport = SportFactory.createSport(state.getSportType());
         Gender gender = (state.getGender() != null)
                 ? Gender.valueOf(state.getGender())
@@ -89,13 +95,18 @@ public class GameController {
         return instance;
     }
 
-    // Mevcut oyunu diske yazar
     public void saveGame(String saveName) throws IOException {
-        FootballSaveManager saveManager = new FootballSaveManager();
+        AbstractSaveManager saveManager = createSaveManagerForSport(sport.getSportId());
         String userTeamName = (userTeam != null) ? userTeam.getName() : null;
         GameState state = saveManager.createState(league, userTeamName, gender);
         saveManager.save(state, saveName);
         this.currentSaveName = saveName;
+    }
+
+    // Sport ID'ye göre doğru save manager'ı döndürür
+    private static AbstractSaveManager createSaveManagerForSport(String sportId) {
+        if ("basketball".equals(sportId)) return new BasketballSaveManager();
+        return new FootballSaveManager();
     }
 
     public String getCurrentSaveName() {
@@ -110,7 +121,6 @@ public class GameController {
 
     // ------- Haftalık döngü -------
 
-    // Kullanıcının bu haftaki fixture'ını döner; yoksa null
     public Fixture getUserFixture() {
         if (userTeam == null) return null;
         int week = league.getCurrentWeek();
@@ -124,8 +134,7 @@ public class GameController {
         return null;
     }
 
-    private FootballMatch ongoingUserMatch;
-
+    // Diğer maçları simüle eder — hangi spor olursa olsun AbstractMatch kullanır
     public List<MatchResult> simulateOtherMatchesThisWeek() {
         List<MatchResult> results = new ArrayList<>();
         int week = league.getCurrentWeek();
@@ -134,7 +143,7 @@ public class GameController {
                 if (userTeam != null && (f.getHomeTeam().equals(userTeam) || f.getAwayTeam().equals(userTeam))) {
                     continue;
                 }
-                MatchResult r = simulateFootballMatch(f.getHomeTeam(), f.getAwayTeam());
+                MatchResult r = simulateAnyMatch(f.getHomeTeam(), f.getAwayTeam());
                 league.recordResult(r);
                 results.add(r);
             }
@@ -142,40 +151,66 @@ public class GameController {
         return results;
     }
 
+    // Kullanıcı maçını başlatır, ilk period'u simüle edip döner (halftime dialog için)
     public PeriodResult startUserMatch() {
         Fixture f = getUserFixture();
         if (f == null) return null;
-        ongoingUserMatch = new FootballMatch(f.getHomeTeam(), f.getAwayTeam());
+        ongoingUserMatch = league.createMatchForTeams(f.getHomeTeam(), f.getAwayTeam());
         ongoingUserMatch.start();
         return ongoingUserMatch.simulateCurrentPeriod();
     }
 
+    // Kalan tüm period'ları oynar ve sonucu döner
+    // Football: sadece 2. yarı | Basketball: Q2, Q3, Q4 (+ OT varsa)
     public MatchResult finishUserMatch() {
         if (ongoingUserMatch == null) return null;
-        ongoingUserMatch.resumeAfterBreak();
-        ongoingUserMatch.simulateCurrentPeriod();
+        while (ongoingUserMatch.getState() != AbstractMatch.MatchState.FINISHED) {
+            if (ongoingUserMatch.getState() == AbstractMatch.MatchState.BETWEEN_PERIODS) {
+                ongoingUserMatch.resumeAfterBreak();
+            }
+            if (ongoingUserMatch.getState() == AbstractMatch.MatchState.IN_PROGRESS) {
+                ongoingUserMatch.simulateCurrentPeriod();
+            }
+        }
         MatchResult r = ongoingUserMatch.getMatchResult();
         league.recordResult(r);
         ongoingUserMatch = null;
         return r;
     }
 
-    public FootballMatch getOngoingUserMatch() {
+    public AbstractMatch getOngoingUserMatch() {
         return ongoingUserMatch;
     }
 
-    private MatchResult simulateFootballMatch(AbstractTeam home, AbstractTeam away) {
-        FootballMatch match = new FootballMatch(home, away);
+    // Herhangi bir maçı tüm period'larıyla simüle eder
+    private MatchResult simulateAnyMatch(AbstractTeam home, AbstractTeam away) {
+        AbstractMatch match = league.createMatchForTeams(home, away);
         match.start();
-        match.simulateCurrentPeriod();
-        match.resumeAfterBreak();
-        match.simulateCurrentPeriod();
+        while (match.getState() != AbstractMatch.MatchState.FINISHED) {
+            if (match.getState() == AbstractMatch.MatchState.BETWEEN_PERIODS) {
+                match.resumeAfterBreak();
+            }
+            if (match.getState() == AbstractMatch.MatchState.IN_PROGRESS) {
+                match.simulateCurrentPeriod();
+            }
+        }
         return match.getMatchResult();
     }
 
-    // Haftayı ilerletir (sadece injury decrement + currentWeek++)
     public void advanceWeek() {
         league.advanceWeek();
+    }
+
+    // ------- Sezon sonu -------
+
+    // Şampiyonu döner ve yeni sezonu hazırlar (fikstur sıfırlanır, sakatlıklar temizlenir)
+    public AbstractTeam startNewSeason() {
+        AbstractTeam champion = league.getChampion();
+        league.resetForNewSeason();
+        trainingsThisWeek = 0;
+        trainingsCountedForWeek = 0;
+        ongoingUserMatch = null;
+        return champion;
     }
 
     // ------- Antrenman -------
@@ -207,7 +242,6 @@ public class GameController {
         }
 
         List<AbstractPlayer> healthyBefore = new ArrayList<>(userTeam.getAvailablePlayers());
-
         userTeam.runTrainingSession(intensity);
         trainingsThisWeek++;
 
@@ -223,8 +257,6 @@ public class GameController {
         }
         return new TrainingReport(newlyInjured, injuryChance);
     }
-
-    private final Random rng = new Random();
 
     private Injury.Severity rollInjurySeverity() {
         double r = rng.nextDouble();

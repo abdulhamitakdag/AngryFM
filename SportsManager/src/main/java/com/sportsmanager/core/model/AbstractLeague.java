@@ -165,6 +165,27 @@ public abstract class AbstractLeague implements ILeague {
         }
     }
 
+    // GameController'ın AbstractMatch oluşturabilmesi için public wrapper
+    public AbstractMatch createMatchForTeams(AbstractTeam home, AbstractTeam away) {
+        return createMatch(home, away);
+    }
+
+    // Yeni sezon başlatır: istatistikler sıfırlanır, sakatlıklar temizlenir, fikstur yeniden üretilir
+    public void resetForNewSeason() {
+        for (AbstractTeam team : teams) {
+            team.resetSeasonStats();
+            for (AbstractPlayer p : team.getSquad()) {
+                p.setInjury(null);
+            }
+        }
+        List<AbstractTeam> savedTeams = new ArrayList<>(teams);
+        fixtures.clear();
+        teamMap.clear();
+        teams.clear();
+        currentWeek = 1;
+        generateFixtures(savedTeams);
+    }
+
     public AbstractTeam getChampion() {
         if (!isSeasonOver()) return null;
         List<TeamInLeagueTable> teamlist = getStandings();

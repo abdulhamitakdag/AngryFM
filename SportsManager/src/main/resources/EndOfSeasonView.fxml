@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane prefHeight="480.0" prefWidth="620.0"
+            style="-fx-background-color: #1a1a2e;"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sportsmanager.ui.EndOfSeasonController">
+    <children>
+
+        <!-- Season title -->
+        <Label fx:id="seasonTitleLabel"
+               text="Season Over"
+               textFill="#f97316"
+               style="-fx-font-size: 13; -fx-font-weight: bold;"
+               AnchorPane.topAnchor="18.0"
+               AnchorPane.leftAnchor="0.0"
+               AnchorPane.rightAnchor="0.0"
+               alignment="CENTER" />
+
+        <!-- Champion banner -->
+        <Label text="CHAMPION"
+               textFill="#9898aa"
+               style="-fx-font-size: 11; -fx-font-weight: bold; -fx-letter-spacing: 2;"
+               AnchorPane.topAnchor="50.0"
+               AnchorPane.leftAnchor="0.0"
+               AnchorPane.rightAnchor="0.0"
+               alignment="CENTER" />
+
+        <Label fx:id="championLabel"
+               text="..."
+               textFill="#eab308"
+               style="-fx-font-size: 26; -fx-font-weight: bold;"
+               AnchorPane.topAnchor="70.0"
+               AnchorPane.leftAnchor="0.0"
+               AnchorPane.rightAnchor="0.0"
+               alignment="CENTER" />
+
+        <!-- Final standings table -->
+        <TableView fx:id="standingsTable"
+                   style="-fx-background-color: #22222e; -fx-border-color: #2e2e3e;"
+                   AnchorPane.topAnchor="118.0"
+                   AnchorPane.bottomAnchor="60.0"
+                   AnchorPane.leftAnchor="14.0"
+                   AnchorPane.rightAnchor="14.0">
+            <columns>
+                <TableColumn fx:id="colTeam" text="Team"  prefWidth="240.0" />
+                <TableColumn fx:id="colPts"  text="PTS"   prefWidth="50.0" />
+                <TableColumn fx:id="colW"    text="W"     prefWidth="45.0" />
+                <TableColumn fx:id="colD"    text="D"     prefWidth="45.0" />
+                <TableColumn fx:id="colL"    text="L"     prefWidth="45.0" />
+                <TableColumn fx:id="colGD"   text="GD"    prefWidth="55.0" />
+            </columns>
+        </TableView>
+
+        <!-- Buttons -->
+        <Button text="New Season"
+                onAction="#newSeasonButton"
+                style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="140.0" prefHeight="34.0"
+                AnchorPane.bottomAnchor="14.0"
+                AnchorPane.leftAnchor="140.0" />
+
+        <Button text="Main Menu"
+                onAction="#mainMenuButton"
+                style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="140.0" prefHeight="34.0"
+                AnchorPane.bottomAnchor="14.0"
+                AnchorPane.rightAnchor="140.0" />
+
+    </children>
+</AnchorPane>
