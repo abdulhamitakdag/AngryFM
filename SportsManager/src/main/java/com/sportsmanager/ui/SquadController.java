@@ -70,6 +70,21 @@ public class SquadController {
             return Integer.compare(index1, index2);
         });
 
+        shirtcol.setComparator((shirtStr1, shirtStr2) -> {
+
+            String number1 = shirtStr1.replace("#", "").trim();
+            String number2 = shirtStr2.replace("#", "").trim();
+
+            try {
+                int val1 = Integer.parseInt(number1);
+                int val2 = Integer.parseInt(number2);
+
+                return Integer.compare(val1, val2);
+            } catch (NumberFormatException e) {
+                return shirtStr1.compareTo(shirtStr2);
+            }
+        });
+
 
         // sakat oyuncu satırlarını kırmızıya boyuyoruz, fit olanlar default kalıyor
         // double clickte attributes gösteren bi pencere eklendi.

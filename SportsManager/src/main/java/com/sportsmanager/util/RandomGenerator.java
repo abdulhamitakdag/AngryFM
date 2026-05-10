@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Random;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.sportsmanager.util.ResourceLoader.*;
 
@@ -57,12 +59,41 @@ public class RandomGenerator{
         return firstFemmeName + " " + surname;
     }
 
-    public static AbstractPlayer generateFemalePlayer(ISport sport, String position){
+
+    private static int getRealisticShirtNumber(Set<Integer> usedNumbers, String position) {
+
+        if ("GK".equals(position) && usedNumbers != null && !usedNumbers.contains(1)) {
+            usedNumbers.add(1);
+            return 1;
+        }
+
+        int shirtNumber;
+        do {
+            int chance = random.nextInt(100);
+            if (chance < 80) {
+                shirtNumber = random.nextInt(30) + 1; // 1 ile 30 arası
+            } else {
+                shirtNumber = random.nextInt(69) + 31; // 31 ile 99 arası
+            }
+        } while ((usedNumbers != null && usedNumbers.contains(shirtNumber)) || (!"GK".equals(position) && shirtNumber == 1));
+        if (usedNumbers != null) {
+            usedNumbers.add(shirtNumber);
+        }
+        return shirtNumber;
+    }
+
+
+
+    public static AbstractPlayer generateFemalePlayer(ISport sport, String position, Set<Integer> usedNumbers){
         String name = generateRandomFullFemaleName();
         int age = random.nextInt(20) + 16;
-        int shirtNumber = random.nextInt(99) + 1;
+        int shirtNumber = getRealisticShirtNumber(usedNumbers, position);
         AbstractPlayerAttributes attributes = sport.generateRandomAttributes(position);
         return sport.createPlayer(name, age, Gender.FEMALE, shirtNumber, position, attributes);
+    }
+
+    public static AbstractPlayer generateFemalePlayer(ISport sport, String position){
+        return generateFemalePlayer(sport, position, null);
     }
 
     public static AbstractPlayer generateFemalePlayer(ISport sport){
@@ -75,12 +106,16 @@ public class RandomGenerator{
         return generateFemalePlayer(DEFAULT_SPORT);
     }
 
-    public static AbstractPlayer generateMalePlayer(ISport sport, String position){
+    public static AbstractPlayer generateMalePlayer(ISport sport, String position, Set<Integer> usedNumbers){
         String name = generateRandomFullMaleName();
         int age = random.nextInt(20) + 16;
-        int shirtNumber = random.nextInt(99) + 1;
+        int shirtNumber = getRealisticShirtNumber(usedNumbers, position);
         AbstractPlayerAttributes attributes = sport.generateRandomAttributes(position);
         return sport.createPlayer(name, age, Gender.MALE, shirtNumber, position, attributes);
+    }
+
+    public static AbstractPlayer generateMalePlayer(ISport sport, String position){
+        return generateMalePlayer(sport, position, null);
     }
 
     public static AbstractPlayer generateMalePlayer(ISport sport){
@@ -145,12 +180,13 @@ public class RandomGenerator{
             requiredPositions.add(randomPos);
         }
 
+        Set<Integer> usedNumbers = new HashSet<>();
         for (String pos : requiredPositions) {
             AbstractPlayer player = null;
             if (gender == Gender.MALE) {
-                player = generateMalePlayer(sport, pos);
+                player = generateMalePlayer(sport, pos, usedNumbers);
             } else if (gender == Gender.FEMALE) {
-                player = generateFemalePlayer(sport, pos);
+                player = generateFemalePlayer(sport, pos, usedNumbers);
             }
             team.addPlayer(player);
         }
