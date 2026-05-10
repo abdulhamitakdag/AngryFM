@@ -4,6 +4,7 @@ public abstract class AbstractPlayerAttributes {
 
     public abstract int computeOverallRating();
     public abstract void applyTrainingBoost(double intensity);
+    public abstract void applySeasonProgression(int age, java.util.Random rng);
 
     public int getOverallRating() {
         return computeOverallRating();

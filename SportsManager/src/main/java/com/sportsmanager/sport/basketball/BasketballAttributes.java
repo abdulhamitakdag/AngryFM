@@ -65,4 +65,35 @@ public class BasketballAttributes extends AbstractPlayerAttributes {
         this.rebounding = limiter(this.rebounding + boost, 0, 100);
         this.physical = limiter(this.physical + boost, 0, 100);
     }
+
+    @Override
+    public void applySeasonProgression(int age, java.util.Random rng) {
+        if (age <= 24) {
+            double min = 1.0, max = 3.0;
+            this.shooting   = limiter(this.shooting   + min + rng.nextDouble() * (max - min), 0, 100);
+            this.playmaking = limiter(this.playmaking + min + rng.nextDouble() * (max - min), 0, 100);
+            this.defending  = limiter(this.defending  + min + rng.nextDouble() * (max - min), 0, 100);
+            this.rebounding = limiter(this.rebounding + min + rng.nextDouble() * (max - min), 0, 100);
+            this.physical   = limiter(this.physical   + min + rng.nextDouble() * (max - min), 0, 100);
+        } else if (age <= 29) {
+            double swing = 1.0;
+            this.shooting   = limiter(this.shooting   + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+            this.playmaking = limiter(this.playmaking + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+            this.defending  = limiter(this.defending  + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+            this.rebounding = limiter(this.rebounding + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+            this.physical   = limiter(this.physical   + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+        } else if (age <= 34) {
+            this.physical   = limiter(this.physical   - (1.0 + rng.nextDouble() * 3.0), 0, 100);
+            this.rebounding = limiter(this.rebounding - (1.0 + rng.nextDouble() * 2.0), 0, 100);
+            this.shooting   = limiter(this.shooting   - (1.0 + rng.nextDouble() * 2.0), 0, 100);
+            this.playmaking = limiter(this.playmaking - (0.5 + rng.nextDouble() * 2.0), 0, 100);
+            this.defending  = limiter(this.defending  - (0.5 + rng.nextDouble() * 2.0), 0, 100);
+        } else {
+            this.physical   = limiter(this.physical   - (2.0 + rng.nextDouble() * 4.0), 0, 100);
+            this.rebounding = limiter(this.rebounding - (2.0 + rng.nextDouble() * 3.0), 0, 100);
+            this.shooting   = limiter(this.shooting   - (2.0 + rng.nextDouble() * 3.0), 0, 100);
+            this.playmaking = limiter(this.playmaking - (1.0 + rng.nextDouble() * 3.0), 0, 100);
+            this.defending  = limiter(this.defending  - (1.0 + rng.nextDouble() * 3.0), 0, 100);
+        }
+    }
 }

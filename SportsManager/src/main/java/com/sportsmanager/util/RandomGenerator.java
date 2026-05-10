@@ -215,6 +215,13 @@ public class RandomGenerator{
         team.autoSetLineup(sport.getPlayersOnField());
         return team;
     }
+    public static AbstractPlayer generateRegenPlayer(ISport sport, Gender gender, String position, Set<Integer> usedNumbers) {
+        if (gender == Gender.FEMALE) {
+            return generateFemalePlayer(sport, position, usedNumbers);
+        }
+        return generateMalePlayer(sport, position, usedNumbers);
+    }
+
     public static AbstractTeam generateTeam(ISport sport) {
         return generateTeam(sport, DEFAULT_GENDER);
     }

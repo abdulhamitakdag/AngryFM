@@ -11,6 +11,7 @@ public class GameState {
     private String sportType;
     private String leagueName;
     private int currentWeek;
+    private int seasonNumber = 1;
     private String userTeamName;
     private String gender;
     private List<TeamData> teams;
@@ -35,6 +36,11 @@ public class GameState {
         { return currentWeek; }
     public void setCurrentWeek(int currentWeek)
         { this.currentWeek = currentWeek; }
+
+    public int getSeasonNumber()
+        { return seasonNumber; }
+    public void setSeasonNumber(int seasonNumber)
+        { this.seasonNumber = seasonNumber; }
 
     public String getUserTeamName()
         { return userTeamName; }

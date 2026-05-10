@@ -26,6 +26,10 @@ public abstract class AbstractPerson implements ITrainable {
         this.gender = gender;
     }
 
+    public void incrementAge() {
+        this.age++;
+    }
+
     public UUID getId() { return id; }
     public String getName() { return name; }
     public int getAge() { return age; }

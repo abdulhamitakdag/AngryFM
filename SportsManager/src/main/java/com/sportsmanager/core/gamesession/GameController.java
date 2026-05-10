@@ -25,6 +25,7 @@ public class GameController {
     private AbstractTeam userTeam;
 
     private String currentSaveName;
+    private int seasonNumber = 1;
 
     public static final int MAX_TRAININGS_PER_WEEK = 1;
     private int trainingsThisWeek = 0;
@@ -86,6 +87,7 @@ public class GameController {
         List<AbstractTeam> teams = new ArrayList<>(league.getTeams());
         instance = new GameController(sport, gender, league, teams);
         instance.currentSaveName = saveName;
+        instance.seasonNumber = state.getSeasonNumber() > 0 ? state.getSeasonNumber() : 1;
         if (state.getUserTeamName() != null) {
             for (AbstractTeam t : teams) {
                 if (t.getName().equals(state.getUserTeamName())) {
@@ -100,7 +102,7 @@ public class GameController {
     public void saveGame(String saveName) throws IOException {
         AbstractSaveManager saveManager = createSaveManagerForSport(sport.getSportId());
         String userTeamName = (userTeam != null) ? userTeam.getName() : null;
-        GameState state = saveManager.createState(league, userTeamName, gender);
+        GameState state = saveManager.createState(league, userTeamName, gender, seasonNumber);
         saveManager.save(state, saveName);
         this.currentSaveName = saveName;
     }
@@ -234,14 +236,102 @@ public class GameController {
 
     // ------- Sezon sonu -------
 
-    // Şampiyonu döner ve yeni sezonu hazırlar (fikstur sıfırlanır, sakatlıklar temizlenir)
-    public AbstractTeam startNewSeason() {
+    public SeasonTransitionResult startNewSeason() {
         AbstractTeam champion = league.getChampion();
+
+        List<AbstractPlayer> retiredPlayers = new ArrayList<>();
+        List<AbstractPlayer> regenPlayers = new ArrayList<>();
+        List<AbstractPlayer> userRetired = new ArrayList<>();
+        List<AbstractPlayer> userRegen = new ArrayList<>();
+
+        for (AbstractTeam team : teams) {
+            // 1) yaşlandır ve attribute progression uygula
+            for (AbstractPlayer p : team.getSquad()) {
+                p.incrementAge();
+                if (p.getAttributes() != null) {
+                    p.getAttributes().applySeasonProgression(p.getAge(), rng);
+                }
+            }
+
+            // 2) emeklilik: 40+ kesin, 35-39 artan şansla
+            List<AbstractPlayer> toRetire = new ArrayList<>();
+            for (AbstractPlayer p : team.getSquad()) {
+                if (p.getAge() >= 40) {
+                    toRetire.add(p);
+                } else if (p.getAge() >= 35) {
+                    double retireChance = (p.getAge() - 34) * 0.15;
+                    if (rng.nextDouble() < retireChance) {
+                        toRetire.add(p);
+                    }
+                }
+            }
+
+            retiredPlayers.addAll(toRetire);
+
+            // 3) emekli oyuncuları çıkar ve regen ile doldur
+            java.util.Set<Integer> usedNumbers = new java.util.HashSet<>();
+            for (AbstractPlayer p : team.getSquad()) {
+                usedNumbers.add(p.getShirtNumber());
+            }
+
+            boolean isUserTeam = team.equals(userTeam);
+            for (AbstractPlayer retired : toRetire) {
+                String position = retired.getPosition();
+                usedNumbers.remove(retired.getShirtNumber());
+                team.removePlayer(retired);
+
+                AbstractPlayer regen = RandomGenerator.generateRegenPlayer(
+                        sport, gender, position, usedNumbers);
+                team.addPlayer(regen);
+                regenPlayers.add(regen);
+
+                if (isUserTeam) {
+                    userRetired.add(retired);
+                    userRegen.add(regen);
+                }
+            }
+        }
+
+        seasonNumber++;
         league.resetForNewSeason();
+
+        for (AbstractTeam team : teams) {
+            team.autoSetLineup(sport.getPlayersOnField());
+        }
+
         trainingsThisWeek = 0;
         trainingsCountedForWeek = 0;
         ongoingUserMatch = null;
-        return champion;
+
+        return new SeasonTransitionResult(champion, retiredPlayers, regenPlayers,
+                userRetired, userRegen, seasonNumber);
+    }
+
+    public static class SeasonTransitionResult {
+        private final AbstractTeam champion;
+        private final List<AbstractPlayer> retiredPlayers;
+        private final List<AbstractPlayer> regenPlayers;
+        private final List<AbstractPlayer> userRetiredPlayers;
+        private final List<AbstractPlayer> userRegenPlayers;
+        private final int newSeasonNumber;
+
+        public SeasonTransitionResult(AbstractTeam champion, List<AbstractPlayer> retired,
+                                      List<AbstractPlayer> regen, List<AbstractPlayer> userRetired,
+                                      List<AbstractPlayer> userRegen, int newSeasonNumber) {
+            this.champion = champion;
+            this.retiredPlayers = retired;
+            this.regenPlayers = regen;
+            this.userRetiredPlayers = userRetired;
+            this.userRegenPlayers = userRegen;
+            this.newSeasonNumber = newSeasonNumber;
+        }
+
+        public AbstractTeam getChampion()                    { return champion; }
+        public List<AbstractPlayer> getRetiredPlayers()      { return retiredPlayers; }
+        public List<AbstractPlayer> getRegenPlayers()        { return regenPlayers; }
+        public List<AbstractPlayer> getUserRetiredPlayers()  { return userRetiredPlayers; }
+        public List<AbstractPlayer> getUserRegenPlayers()    { return userRegenPlayers; }
+        public int getNewSeasonNumber()                      { return newSeasonNumber; }
     }
 
     // ------- Antrenman -------
@@ -337,6 +427,7 @@ public class GameController {
     public AbstractLeague getLeague()            { return league; }
     public List<AbstractTeam> getTeams()         { return teams; }
     public Gender getGender()                    { return gender; }
+    public int getSeasonNumber()                 { return seasonNumber; }
     public List<?> getStandings()                { return league.getStandings(); }
     public List<?> getFixtures()                 { return league.getFixtures(); }
 }

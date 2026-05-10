@@ -19,6 +19,10 @@ public class TestAbstractPlayer extends BaseTest {
             totalBoost += intensity;
         }
 
+        @Override
+        public void applySeasonProgression(int age, java.util.Random rng) {
+        }
+
         public double getTotalBoost() {
             return totalBoost;
         }

@@ -158,5 +158,65 @@ public class FootballAttributes extends AbstractPlayerAttributes {
         this.pace = limiter(this.pace + boost, 0, 100);
     }
 
+    @Override
+    public void applySeasonProgression(int age, java.util.Random rng) {
+        if (age <= 24) {
+            double min = 1.0, max = 3.0;
+            if (position == FootballPositions.GK) {
+                this.reflexes    = limiter(this.reflexes    + min + rng.nextDouble() * (max - min), 0, 100);
+                this.positioning = limiter(this.positioning + min + rng.nextDouble() * (max - min), 0, 100);
+                this.diving      = limiter(this.diving      + min + rng.nextDouble() * (max - min), 0, 100);
+                this.handling    = limiter(this.handling    + min + rng.nextDouble() * (max - min), 0, 100);
+            } else {
+                this.pace      = limiter(this.pace      + min + rng.nextDouble() * (max - min), 0, 100);
+                this.shooting  = limiter(this.shooting  + min + rng.nextDouble() * (max - min), 0, 100);
+                this.passing   = limiter(this.passing   + min + rng.nextDouble() * (max - min), 0, 100);
+                this.defending = limiter(this.defending + min + rng.nextDouble() * (max - min), 0, 100);
+                this.physical  = limiter(this.physical  + min + rng.nextDouble() * (max - min), 0, 100);
+            }
+        } else if (age <= 29) {
+            double swing = 1.0;
+            if (position == FootballPositions.GK) {
+                this.reflexes    = limiter(this.reflexes    + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+                this.positioning = limiter(this.positioning + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+                this.diving      = limiter(this.diving      + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+                this.handling    = limiter(this.handling    + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+            } else {
+                this.pace      = limiter(this.pace      + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+                this.shooting  = limiter(this.shooting  + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+                this.passing   = limiter(this.passing   + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+                this.defending = limiter(this.defending + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+                this.physical  = limiter(this.physical  + (rng.nextDouble() * 2 - 1) * swing, 0, 100);
+            }
+        } else if (age <= 34) {
+            double min = -1.0, max = -3.0;
+            if (position == FootballPositions.GK) {
+                this.reflexes    = limiter(this.reflexes    + min + rng.nextDouble() * (max - min), 0, 100);
+                this.positioning = limiter(this.positioning + min + rng.nextDouble() * (max - min), 0, 100);
+                this.diving      = limiter(this.diving      + min + rng.nextDouble() * (max - min), 0, 100);
+                this.handling    = limiter(this.handling    + min + rng.nextDouble() * (max - min), 0, 100);
+            } else {
+                this.pace      = limiter(this.pace      - (1.0 + rng.nextDouble() * 3.0), 0, 100);
+                this.physical  = limiter(this.physical  - (1.0 + rng.nextDouble() * 3.0), 0, 100);
+                this.shooting  = limiter(this.shooting  + min + rng.nextDouble() * (max - min), 0, 100);
+                this.passing   = limiter(this.passing   + min + rng.nextDouble() * (max - min), 0, 100);
+                this.defending = limiter(this.defending + min + rng.nextDouble() * (max - min), 0, 100);
+            }
+        } else {
+            double min = -2.0, max = -5.0;
+            if (position == FootballPositions.GK) {
+                this.reflexes    = limiter(this.reflexes    + min + rng.nextDouble() * (max - min), 0, 100);
+                this.positioning = limiter(this.positioning + min + rng.nextDouble() * (max - min), 0, 100);
+                this.diving      = limiter(this.diving      + min + rng.nextDouble() * (max - min), 0, 100);
+                this.handling    = limiter(this.handling    + min + rng.nextDouble() * (max - min), 0, 100);
+            } else {
+                this.pace      = limiter(this.pace      - (2.0 + rng.nextDouble() * 4.0), 0, 100);
+                this.physical  = limiter(this.physical  - (2.0 + rng.nextDouble() * 4.0), 0, 100);
+                this.shooting  = limiter(this.shooting  + min + rng.nextDouble() * (max - min), 0, 100);
+                this.passing   = limiter(this.passing   + min + rng.nextDouble() * (max - min), 0, 100);
+                this.defending = limiter(this.defending + min + rng.nextDouble() * (max - min), 0, 100);
+            }
+        }
+    }
 
 }

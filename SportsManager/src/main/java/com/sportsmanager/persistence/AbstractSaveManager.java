@@ -123,11 +123,16 @@ public abstract class AbstractSaveManager {
     }
 
     public GameState createState(AbstractLeague league, String userTeamName, Gender gender) {
+        return createState(league, userTeamName, gender, 1);
+    }
+
+    public GameState createState(AbstractLeague league, String userTeamName, Gender gender, int seasonNumber) {
         GameState state = new GameState();
         state.setSaveVersion(1);
         state.setSportType(getSportType());
         state.setLeagueName(league.getName());
         state.setCurrentWeek(league.getCurrentWeek());
+        state.setSeasonNumber(seasonNumber);
         state.setUserTeamName(userTeamName);
         if (gender != null) {
             state.setGender(gender.name());

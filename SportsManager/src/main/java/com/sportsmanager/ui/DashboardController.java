@@ -65,7 +65,8 @@ public class DashboardController {
         }
 
         String sportId = gc.getSport().getSportId();
-        sportLabel.setText(sportId.substring(0, 1).toUpperCase() + sportId.substring(1));
+        String sportName = sportId.substring(0, 1).toUpperCase() + sportId.substring(1);
+        sportLabel.setText(sportName + " — Season " + gc.getSeasonNumber());
 
         int week = gc.getLeague().getCurrentWeek();
         int totalWeeks = computeTotalWeeks(gc);
