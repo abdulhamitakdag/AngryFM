@@ -10,6 +10,7 @@ public class BasketballTeam extends AbstractTeam {
 
     public BasketballTeam(String name) {
         super(name);
+        this.setCurrentTactic(BasketballTactic.createBalanced());
     }
     @Override
     public int getMaxSquadSize() {

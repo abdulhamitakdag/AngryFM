@@ -169,16 +169,26 @@ public class RandomGenerator{
         int randomFree = squadSize % totalPositions;
         List<String> requiredPositions = new ArrayList<>();
 
+
         for (String pos : positions) {
-            for (int i = 0; i < minPerPosition; i++) {
-                requiredPositions.add(pos);  // there is minPerPosition times requiredPositions in the arraylist. forexample: 2 GK, 2 RB, 2 ST etc.
+            for (int i = 0; i < minPerPosition; i++) {  // there is minPerPosition times requiredPositions in the arraylist. forexample: 2 GK, 2 RB, 2 ST etc.
+                requiredPositions.add(pos);
             }
+        }
+        if (positions.contains("CB") && randomFree > 0) {
+            requiredPositions.add("CB");           // en az 3 CB  olmasını sağlamak için çünkü 2 CB ile 3lü veya 5li diziliş kullanamıyoruz!
+            randomFree--;
+        }
+        if (positions.contains("ST") && randomFree > 0) {
+            requiredPositions.add("ST");           // en az 3 ST  olmasını sağlamak için
+            randomFree--;
         }
 
         for (int i = 0; i < randomFree; i++) {
             String randomPos = positions.get(random.nextInt(totalPositions));
             requiredPositions.add(randomPos);
         }
+
 
         Set<Integer> usedNumbers = new HashSet<>();
         for (String pos : requiredPositions) {

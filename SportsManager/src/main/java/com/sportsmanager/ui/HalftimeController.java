@@ -38,8 +38,7 @@ public class HalftimeController {
             "3-5-2", "3-4-3", "5-3-2", "5-4-1"
     };
     private static final String[] BASKETBALL_TACTICS = {
-            "Standard", "Offensive", "Defensive Wall",
-            "2-1-2", "1-3-1", "2-3"
+            "Balanced", "Offensive", "Defensive",
     };
 
     private AbstractTeam userTeam;
@@ -224,12 +223,9 @@ public class HalftimeController {
 
     private BasketballTactic createBasketballTactic(String name) {
         switch (name) {
-            case "Standard":       return BasketballTactic.createStandard();
+            case "Balanced":       return BasketballTactic.createBalanced();
             case "Offensive":      return BasketballTactic.createOffensive();
-            case "Defensive Wall": return BasketballTactic.createDefensive();
-            case "2-1-2":          return BasketballTactic.createZone();
-            case "1-3-1":          return BasketballTactic.createTrap();
-            case "2-3":            return BasketballTactic.createBig();
+            case "Defensive":      return BasketballTactic.createDefensive();
             default:               return null;
         }
     }

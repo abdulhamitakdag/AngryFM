@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import com.sportsmanager.sport.football.*;
+import com.sportsmanager.sport.basketball.*;
+import java.util.*;
 
 // takımların temel yapısı - kadro, antrenman, sezon istatistikleri burada
 public abstract class AbstractTeam {
@@ -224,17 +227,57 @@ public abstract class AbstractTeam {
     }
 
 
-    // starting lineup yönetimi
-
     public void autoSetLineup(int playersOnField) {
         startingLineup.clear();
-        List<AbstractPlayer> available = new ArrayList<>(getAvailablePlayers());
-        available.sort((a, b) -> Integer.compare(ovrOf(b), ovrOf(a)));
-        int count = Math.min(playersOnField, available.size());
-        for (int i = 0; i < count; i++) {
-            startingLineup.add(available.get(i));
+        List<AbstractPlayer> availablePlayers = new ArrayList<>(getAvailablePlayers());
+
+        availablePlayers.sort((a, b) -> Integer.compare(ovrOf(b), ovrOf(a)));
+
+        List<AbstractPlayer> newStarting = new ArrayList<>();
+
+        if (currentTactic != null) {
+            if (currentTactic instanceof FootballTactic) {
+                FootballTactic ft = (FootballTactic) currentTactic;
+                for (Map.Entry<FootballPositions, Integer> entry : ft.getRequiredPositions().entrySet()) {
+                    String requiredPositions = entry.getKey().name();
+                    int count = entry.getValue();
+                    for (int i = 0; i < count; i++) {
+                        AbstractPlayer pl = null;
+                        for (AbstractPlayer p : availablePlayers) {
+                            if (p.getPosition().equals(requiredPositions)) { pl = p; break; }
+                        }
+                        if (pl != null) {
+                            newStarting.add(pl);
+                            availablePlayers.remove(pl);
+                        }
+                    }
+                }
+            } else if (currentTactic instanceof BasketballTactic) {
+                BasketballTactic bt = (BasketballTactic) currentTactic;
+                for (Map.Entry<BasketballPositions, Integer> entry : bt.getRequiredPositions().entrySet()) {
+                    String reqPos = entry.getKey().name();
+                    int count = entry.getValue();
+                    for (int i = 0; i < count; i++) {
+                        AbstractPlayer pl = null;
+                        for (AbstractPlayer p : availablePlayers) {
+                            if (p.getPosition().equals(reqPos)) { pl = p; break; }
+                        }
+                        if (pl != null) {
+                            newStarting.add(pl);
+                            availablePlayers.remove(pl);
+                        }
+                    }
+                }
+            }
         }
+
+        while (newStarting.size() < playersOnField && !availablePlayers.isEmpty()) {
+            newStarting.add(availablePlayers.remove(0));
+        }
+
+        startingLineup.addAll(newStarting);
     }
+
 
     public List<AbstractPlayer> getStartingLineup() {
         startingLineup.removeIf(AbstractPlayer::isInjured);
@@ -252,9 +295,12 @@ public abstract class AbstractTeam {
 
     public boolean swapStartingWithBench(AbstractPlayer out, AbstractPlayer in) {
         startingLineup.removeIf(AbstractPlayer::isInjured);
+        if (in == null || in.isInjured() || startingLineup.contains(in)) return false;
+        if (out == null) {
+            startingLineup.add(in);
+            return true;
+        }
         if (!startingLineup.contains(out)) return false;
-        if (startingLineup.contains(in)) return false;
-        if (in.isInjured()) return false;
         int idx = startingLineup.indexOf(out);
         startingLineup.set(idx, in);
         return true;

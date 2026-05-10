@@ -223,6 +223,15 @@ public class DashboardController {
         GameController gc = GameController.getInstance();
         if (gc == null) return;
 
+        int requiredPlayers = gc.getSport().getPlayersOnField();
+        AbstractTeam userTeam = gc.getUserTeam();
+
+        if (userTeam != null && userTeam.getStartingLineup().size() < requiredPlayers) {
+            showAlert("Incomplete Squad", "You can not play with an incomplete lineup.",
+                    "Please complete your squad (" + requiredPlayers + " players) from the 'Squad' screen first.");
+            return;
+        }
+
         if (gc.getLeague().isSeasonOver()) {
             try {
                 URL url = getClass().getResource("/EndOfSeasonView.fxml");

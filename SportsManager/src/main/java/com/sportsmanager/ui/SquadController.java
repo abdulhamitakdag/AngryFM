@@ -21,21 +21,29 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 
 public class SquadController {
+
+    private static final List<String> POS_ORDER = Arrays.asList(
+            "GK", "LB", "CB", "RB", "CDM", "CM", "LW", "CAM", "RW", "ST",
+            "PG", "SG", "SF", "PF", "C"
+    );
 
     @FXML private Label teamnamelabel;
     @FXML private Label squadcountlabel;
     @FXML private Label infolabel;
 
     @FXML private TableView<AbstractPlayer> startingtable;
+    @FXML private TableColumn<AbstractPlayer, String> s_shirtcol;
     @FXML private TableColumn<AbstractPlayer, String> s_namecol;
     @FXML private TableColumn<AbstractPlayer, String> s_poscol;
     @FXML private TableColumn<AbstractPlayer, String> s_ovrcol;
     @FXML private TableColumn<AbstractPlayer, String> s_statuscol;
 
     @FXML private TableView<AbstractPlayer> benchtable;
+    @FXML private TableColumn<AbstractPlayer, String> b_shirtcol;
     @FXML private TableColumn<AbstractPlayer, String> b_namecol;
     @FXML private TableColumn<AbstractPlayer, String> b_poscol;
     @FXML private TableColumn<AbstractPlayer, String> b_ovrcol;
@@ -53,26 +61,43 @@ public class SquadController {
         playersOnField = gc.getSport().getPlayersOnField();
 
         teamnamelabel.setText(team.getName());
-        squadcountlabel.setText("Squad: " + team.getCurrentSquadSize() + "/" + team.getMaxSquadSize()
-                + "  |  Starting: " + team.getStartingLineup().size() + "  |  Bench: " + team.getBench().size());
+        updateCounts();
 
-        setupColumns(s_namecol, s_poscol, s_ovrcol, s_statuscol, startingtable);
-        setupColumns(b_namecol, b_poscol, b_ovrcol, b_statuscol, benchtable);
+        setupColumns(s_shirtcol, s_namecol, s_poscol, s_ovrcol, s_statuscol, startingtable);
+        setupColumns(b_shirtcol, b_namecol, b_poscol, b_ovrcol, b_statuscol, benchtable);
 
         refresh();
     }
 
-    private void setupColumns(TableColumn<AbstractPlayer, String> nameCol,
-                               TableColumn<AbstractPlayer, String> posCol,
-                               TableColumn<AbstractPlayer, String> ovrCol,
-                               TableColumn<AbstractPlayer, String> statusCol,
-                               TableView<AbstractPlayer> table) {
+    private void setupColumns(TableColumn<AbstractPlayer, String> shirtCol,
+                              TableColumn<AbstractPlayer, String> nameCol,
+                              TableColumn<AbstractPlayer, String> posCol,
+                              TableColumn<AbstractPlayer, String> ovrCol,
+                              TableColumn<AbstractPlayer, String> statusCol,
+                              TableView<AbstractPlayer> table) {
+
+        shirtCol.setCellValueFactory(c -> new SimpleStringProperty(String.valueOf(c.getValue().getShirtNumber())));
+        shirtCol.setComparator((s1, s2) -> {
+            try { return Integer.compare(Integer.parseInt(s1), Integer.parseInt(s2)); }
+            catch (NumberFormatException e) { return s1.compareTo(s2); }
+        });
+
         nameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
+
         posCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPosition()));
+        posCol.setComparator((pos1, pos2) -> {
+            int index1 = POS_ORDER.indexOf(pos1.toUpperCase());
+            int index2 = POS_ORDER.indexOf(pos2.toUpperCase());
+            if (index1 == -1) index1 = 999;
+            if (index2 == -1) index2 = 999;
+            return Integer.compare(index1, index2);
+        });
+
         ovrCol.setCellValueFactory(c -> {
             AbstractPlayerAttributes a = c.getValue().getAttributes();
             return new SimpleStringProperty(a == null ? "-" : String.valueOf(a.getOverallRating()));
         });
+
         statusCol.setCellValueFactory(c -> new SimpleStringProperty(formatStatus(c.getValue())));
 
         table.setRowFactory(tv -> {
@@ -98,24 +123,39 @@ public class SquadController {
         if (team == null) return;
         startingtable.setItems(FXCollections.observableArrayList(team.getStartingLineup()));
         benchtable.setItems(FXCollections.observableArrayList(team.getBench()));
+        updateCounts();
+    }
+
+    private void updateCounts() {
         squadcountlabel.setText("Squad: " + team.getCurrentSquadSize() + "/" + team.getMaxSquadSize()
                 + "  |  Starting: " + team.getStartingLineup().size() + "  |  Bench: " + team.getBench().size());
     }
+
 
     @FXML
     public void swapbutton() {
         AbstractPlayer out = startingtable.getSelectionModel().getSelectedItem();
         AbstractPlayer in  = benchtable.getSelectionModel().getSelectedItem();
-        if (out == null || in == null) {
-            showAlert("Select players", "Select one player from Starting and one from Bench.");
+
+        if (out == null && in != null && team.getStartingLineup().size() < playersOnField) {
+            boolean ok = team.swapStartingWithBench(null, in);
+            if (!ok) showAlert("Error", "The player could not be added, may be injured.");
+            refresh();
             return;
         }
+
+        if (out == null || in == null) {
+            showAlert("Missing Selection", "\"Select one player from Starting and one from Bench.");
+            return;
+        }
+
         boolean ok = team.swapStartingWithBench(out, in);
         if (!ok) {
             showAlert("Swap failed", "Could not swap — player may be injured or already starting.");
         }
         refresh();
     }
+
 
     @FXML
     public void autosetbutton() {

@@ -9,6 +9,7 @@ public class FootballTeam extends AbstractTeam {
 
     public FootballTeam(String name) {
         super(name);
+        this.setCurrentTactic(FootballTactic.create442());
     }
 
     @Override
